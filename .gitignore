@@ -5,15 +5,15 @@ db.sqlite3
 /static
 
 # dependencies
-react/node_modules
-react/.pnp
+frontend/node_modules
+frontend/.pnp
 .pnp.js
 
 # testing
-react/coverage
+frontend/coverage
 
 # production
-react/build
+frontend/build
 
 # misc
 .DS_Store
