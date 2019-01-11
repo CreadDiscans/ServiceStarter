@@ -1,3 +1,4 @@
 Django
 djangorestframework
 djangorestframework-jwt
+django-sslserver
