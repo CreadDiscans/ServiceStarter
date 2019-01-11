@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/core": "7.1.6",
     "@svgr/webpack": "2.4.1",
+    "axios": "^0.18.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
@@ -33,6 +34,8 @@
     "jest": "23.6.0",
     "jest-pnp-resolver": "1.0.1",
     "jest-resolve": "23.6.0",
+    "koa": "^2.6.2",
+    "koa-static": "^5.0.0",
     "mini-css-extract-plugin": "0.4.3",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
@@ -45,9 +48,17 @@
     "react-app-polyfill": "^0.2.0",
     "react-dev-utils": "^7.0.1",
     "react-dom": "^16.7.0",
+    "react-helmet": "^5.2.0",
+    "react-hot-loader": "^4.5.3",
+    "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
+    "react-router-server": "^4.2.3",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.4",
+    "redux-pender": "^2.0.12",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
+    "serialize-javascript": "^1.6.1",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
     "url-loader": "1.1.1",
@@ -58,9 +69,10 @@
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src react-scripts start",
+    "start:server": "node server",
     "build": "cross-env NODE_PATH=src react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "build:server": "cross-env NODE_PATH=src node scripts/build.server.js",
+    "test": "react-scripts test --env=jsdom"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -116,5 +128,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "ignore-loader": "^0.1.2"
   }
 }

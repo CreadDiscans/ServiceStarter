@@ -125,6 +125,7 @@ module.exports = function(webpackEnv) {
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
+      'react-hot-loader/patch',
       // Include an alternative client for WebpackDevServer. A client's job is to
       // connect to WebpackDevServer by a socket and get notified about changes.
       // When you save a file, the client will either apply hot updates (in case
@@ -337,6 +338,7 @@ module.exports = function(webpackEnv) {
                 
                 plugins: [
                   [
+                    'react-hot-loader/babel',
                     require.resolve('babel-plugin-named-asset-import'),
                     {
                       loaderMap: {

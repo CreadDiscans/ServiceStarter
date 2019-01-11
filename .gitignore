@@ -14,6 +14,7 @@ frontend/coverage
 
 # production
 frontend/build
+frontend/server/render/*render.js
 
 # misc
 .DS_Store
