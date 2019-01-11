@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # my app
-    'home'
+    'home',
+    'react.build'
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,7 @@ ROOT_URLCONF = 'mydjangorest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'react/build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
