@@ -1,6 +1,6 @@
 import React from 'react';
 import { StaticRouter } from 'react-router';
-import App from 'shared/App';
+import App from 'app/App';
 import configureStore from 'redux/configureStore';
 import { Provider } from 'react-redux';
 
