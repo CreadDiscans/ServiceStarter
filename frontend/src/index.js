@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Root from './client/Root';
+import Root from './Root';
 import { AppContainer } from 'react-hot-loader';
 import * as serviceWorker from './serviceWorker';
 
@@ -15,6 +15,6 @@ const render = Component => {
 render(Root)
 
 if (module.hot) {
-  module.hot.accept('./client/Root', () => { render(Root) })
+  module.hot.accept('./Root', () => { render(Root) })
 }
 serviceWorker.unregister();

@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home, Header, Footer } from 'app';
+import * as A from 'app';
 import { Helmet } from "react-helmet";
 
+
 class App extends Component {
+
     render() {
         return (
             <div>
                 <Helmet>
-                    <title>React Router & SSR</title>
+                    <title>React Router &amp; SSR</title>
                 </Helmet>
-                <Route path="/" component={Header}/>
-                <Switch>
-                    <Route exact path="/" component={Home}/>
-                </Switch>
-                <Route path="/" component={Footer}/>
+                {
+                    process.env.NODE_ENV === 'development' ? 
+                    (<Switch>
+                        <Route path="/data-test" component={A.DataTest}/>
+                        <Route path="/theme-test" component={A.ThemeTest}/>
+                        <Route path="/" component={A.Main}/>
+                    </Switch>) : 
+                    <Route path="/" component={A.Main}/>
+                }
             </div>
         );
     }
