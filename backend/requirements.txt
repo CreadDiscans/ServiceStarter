@@ -2,3 +2,5 @@ Django
 djangorestframework
 djangorestframework-jwt
 django-sslserver
+pymysql
+requests

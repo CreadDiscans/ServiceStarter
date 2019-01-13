@@ -1,18 +1,15 @@
+#backend
 __pycache__
 *.pyc
 venv
 db.sqlite3
 backend/statics
 
-# dependencies
+# frontend
 frontend/node_modules
 frontend/.pnp
 .pnp.js
-
-# testing
 frontend/coverage
-
-# production
 frontend/build
 frontend/server/render/*render.js
 
