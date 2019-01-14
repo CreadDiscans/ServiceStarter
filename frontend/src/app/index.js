@@ -20,4 +20,3 @@ export const ThemeBoardListTest = asyncRoute(() => import('./theme/board/ThemeBo
 
 // data test
 export const DataTest = asyncRoute(() => import('./data/DataTest'));
-export const DataTestBoard = asyncRoute(() => import('./data/DataTestBoard'));

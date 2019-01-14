@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # my app
     'home',
     'board',
+    # new app inserted here automatically
 ]
 
 REACT_URL = 'http://127.0.0.1:3001'
@@ -145,3 +146,5 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+ITEM_COUNT_PER_PAGE = 10
