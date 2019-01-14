@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import { Route, Switch } from 'react-router-dom';
-import * as A from 'app/data';
+import {ThemeHeader, ThemeContent, ThemeFooter} from 'app';
+import * as A from './index';
 
 class DataTest extends Component {
 
     menus = [
-        {group: 'board', name:'list', link:'/data-test/list'},
+        {group: 'board', name:'list', link:'/data-test/board/list'},
         // data test inserted automatically
     ]
 
@@ -29,14 +30,14 @@ class DataTest extends Component {
 
         return (
             <React.Fragment>
-                <A.ThemeHeader />
-                <A.ThemeContent sideMenu={this.sideMenu}>
+                <ThemeHeader />
+                <ThemeContent sideMenu={this.sideMenu}>
                     <Switch>
-                        <Route path="/data-test/board" component={A.DataTestBoard} />
+                        <Route path="/data-test/board/list" component={A.DataTestBoard} />
                         {/* data test inserted automatically */}
                     </Switch>
-                </A.ThemeContent>
-                <A.ThemeFooter />
+                </ThemeContent>
+                <ThemeFooter />
             </React.Fragment>
         );
     }

@@ -2,5 +2,6 @@ Django
 djangorestframework
 djangorestframework-jwt
 django-sslserver
+django-cors-headers
 pymysql
 requests

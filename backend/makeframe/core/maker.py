@@ -54,7 +54,7 @@ from %s.models import *\n'''
 
   REACT_ROUTE = '''        {group: '%s', name:'%s', link:'/data-test/%s/%s'},\n'''
   REACT_ROUTE2 = '''                        <Route path="/data-test/%s/%s" component={A.%s} />\n'''
-  REACT_INDEX = '''export const %s = asyncRoute(() => import('./data/%s/%s'));\n'''
+  REACT_INDEX = '''export const %s = asyncRoute(() => import('./%s/%s'));\n'''
 
   def make(self, app):
     for appName in app:
