@@ -10,6 +10,10 @@ pip -U -r requirements.txt
 
 python manage.py migrate
 
+# model 생성
+
+python manage.py makeframe
+
 # development mode
 
 python manage.py runsslserver
