@@ -10,14 +10,19 @@ urlpatterns = router.urls'''
   SERIALIZERS_PY = '''from rest_framework import serializers
 from .models import *
 '''
+  MODEL_ITEM = '''\nclass %s(models.Model):\n'''
+  SERIALIZER_ITEM = '''\nclass %sSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = %s
+    fields = '__all__'\n'''
 
   def make(self, app):
     for appName in app:
-      self.makeApp(appName)
-      self.makeModel(app[appName])
+      name = appName.split('.')[-1]
+      self.makeApp(name)
+      self.makeModels(app[appName], name)
 
-  def makeApp(self, appName):
-    name = appName.split('.')[-1]
+  def makeApp(self, name):
     if not os.path.exists(name):
       os.system('python manage.py startapp %s'%name)
     if not os.path.exists(os.path.join(name, 'urls.py')):
@@ -75,7 +80,54 @@ from .models import *
         if 'settings' in file:
           return root
     
-  def makeModel(self, models):
+  def makeModels(self, models, name):
     for klass in models:
       instance = klass()
-      print(dir(instance))
+      self.makeModelPy(instance, name)
+      self.makeSerializerPy(instance, name)
+  
+  def makeModelPy(self, instance, name):
+    body = self.MODEL_ITEM%instance.__class__.__name__
+    with open(os.path.join(name, 'models.py'), 'r') as f:
+      models = f.read()
+    if body in models:
+      return
+    work = []
+    for field in dir(instance):
+      if '__' in field: 
+        continue
+      ff = getattr(instance, field)
+      if ff.need() is not None:
+        work.append(ff.need())
+      body += ff.toString()%field
+    for w in work:
+      if w['type'] == 'import':
+        if w['content'] in models:
+          continue
+        body = w['content'] + '\n' + body  
+    with open(os.path.join(name, 'models.py'), 'a') as f:
+      f.write(body)
+  
+  def makeSerializerPy(self, instance, name):
+    body = self.SERIALIZER_ITEM%(instance.__class__.__name__, instance.__class__.__name__)
+    with open(os.path.join(name, 'serializers.py'), 'r') as f:
+      serialisers = f.read()
+    if body in serialisers:
+      return
+    # work = []
+    # for field in dir(instance):
+    #   if '__' in field: 
+    #     continue
+    #   ff = getattr(instance, field)
+    #   if ff.need() is not None:
+    #     work.append(ff.need())
+    #   body += ff.toString()%field
+    # for w in work:
+    #   if w['type'] == 'import':
+    #     if w['content'] in models:
+    #       continue
+    #     body = w['content'] + '\n' + body  
+    with open(os.path.join(name, 'serializers.py'), 'a') as f:
+      f.write(body)
+  
+  
