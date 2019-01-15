@@ -4,12 +4,11 @@ from django.conf import settings
 from rest_framework import viewsets
 from home.serializers import UserSerializer, GroupSerializer
 from rest_framework.decorators import permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 import requests
 
-@permission_classes((IsAuthenticatedOrReadOnly,))
-@authentication_classes((JSONWebTokenAuthentication,))
+@permission_classes((AllowAny,))
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer

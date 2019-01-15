@@ -6,7 +6,9 @@ import * as A from './index';
 class DataTest extends Component {
 
     menus = [
-        {group: 'board', name:'list', link:'/data-test/board/list'},
+        {group: 'home', name:'user', link:'/data-test/home/user'},
+        {group: 'home', name:'group', link:'/data-test/home/group'},
+        {group: 'home', name:'sign', link:'/data-test/home/sign'},
         // data test inserted automatically
     ]
 
@@ -33,7 +35,9 @@ class DataTest extends Component {
                 <ThemeHeader />
                 <ThemeContent sideMenu={this.sideMenu}>
                     <Switch>
-                        <Route path="/data-test/board/list" component={A.DataTestBoard} />
+                        <Route path="/data-test/home/user" component={A.DataTestHomeUser} />
+                        <Route path="/data-test/home/group" component={A.DataTestHomeGroup} />
+                        <Route path="/data-test/home/sign" component={A.DataTestHomeSign} />
                         {/* data test inserted automatically */}
                     </Switch>
                 </ThemeContent>

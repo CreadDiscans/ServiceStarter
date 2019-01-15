@@ -6,13 +6,13 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from board import models, serializers
 
-ITEM_COUNT_PER_PAGE = 10
+from makeframe.shared.views import SharedViewSet
 
-@permission_classes((IsAuthenticatedOrReadOnly,))
-@authentication_classes((JSONWebTokenAuthentication,))
-class BoardGroupViewSet(viewsets.ModelViewSet):
+class BoardGroupViewSet(SharedViewSet):
   queryset = models.BoardGroup.objects.all().order_by('-id')
   serializer_class = serializers.BoardGroupSerializer
+
+ITEM_COUNT_PER_PAGE = 10
 
 @permission_classes((IsAuthenticatedOrReadOnly,))
 @authentication_classes((JSONWebTokenAuthentication,))

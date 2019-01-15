@@ -1,24 +1,58 @@
-import {BehaviorSubject} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import {ajax} from 'rxjs/ajax';
+import {of} from 'rxjs';
 
 class DataService {
-
-  static subject = new BehaviorSubject();
-
-  get = () => {
-    return DataService.subject;
+  auth = null;
+  constructor() {
+    if (process.env.NODE_ENV === 'development')
+      this.host = 'https://localhost:8000/api/';
+    else
+      this.host = '/api/';
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.auth = {
+        token : token
+      }
+    }
   }
 
-  host = 'https://localhost:8000/api/'
+  signin(username, password) {
+    return this.create('token-auth/', {
+      username: username,
+      password: password
+    }).pipe(
+      map(userResponse => {
+        this.auth = userResponse;
+        localStorage.setItem('token', this.auth.token);
+        return true;
+      }),
+      catchError(error => console.log('error: ', error))
+    );
+  }
+
+  signout() {
+    this.auth = null;
+    localStorage.removeItem('token');
+  }
+
+  isSigned() {
+    if (this.auth == null) {
+      return of(false);
+    }
+    return this.create('token-verify/', {
+      token: this.auth.token
+    }).pipe(
+      map(()=> true),
+      catchError(() => false)
+    );
+  }
 
   select(url, param=null) {
     return ajax({
       url: this.host + url,
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.getHeader(),
       param: param
     }).pipe(
       map(userResponse => userResponse.response),
@@ -26,13 +60,11 @@ class DataService {
     );
   }
 
-  create(url, data) {
+  create(url, data=null) {
     return ajax({
       url: this.host + url,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.getHeader(),
       body: data
     }).pipe(
       map(userResponse => userResponse.response),
@@ -44,9 +76,7 @@ class DataService {
     return ajax({
       url: this.host + url,
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.getHeader(),
       body: data
     }).pipe(
       map(userResponse => userResponse.response),
@@ -58,14 +88,22 @@ class DataService {
     return ajax({
       url: this.host + url,
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: this.getHeader(),
       param: param
     }).pipe(
       map(userResponse => userResponse.response),
       catchError(error => console.log('error: ', error))
     );
+  }
+
+  getHeader() {
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+    if (this.auth != null) {
+      headers['Authorization'] = 'JWT ' +this.auth.token;
+    }
+    return headers;
   }
 } 
 
