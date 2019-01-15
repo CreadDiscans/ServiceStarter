@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
     # my app
     'home',
-    'board',
     # new app inserted here automatically
 ]
 

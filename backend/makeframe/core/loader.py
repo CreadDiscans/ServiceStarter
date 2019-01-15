@@ -1,4 +1,5 @@
 from makeframe import models
+from django.conf import settings
 import importlib
 import os
 import sys
@@ -26,5 +27,22 @@ class Loader:
       item[mod.__name__].append(klass)
     self.data.append(item)
 
+  def readFile(self, app):
+    target = []
+    for key in app:
+      with open(os.path.join(settings.BASE_DIR,key.replace('.','/')+'.py'), 'r') as f:
+        content = f.read()
+      for line in content.split('\n'):
+        if 'class' in line and not 'class Admin:' in line:
+          target.append(line.replace('class ', '').replace(':', ''))
+      tmp = app[key]
+      app[key] = []
+      for t in target:
+        for item in tmp:
+          if t == item.__name__:
+            app[key].append(item)
+
   def getModels(self):
+    for app in self.data:
+      self.readFile(app)
     return self.data

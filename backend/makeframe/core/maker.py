@@ -11,7 +11,8 @@ class Maker:
   VIEWS_PY = '''from makeframe.shared.views import SharedViewSet\nfrom %s.models import *\nfrom %s.serializers import *\n'''
   VIEWS_ITEM = '''\nclass %sViewSet(SharedViewSet):\n  queryset = %s.objects.all().order_by('-id')\n  serializer_class = %sSerializer\n'''
   ADMIN_PY = '''from django.contrib import admin\nfrom %s.models import *\n'''
-  ADMIN_ITEM = '''admin.site.register(%s)\n'''
+  ADMIN_ITEM = '''class %s%s(admin.%s):\n  model = %s\n%s\n'''
+  ADMIN_ITEM_REGISTER = '''admin.site.register(%s, %sAdmin)\n'''
 
   REACT_ROUTE = '''        {group: '%s', name:'%s', link:'/data-test/%s/%s'},\n'''
   REACT_ROUTE2 = '''                        <Route path="/data-test/%s/%s" component={A.%s} />\n'''
@@ -82,6 +83,9 @@ class Maker:
       self.makeSerializerPy(instance, name)
       self.makeViewPy(instance, name)
       self.makeUrlsPy(instance, name)
+      
+    for klass in reversed(models): 
+      instance = klass()
       self.makeAdminPy(instance, name)
   
   def makeModelPy(self, instance, name):
@@ -131,10 +135,31 @@ class Maker:
       self.insertLine(os.path.join(name, 'urls.py'), body, 'urlpatterns = router.urls')
 
   def makeAdminPy(self, instance, name):
-    body = self.ADMIN_ITEM%(instance.__class__.__name__)
-    if self.check(name, 'admin.py', instance.__class__.__name__):
-      with open(os.path.join(name, 'admin.py'), 'a') as f:
-        f.write(body)
+    n = instance.__class__.__name__
+    extra = ''
+    try:
+      admin = getattr(instance, 'Admin')()
+      parentClass = 'ModelAdmin'
+      prefix = 'Admin'
+      inlines = None
+      for f in self.getFields(admin):
+        if f['var'] == 'type':
+          parentClass = f['obj']
+          if parentClass == 'TabularInline':
+            prefix = 'Inline'
+        if f['var'] == 'inlines':
+          inlines = str(f['obj']).replace('\'', '')
+      if inlines is not None:
+        extra += '  inlines = %s\n'%inlines
+      body = self.ADMIN_ITEM%(n,prefix, parentClass, n, extra)
+      if parentClass == 'ModelAdmin':
+        body += self.ADMIN_ITEM_REGISTER%(n, n)
+
+      if self.check(name, 'admin.py', n+prefix):
+        with open(os.path.join(name, 'admin.py'), 'a') as f:
+          f.write(body)
+    except:
+      pass
 
 # make React
   def makeReact(self, models, name):
@@ -196,6 +221,8 @@ class Maker:
     fields = []
     for field in dir(instance):
       if '__' in field: 
+        continue
+      if field == 'Admin':
         continue
       fields.append({'var': field, 'obj':getattr(instance, field)})
     return fields

@@ -10,7 +10,6 @@ else:
     
 urlpatterns += [
     path('admin/', admin.site.urls),
-    path('api/board/', include('board.urls')),
     # app urls are inserted here automatinally
     path('', include('home.urls'))
 ] 
