@@ -25,7 +25,7 @@ class DataService {
     } else {
       token = DataService.auth.token;
     }
-    if (token && token != 'undefined') {
+    if (token && token !== 'undefined') {
       const decoded = jwt.decode(token);
       if (new Date(decoded.exp*1000)> new Date()) {
         return false;
@@ -144,7 +144,7 @@ class DataService {
     for(let key in params) {
       query += key + '=' + params[key] + '&';
     }
-    if (query.length != 0) {
+    if (query.length !== 0) {
       query = '?' + query.slice(0, -1);
     }
     return query;
