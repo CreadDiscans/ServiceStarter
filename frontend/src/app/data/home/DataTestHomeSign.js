@@ -26,6 +26,7 @@ class DataTestFrame extends Component {
         this.dataService.isSigned().subscribe(result=> {
           console.log(result);
         })
+        break;
       default:
         break;
     }

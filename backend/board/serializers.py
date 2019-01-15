@@ -14,12 +14,12 @@ class BoardItemSerializer(serializers.ModelSerializer):
     fields = '__all__'
 
 class BoardCommentSerializer(serializers.ModelSerializer):
-  children = serializers.SerializerMethodField()
 
   class Meta:
     model = models.BoardComment
     fields = '__all__'
 
+  children = serializers.SerializerMethodField()
   def get_children(self, obj):
     children = models.BoardComment.objects.filter(parent=obj).order_by('-id')
     return BoardCommentSerializer(children, many=True).data

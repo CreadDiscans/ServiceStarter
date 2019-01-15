@@ -14,6 +14,13 @@ class SharedViewSet(viewsets.ModelViewSet):
 
   def list(self, request):
     page = request.GET.get('page')
+    fields = []
+    kwargs = {}
+    for field in request.GET:
+      if field == 'page': continue
+      kwargs['{0}'.format(field)] = request.GET.get(field)
+
+    self.queryset = self.queryset.filter(**kwargs)
 
     paginator = Paginator(self.queryset, settings.ITEM_COUNT_PER_PAGE)
     try:

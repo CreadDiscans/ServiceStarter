@@ -4,6 +4,9 @@ CASCADE = 'CASCADE'
 class Field:
   def need(self):
     return None
+  
+  def serializer(self):
+    return None
 
 class CharField(Field):
   def __init__(self, max_length):
@@ -13,13 +16,14 @@ class CharField(Field):
     return '    %s = models.CharField(max_length='+str(self.max_length)+')\n'
 
 class ForeignKey(Field):
-  def __init__(self, foreign, on_delete, null=False, package=None):
+  def __init__(self, foreign, on_delete, null=False, package=None, recursive=False):
     self.foreign = foreign
     self.package = package
     if package is None:
       self.foreign = '\'%s\''%foreign
     self.on_delete = on_delete
     self.null = null
+    self.recursive = recursive
   
   def toString(self):
     param = '%s, on_delete=models.%s'%(self.foreign, self.on_delete)
@@ -35,6 +39,17 @@ class ForeignKey(Field):
       }
     else:
       return None
+  
+  def serializer(self):
+    if self.recursive:
+      return {
+        'type': 'recursive',
+        'content': '''
+  recursive_%s = serializers.SerializerMethodField()
+  def get_recursive_%s(self, obj):
+    return %sSerializer(%s.objects.filter(parent=obj).order_by('-id'), many=True).data\n'''
+      }
+    return None
 
 class TextField(Field):
   def __init__(self, null):

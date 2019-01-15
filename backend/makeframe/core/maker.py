@@ -32,7 +32,7 @@ class Maker:
       self.makeApp(name)
       self.makeModels(app[appName], name)
       self.makeReact(app[appName], name)
-
+# make App
   def makeApp(self, name):
     if not os.path.exists(name):
       os.system('python manage.py startapp %s'%name)
@@ -74,16 +74,7 @@ class Maker:
     if self.check(self.getRootPackage(name), 'urls.py', name+'/'):
       self.insertLine(os.path.join(self.getRootPackage(name), 'urls.py'), self.URLS_ROOT_ITEM%(name, name), "# app urls are inserted here automatinally")
 
-  def getRootPackage(self, name):
-    for root, _, files in os.walk('.'):
-      if 'lib' in root: 
-        continue
-      if '__' in root: 
-        continue
-      for file in files:
-        if 'settings' in file:
-          return root
-    
+# make Models
   def makeModels(self, models, name):
     for klass in models:
       instance = klass()
@@ -100,13 +91,10 @@ class Maker:
     if body in models:
       return
     work = []
-    for field in dir(instance):
-      if '__' in field: 
-        continue
-      ff = getattr(instance, field)
-      if ff.need() is not None:
-        work.append(ff.need())
-      body += ff.toString()%field
+    for field in self.getFields(instance):
+      if field['obj'].need() is not None:
+        work.append(field['obj'].need())
+      body += field['obj'].toString()%field['var']
     for w in work:
       if w['type'] == 'import':
         if w['content'] in models:
@@ -116,8 +104,15 @@ class Maker:
       f.write(body)
   
   def makeSerializerPy(self, instance, name):
-    body = self.SERIALIZER_ITEM%(instance.__class__.__name__, instance.__class__.__name__)
+    n = instance.__class__.__name__
+    body = self.SERIALIZER_ITEM%(n, n)
     if self.check(name, 'serializers.py', body):
+      for field in self.getFields(instance):
+        work = field['obj'].serializer()
+        if work is not None:
+          if work['type'] == 'recursive':
+            body += work['content']%(field['var'], field['var'], n, n)
+
       with open(os.path.join(name, 'serializers.py'), 'a') as f:
         f.write(body)
   
@@ -141,6 +136,7 @@ class Maker:
       with open(os.path.join(name, 'admin.py'), 'a') as f:
         f.write(body)
 
+# make React
   def makeReact(self, models, name):
     base = '../frontend/src/app/data'
     directory = os.path.join(base, name)
@@ -173,10 +169,10 @@ class Maker:
       body = self.REACT_DATA_TEST%(name,appName,lowername,appName.capitalize(), lowername.capitalize(),name)
       with open(filename, 'w') as f:
         f.write(body)
-      for field in dir(instance):
-        if '__' in field:
-          continue
-        self.insertLine(filename, '      \'%s\':\'\',\n'%field, '// fields added automatically')
+      for field in self.getFields(instance):
+        self.insertLine(filename, '      \'%s\':\'\',\n'%field['var'], '// fields added automatically')
+
+# utils
 
   def check(self, name, file, body):
     with open(os.path.join(name, file), 'r') as f:
@@ -185,6 +181,24 @@ class Maker:
       return False
     else:
       return True
+    
+  def getRootPackage(self, name):
+    for root, _, files in os.walk('.'):
+      if 'lib' in root: 
+        continue
+      if '__' in root: 
+        continue
+      for file in files:
+        if 'settings' in file:
+          return root
+
+  def getFields(self, instance):
+    fields = []
+    for field in dir(instance):
+      if '__' in field: 
+        continue
+      fields.append({'var': field, 'obj':getattr(instance, field)})
+    return fields
 
   def insertLine(self, fullname, body, before):
     with open(fullname, 'r') as f:

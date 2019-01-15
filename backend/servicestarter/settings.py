@@ -122,6 +122,10 @@ REST_FRAMEWORK = {
     ),
 }
 
+JWT_AUTH = {
+    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+    'JWT_ALLOW_REFRESH': True,
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
