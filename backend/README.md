@@ -12,7 +12,13 @@ python manage.py migrate
 
 # model 생성
 
-python manage.py makeframe
+UML로 backend/models 폴더 및 파일 생성
+
+python manage.py copymodels
+
+python manage.py makemigrations
+
+python manage.py migrate
 
 # development mode
 
