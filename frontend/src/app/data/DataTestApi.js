@@ -1,16 +1,40 @@
 import React, {Component} from 'react';
 import DataService from 'service/DataService';
 
-class DataTestFrame extends Component {
+class DataTestApi extends Component {
   url='';
   title='';
   state = {
     'id':'',
     'page': ''
   }
-  componentDidMount() {
+  constructor() {
+    super();
     this.dataService = new DataService();
   }
+  componentWillReceiveProps() {
+    Object.keys(this.state).forEach(key=> {
+      delete this.state[key];
+    });
+    this.setState({
+      'id':'',
+      'page': ''
+    });
+    this.dataService.select('spec/').subscribe(json=> {
+      json.forEach(item=> {
+        if(window.location.href.indexOf(item.url) !== -1) {
+          this.url = item.url;
+          this.title = item.name;
+          item.fields.forEach(field=> {
+            this.setState({
+              [field]:''
+            });
+          });
+        }
+      });
+    });
+  }
+
   handleChange = (e) => {
     this.setState({[e.target.name]:e.target.value});
   }
@@ -81,4 +105,4 @@ class DataTestFrame extends Component {
   }
 };
 
-export default DataTestFrame;
+export default DataTestApi;

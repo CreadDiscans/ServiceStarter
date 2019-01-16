@@ -7,6 +7,9 @@ class Command(BaseCommand):
     pass
 
   def handle(self, *args, **options):
+    self.copyModels()
+
+  def copyModels(self):
     body = 'from django.db import models\n\n'
 
     for file in os.listdir('models'):

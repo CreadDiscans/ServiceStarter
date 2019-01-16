@@ -12,12 +12,12 @@ class ThemeContent extends Component {
   }
 
   render() {
-    const menuGroup = this.props.sideMenu.map(group=> 
-      <div key={group.name}>
-        <h4>{group.name}</h4>
+    const menuGroup = Object.keys(this.props.sideMenu).map(group=> 
+      <div key={group}>
+        <h4>{group}</h4>
         <ul>
           {
-            group.items.map(item=> 
+            this.props.sideMenu[group].map(item=> 
               <li key={item.name}>
                 <Link to={item.link}>{item.name}</Link>
               </li>

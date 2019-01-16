@@ -2,17 +2,18 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import permission_classes, authentication_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.decorators import permission_classes, authentication_classes, api_view
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import serializers
+import importlib
+import re
 
 def getSerializer(modelClass):
   class ApiSerializer(serializers.ModelSerializer):
     class Meta:
         model = modelClass
         fields = '__all__'
-  print(ApiSerializer)
   return ApiSerializer
 
 def getViewSet(modelClass):
@@ -46,3 +47,28 @@ def getViewSet(modelClass):
       res['items'] = serializers.data
       return Response(res, status=status.HTTP_200_OK)
   return ApiViewSet
+
+@api_view(('GET',))
+@permission_classes((AllowAny,))
+def spec(request):
+  mod = importlib.import_module('api.models')
+  data = []
+  for klassName in dir(mod):
+    if '__' in klassName: continue
+    if klassName == 'models': continue
+    klass = getattr(mod,klassName)
+    parts = re.findall('[A-Z][^A-Z]*',klassName)
+    instance = klass()
+    fields = []
+    for ff in list(klass.__dict__):
+      if any(x in ff for x in ['__', 'objects', 'DoesNotExist', 'MultipleObjectsReturned', '_set', '_id', '_meta', 'get_next_by_', 'get_previous_by_']): 
+        continue
+      fields.append(ff)
+    item = {
+      'url': '/'.join(parts).lower(),
+      'name': klassName,
+      'fields': fields
+    }
+    data.append(item)
+
+  return Response(data)

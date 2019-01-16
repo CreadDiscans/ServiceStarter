@@ -1,44 +1,44 @@
 import React, {Component} from 'react';
 import { Route, Switch } from 'react-router-dom';
 import {ThemeHeader, ThemeContent, ThemeFooter} from 'app';
+import DataService from 'service/DataService';
 import * as A from './index';
 
 class DataTest extends Component {
 
-    menus = [
-        {group: 'home', name:'user', link:'/data-test/home/user'},
-        {group: 'home', name:'group', link:'/data-test/home/group'},
-        {group: 'home', name:'sign', link:'/data-test/home/sign'},
-        // data test inserted automatically
-    ]
+    state = {
+        'home': [
+            {name:'user', link:'/data-test/home/user'},
+            {name:'group', link:'/data-test/home/group'},
+            {name:'sign', link:'/data-test/home/sign'},
+        ],
+        'api': [
 
+        ]
+    };
+    componentDidMount() {
+        const dataService = new DataService();
+        dataService.select('spec/').subscribe(json=> {
+            json.forEach(item=> {
+                this.state['api'].push({
+                    name: item['name'],
+                    link: '/data-test/api/'+item['url']
+                })
+            });
+            this.setState({}); 
+        });
+    }
     
     render() {
-        this.sideMenu = []
-        let group = {}
-        this.menus.forEach(item=> {
-            if (item.group in group) {
-                group[item.group].push(item);
-            } else {
-                group[item.group] = [item];
-            }
-        });
-        for(let g in group) {
-            this.sideMenu.push({
-                name: g,
-                items: group[g]
-            });
-        }
-
         return (
             <React.Fragment>
                 <ThemeHeader />
-                <ThemeContent sideMenu={this.sideMenu}>
+                <ThemeContent sideMenu={this.state}>
                     <Switch>
                         <Route path="/data-test/home/user" component={A.DataTestHomeUser} />
                         <Route path="/data-test/home/group" component={A.DataTestHomeGroup} />
                         <Route path="/data-test/home/sign" component={A.DataTestHomeSign} />
-                        {/* data test inserted automatically */}
+                        <Route path="/data-test/api" component={A.DataTestApi} />
                     </Switch>
                 </ThemeContent>
                 <ThemeFooter />

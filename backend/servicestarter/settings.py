@@ -40,12 +40,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'sslserver',
-    'makeframe',
-    'api',
-
-    # my app
+    
     'home',
-    # new app inserted here automatically
+    'api',
 ]
 
 REACT_URL = 'http://127.0.0.1:3001'

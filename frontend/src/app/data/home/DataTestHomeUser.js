@@ -1,7 +1,7 @@
-import DataTestFrame from '../DataTestFrame';
+import {DataTestApi} from '../index';
 
-class DataTestHomeUser extends DataTestFrame {
-  componentWillMount() {
+class DataTestHomeUser extends DataTestApi {
+  componentWillReceiveProps() {
     this.url = 'home/user/';
     this.title = 'Home User';
     this.setState({

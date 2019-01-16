@@ -1,12 +1,11 @@
-import DataTestFrame from '../DataTestFrame';
+import {DataTestApi} from '../index';
 
-class DataTestHomeGroup extends DataTestFrame {
-  componentWillMount() {
+class DataTestHomeGroup extends DataTestApi {
+  componentWillReceiveProps() {
     this.url = 'home/group/';
     this.title = 'Home Group';
     this.setState({
       'name':'',
-      // fields added automatically
     })
   }
 };
