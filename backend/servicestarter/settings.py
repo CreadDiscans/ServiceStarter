@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'sslserver',
     'makeframe',
+    'api',
 
     # my app
     'home',
