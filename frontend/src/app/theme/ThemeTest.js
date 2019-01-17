@@ -1,30 +1,26 @@
 import React, {Component} from 'react';
 import { Route, Switch } from 'react-router-dom';
-import * as A from 'app';
+import {ThemeHeader, ThemeFooter, ThemeContent} from 'app';
+import * as T from './index';
 
 class ThemeTest extends Component {
 
-    sideMenu = [{
-        name: 'board',
-        items: [
-            {name:'list', link:'/theme-test/board/list'}, 
-            {name:'detail', link:'/theme-test/board/detail'},
-            {name:'editor', link:'/theme-test/board/editor'},
+    sideMenu = {
+        'Bootstrap': [
+            {name:'alert', link:'/theme-test/bootstrap/alert'}
         ]
-    }]
+    }
 
     render() {
         return (
             <React.Fragment>
-                <A.ThemeHeader />
-                <A.ThemeContent sideMenu={this.sideMenu}>
+                <ThemeHeader />
+                <ThemeContent sideMenu={this.sideMenu}>
                     <Switch>
-                        <Route path="/theme-test/board/list" component={A.ThemeBoardListTest} />
-                        <Route path="/theme-test/board/detail" component={A.ThemeBoardDetailTest} />
-                        <Route path="/theme-test/board/editor" component={A.ThemeBoardEditorTest} />
+                        <Route path="/theme-test/bootstrap/alert" component={T.BSAlertTest} />
                     </Switch>
-                </A.ThemeContent>
-                <A.ThemeFooter />
+                </ThemeContent>
+                <ThemeFooter />
             </React.Fragment>
         );
     }
