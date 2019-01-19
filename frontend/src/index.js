@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Root from './Root';
 import { AppContainer } from 'react-hot-loader';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const render = Component => {
   ReactDOM.render(
