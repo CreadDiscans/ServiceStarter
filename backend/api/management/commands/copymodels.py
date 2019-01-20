@@ -13,9 +13,9 @@ class Command(BaseCommand):
     body = 'from django.db import models\n\n'
 
     for file in os.listdir('models'):
-      with open('models/'+file, 'r') as f:
+      with open('models/'+file, 'r', encoding='utf-8') as f:
         content = f.read()
       content = '\n'.join(content.split('\n')[4:])
       body += content
-    with open('api/models.py', 'w') as f:
+    with open('api/models.py', 'w', encoding='utf-8') as f:
       f.write(body)
