@@ -10,7 +10,6 @@ const ThemeHeader = () => {
             process.env.NODE_ENV === 'development' && 
             (
               <React.Fragment>
-                <Link className="py-2 d-none d-md-inline-block text-muted" to="/data-test">data test</Link>
                 <Link className="py-2 d-none d-md-inline-block text-muted" to="/theme-test">theme test</Link>
               </React.Fragment>
             )
