@@ -2,6 +2,7 @@ import { map, mergeMap, catchError } from 'rxjs/operators';
 import {ajax} from 'rxjs/ajax';
 import {of} from 'rxjs';
 import jwt from 'jsonwebtoken';
+import { ConnectService } from './ConnectService';
 
 export class DataService {
   static instance = null;
@@ -11,6 +12,9 @@ export class DataService {
   constructor() {
     this.auth = {
       token: localStorage.getItem('token')
+    }
+    if (!this.isExpired()) {
+      ConnectService.getInstance().get('login').next({login:true});
     }
   }
 
