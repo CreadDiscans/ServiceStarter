@@ -27,7 +27,7 @@ export default class Header extends React.Component {
     this.connectService = ConnectService.getInstance();
     this.connectService.get('login').subscribe(obj=> {
       this.setState({
-        isLogined: true
+        isLogined: obj.login
       })
     });
   }
@@ -39,9 +39,7 @@ export default class Header extends React.Component {
   }
   handleClick = () => {
     this.dataService.signout();
-    this.setState({
-      isLogined: false
-    })
+    this.connectService.get('login').next({login:false});
   }
   render() {
     return (
