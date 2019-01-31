@@ -3,15 +3,11 @@ __pycache__
 *.pyc
 venv
 db.sqlite3
-backend/statics
+static
 
 # frontend
-frontend/node_modules
-frontend/.pnp
-.pnp.js
-frontend/coverage
-frontend/build
-frontend/server/render/*render.js
+node_modules
+build
 
 # misc
 .DS_Store
