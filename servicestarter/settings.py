@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     'api',
 ]
 
-REACT_URL = 'http://127.0.0.1:3001'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
