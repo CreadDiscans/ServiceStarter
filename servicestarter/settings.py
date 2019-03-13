@@ -157,3 +157,6 @@ ITEM_COUNT_PER_PAGE = 10
 CORS_ALLOW_CREDENTIALS = True
 if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'

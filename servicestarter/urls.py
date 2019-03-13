@@ -8,15 +8,16 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 from .views import *
   
 router = routers.DefaultRouter()
-router.register(r'api/home/user', UserViewSet)
-router.register(r'api/home/group', GroupViewSet)
+router.register(r'home/user', UserViewSet)
+router.register(r'home/group', GroupViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token-auth/', obtain_jwt_token),
     path('api/token-refresh/', refresh_jwt_token),
     path('api/token-verify/', verify_jwt_token),
-    path('api/', include('api.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('', include('api.urls')),
     path('', index),
     path('favicon.ico', favicon),
     path('manifest.json', manifest),
