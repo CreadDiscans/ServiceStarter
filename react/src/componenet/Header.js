@@ -48,13 +48,20 @@ export default class Header extends React.Component {
             <NavbarToggler onClick={this.toggle} />
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="ml-auto" navbar>
-                <NavItem>
-                  { this.state.isLogined ? (
+                { this.state.isLogined ? (
+                  <NavItem>
                     <Link className="nav-link" to="/" onClick={this.handleClick}>Logout</Link>
-                  ) : (
-                    <Link className="nav-link" to="/login">Login</Link>
-                  )}
-                </NavItem>
+                  </NavItem>
+                ) : (
+                  <React.Fragment>
+                    <NavItem>
+                      <Link className="nav-link" to="/login">Login</Link>
+                    </NavItem>
+                    <NavItem>
+                      <Link className="nav-link" to="/signup">SignUp</Link>
+                    </NavItem>
+                  </React.Fragment>
+                )}
               </Nav>
             </Collapse>
           </Navbar>

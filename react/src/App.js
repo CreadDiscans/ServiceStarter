@@ -3,15 +3,13 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Header from './componenet/header';
 import Footer from './componenet/footer';
 import Home from './componenet/home';
-import Login from './componenet/login';
+import Login from './componenet/auth/login';
 import Next from './componenet/next';
 import PubsubService from './service/pubsub.service';
 import AuthService from './service/auth.service';
+import SignUp from './componenet/auth/signup';
 
 class App extends Component {
-  styleApp = {
-    minHeight: '100vh'
-  }
   state = {
     isLogined: false
   }
@@ -29,11 +27,12 @@ class App extends Component {
 
   render() {
     return (
-      <div style={this.styleApp}>
+      <div>
         <Header />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={SignUp} />
           {this.state.isLogined && <Route exact={true} path="/next" component={Next} />}
           <Route path="*" render={() => (<Redirect to="/" />)} />
         </Switch>

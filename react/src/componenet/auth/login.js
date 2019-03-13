@@ -1,6 +1,6 @@
 import React from 'react';
 import {Alert} from 'reactstrap';
-import AuthService from './../service/auth.service';
+import AuthService from '../../service/auth.service';
 export default class Login extends React.Component {
   state = {
     open: false,
@@ -37,7 +37,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="container" style={{width:'300px', marginTop:'100px'}}>
         <h2>Login</h2>
         <div className="form-group">
           <input className="form-control" 
