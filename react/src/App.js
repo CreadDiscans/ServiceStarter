@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import Header from './componenet/Header';
-import Footer from './componenet/Footer';
-import Home from './componenet/Home';
-import Login from './componenet/Login';
-import Next from './componenet/Next';
-import { ConnectService } from './service/ConnectService';
+import Header from './componenet/header';
+import Footer from './componenet/footer';
+import Home from './componenet/home';
+import Login from './componenet/login';
+import Next from './componenet/next';
+import PubsubService from './service/pubsub.service';
+import AuthService from './service/auth.service';
 
 class App extends Component {
   styleApp = {
@@ -16,12 +17,14 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.connectService = ConnectService.getInstance();
-    this.connectService.get('login').subscribe(obj=> {
-      this.setState({
-        isLogined: obj.login
-      })
+    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe(obj=> {
+      if (obj) {
+        this.setState({
+          isLogined: obj.login
+        })
+      }
     })
+    new AuthService()
   }
 
   render() {

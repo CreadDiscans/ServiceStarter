@@ -1,7 +1,6 @@
 import React from 'react';
 import {Alert} from 'reactstrap';
-import {DataService} from '../service/DatsService';
-import { ConnectService } from '../service/ConnectService';
+import AuthService from './../service/auth.service';
 export default class Login extends React.Component {
   state = {
     open: false,
@@ -9,34 +8,19 @@ export default class Login extends React.Component {
     password: ''
   }
 
-  componentWillMount() {
-    this.dataService = DataService.getInstance();
-    this.connectService = ConnectService.getInstance();
-    this.asyncPool = [];
-  }
-
-  componentWillUnmount() {
-    this.asyncPool.forEach(obserbe=> {
-      obserbe.unsubscribe();
-    })
-  }
-
   handleClick = () => {
-    this.asyncPool.push(
-      this.dataService.login(this.state.username, this.state.password).subscribe(result=> {
-        this.connectService.get('login').next({login: true});
-        this.props.history.push('/');
-      }, err=> {
-        this.setState({
-          open: true
-        });
-        setTimeout(()=> {
-          this.setState({
-            open: false
-          })
-        }, 3000)
+    AuthService.login(this.state.username, this.state.password).subscribe(res=> {
+      this.props.history.push('/')
+    }, err=> {
+      this.setState({
+        open: true
       })
-    );
+      setTimeout(()=> {
+        this.setState({
+          open: false
+        })
+      }, 3000)
+    })
   }
 
   handleChange = (e) => {

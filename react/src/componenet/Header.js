@@ -6,8 +6,8 @@ import {
   Nav,
   NavItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
-import { DataService } from '../service/DatsService';
-import { ConnectService } from '../service/ConnectService';
+import PubsubService from './../service/pubsub.service';
+import AuthService from './../service/auth.service';
 export default class Header extends React.Component {
 
   state = {
@@ -23,13 +23,13 @@ export default class Header extends React.Component {
     };
   }
   componentWillMount() {
-    this.dataService = DataService.getInstance();
-    this.connectService = ConnectService.getInstance();
-    this.connectService.get('login').subscribe(obj=> {
-      this.setState({
-        isLogined: obj.login
-      })
-    });
+    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe(obj=> {
+      if (obj) {
+        this.setState({
+          isLogined: obj.login
+        })
+      }
+    })
   }
 
   toggle() {
@@ -38,8 +38,7 @@ export default class Header extends React.Component {
     });
   }
   handleClick = () => {
-    this.dataService.signout();
-    this.connectService.get('login').next({login:false});
+    AuthService.logout()
   }
   render() {
     return (
