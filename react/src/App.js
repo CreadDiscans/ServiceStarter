@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import Header from './componenet/header';
-import Footer from './componenet/footer';
-import Home from './componenet/home';
-import Login from './componenet/auth/login';
-import Next from './componenet/next';
+import Header from './component/header';
+import Footer from './component/footer';
+import Home from './component/home';
+import Login from './component/auth/login';
+import Next from './component/next';
 import PubsubService from './service/pubsub.service';
 import AuthService from './service/auth.service';
-import SignUp from './componenet/auth/signup';
+import SignUp from './component/auth/signup';
 
 class App extends Component {
   state = {
