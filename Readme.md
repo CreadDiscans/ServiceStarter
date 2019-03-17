@@ -1,6 +1,10 @@
-startUML 설치, starUML extension 설치 (https://github.com/CreadDiscans/staruml-django)
+# Django Development Guide
 
-ERD 설계 (UML.mdj 참고)
+install startUML(http://staruml.io/)
+
+install starUML extension (https://github.com/CreadDiscans/staruml-django)
+
+design ERD (refer to UML.mdj)
 
 python -m virtualenv venv
 
@@ -16,10 +20,14 @@ python manage.py migrate
 
 python manage.py runserver
 
+# React Development Guide
+
 cd react
 
 npm install
 
 npm install -g react-scripts
 
-yarn start
+npm start (for realtime react development)
+
+npm run build (for frontend rendered by django)

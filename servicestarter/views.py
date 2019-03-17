@@ -47,4 +47,5 @@ def favicon(request):
   return HttpResponse(favicon, content_type="image/png")
 
 def manifest(request):
-  return render(request, 'manifest.json')
+  favicon = open('react/build/manifest.json', 'rb').read()
+  return HttpResponse(favicon, content_type="application/json")
