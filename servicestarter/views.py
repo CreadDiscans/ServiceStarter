@@ -5,6 +5,8 @@ from rest_framework import serializers
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from django.conf import settings
+import os
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -43,9 +45,9 @@ def index(request):
   return render(request, 'index.html')
 
 def favicon(request):
-  favicon = open('react/build/favicon.ico', 'rb').read()
-  return HttpResponse(favicon, content_type="image/png")
+  icon = open(os.path.join(settings.BASE_DIR, 'react/build/favicon.ico'), 'rb').read()
+  return HttpResponse(icon, content_type="image/png")
 
 def manifest(request):
-  favicon = open('react/build/manifest.json', 'rb').read()
-  return HttpResponse(favicon, content_type="application/json")
+  mani = open(os.path.join(settings.BASE_DIR, 'react/build/manifest.json'), 'rb').read()
+  return HttpResponse(mani, content_type="application/json")
