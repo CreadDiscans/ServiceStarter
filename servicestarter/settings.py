@@ -60,7 +60,7 @@ ROOT_URLCONF = 'servicestarter.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['react/build'],
+        'DIRS': [os.path.join(BASE_DIR, 'react/build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

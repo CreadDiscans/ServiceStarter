@@ -19,7 +19,7 @@ def getSerializer(modelClass):
 
 def getViewSet(modelClass):
   @permission_classes((IsAuthenticatedOrReadOnly,))
-  @authentication_classes((JSONWebTokenAuthentication,SessionAuthentication))
+  @authentication_classes((JSONWebTokenAuthentication, SessionAuthentication))
   class ApiViewSet(viewsets.ModelViewSet):
     queryset = modelClass.objects.all().order_by('-id')
     serializer_class = getSerializer(modelClass)
