@@ -16,7 +16,6 @@ urlpatterns = [
     path('api/token-auth/', obtain_jwt_token),
     path('api/token-refresh/', refresh_jwt_token),
     path('api/token-verify/', verify_jwt_token),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', index),
     path('', include('api.urls')),
     path('favicon.ico', favicon),
@@ -26,4 +25,7 @@ urlpatterns += router.urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += [path('swagger/', get_swagger_view(title='Pastebin API'))]
+    urlpatterns += [
+        path('swagger/', get_swagger_view(title='Pastebin API')),
+        path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    ]

@@ -117,8 +117,15 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    # 'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+    # how long the original token is valid for
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
+
+    # allow refreshing of tokens
     'JWT_ALLOW_REFRESH': True,
+
+    # this is the maximum time AFTER the token was issued that
+    # it can be refreshed.  exprired tokens can't be refreshed.
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
 
 # Internationalization
@@ -151,8 +158,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
 # CSRF_COOKIE_SECURE = True
-
-ITEM_COUNT_PER_PAGE = 10
 
 CORS_ALLOW_CREDENTIALS = True
 if DEBUG:
