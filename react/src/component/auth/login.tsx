@@ -1,7 +1,7 @@
 import React from 'react';
 import {Alert} from 'reactstrap';
 import AuthService from '../../service/auth.service';
-export default class Login extends React.Component {
+export default class Login extends React.Component<any,any> {
   state = {
     open: false,
     username: '',
@@ -23,13 +23,13 @@ export default class Login extends React.Component {
     })
   }
 
-  handleChange = (e) => {
+  handleChange = (e:any) => {
     this.setState({
       [e.target.name]: e.target.value
     })
   }
 
-  handleKeyPress = (e) => {
+  handleKeyPress = (e:any) => {
     if (e.key === 'Enter') {
       this.handleClick();
     }
@@ -53,10 +53,10 @@ export default class Login extends React.Component {
         </div>
         <Alert color="danger" style={this.state.open ? {
           transition: 'opacity 0.5s',
-          opacity: '1'
+          opacity: 1
         } : {
           transition: 'opacity 0.5s',
-          opacity: '0'
+          opacity: 0
         }}>
           로그인 실패
         </Alert>

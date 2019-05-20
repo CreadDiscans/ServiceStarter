@@ -7,6 +7,7 @@ export default class AuthService {
     
     static STORAGE_KEY_TOKEN = 'token'
     static URL_TOKEN_AUTH = 'api/token-auth/'
+    auth:any;
 
     constructor() {
         this.auth = {
@@ -22,14 +23,14 @@ export default class AuthService {
         if (!this.auth || !this.auth.token) {
             return true;
         }
-        const decoded = jwt.decode(this.auth.token);
+        const decoded:any = jwt.decode(this.auth.token);
         if (new Date(decoded.exp*1000)> new Date()) {
             return false;
         }
         return true;
     }
 
-    static login(username, password) {
+    static login(username:string, password:string) {
         return RequestService.post(AuthService.URL_TOKEN_AUTH,{
             username: username,
             password: password

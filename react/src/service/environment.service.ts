@@ -10,7 +10,7 @@ export default class EnvironmentService {
         }
     }
 
-    static getEnv() {
+    static getEnv():any {
         if (process.env.NODE_ENV === 'development') {
             return EnvironmentService.ENV.dev
         } else if ('production') {

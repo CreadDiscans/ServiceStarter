@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe(obj=> {
+    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe((obj:any)=> {
       if (obj) {
         this.setState({
           isLogined: obj.login

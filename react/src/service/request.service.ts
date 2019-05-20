@@ -4,12 +4,12 @@ import EnvironmentService from './environment.service';
 
 export class RequestService {
     
-    static HEADER = {
+    static HEADER:any = {
         'Accept'        : 'application/json',
         'Content-Type'  : 'application/json'
     }
 
-    static setHeader(key, value) {
+    static setHeader(key:string, value:string|undefined) {
         if (value) {
             RequestService.HEADER[key] = value
         } else {
@@ -17,42 +17,42 @@ export class RequestService {
         }
     }
 
-    static get(path, query={}) {
+    static get(path:string, query={}) {
         const url = EnvironmentService.getEnv().apiUrl + path + '?' + RequestService.toQueryString(query)
         return ajax.get(url, RequestService.HEADER).pipe(
             map(res=>res.response)
         )
     }
 
-    static post(path, body={}) {
+    static post(path:string, body={}) {
         const url = EnvironmentService.getEnv().apiUrl + path
         return ajax.post(url, body, RequestService.HEADER).pipe(
             map(res=>res.response)
         )
     }
     
-    static put(path, body={}) {
+    static put(path:string, body={}) {
         const url = EnvironmentService.getEnv().apiUrl + path
         return ajax.put(url, body, RequestService.HEADER).pipe(
             map(res=>res.response)
         )
     }
 
-    static patch(path, body={}) {
+    static patch(path:string, body={}) {
         const url = EnvironmentService.getEnv().apiUrl + path
         return ajax.patch(url, body, RequestService.HEADER).pipe(
             map(res=>res.response)
         )
     }
 
-    static delete(path, query={}) {
+    static delete(path:string, query={}) {
         const url = EnvironmentService.getEnv().apiUrl + path + '?' + RequestService.toQueryString(query)
         return ajax.delete(url, RequestService.HEADER).pipe(
             map(res=>res.response)
         )
     }
     
-    static toQueryString(obj) {
+    static toQueryString(obj:any) {
         const keyValuePairs = [];
         for (const key in obj) {
             keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));

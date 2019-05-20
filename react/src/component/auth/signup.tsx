@@ -2,7 +2,7 @@ import React from 'react';
 import {Alert} from 'reactstrap';
 import { RequestService } from '../../service/request.service';
 
-export default class SignUp extends React.Component {
+export default class SignUp extends React.Component<any,any> {
     state = {
         open: false,
         username: '',
@@ -10,13 +10,13 @@ export default class SignUp extends React.Component {
         password_confirm: ''
     }
 
-    handleChange = (e) => {
+    handleChange = (e:any) => {
         this.setState({
           [e.target.name]: e.target.value
         })
     }
 
-    handleClick = (e) => {
+    handleClick = (e:any) => {
         if (this.state.password !== this.state.password_confirm) {
             this.showAlert()
             return
@@ -55,20 +55,20 @@ export default class SignUp extends React.Component {
             <input className="form-control" type="password" placeholder="password" 
               name="password"
               onChange={this.handleChange} 
-              onKeyPress={this.handleKeyPress}/>
+              onKeyPress={this.handleClick}/>
           </div>
           <div className="form-group">
             <input className="form-control" type="password" placeholder="password confirm" 
               name="password_confirm"
               onChange={this.handleChange} 
-              onKeyPress={this.handleKeyPress}/>
+              onKeyPress={this.handleClick}/>
           </div>
           <Alert color="danger" style={this.state.open ? {
             transition: 'opacity 0.5s',
-            opacity: '1'
+            opacity: 1
           } : {
             transition: 'opacity 0.5s',
-            opacity: '0'
+            opacity: 0
           }}>
             가입 실패
           </Alert>

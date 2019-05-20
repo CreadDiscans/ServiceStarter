@@ -6,15 +6,15 @@ import {
   Nav,
   NavItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
-import PubsubService from './../service/pubsub.service';
-import AuthService from './../service/auth.service';
-export default class Header extends React.Component {
+import PubsubService from '../service/pubsub.service';
+import AuthService from '../service/auth.service';
+export default class Header extends React.Component<any,any> {
 
-  state = {
+  state:any = {
     isLogined: false
   }
 
-  constructor(props) {
+  constructor(props:any) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
@@ -23,7 +23,7 @@ export default class Header extends React.Component {
     };
   }
   componentWillMount() {
-    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe(obj=> {
+    PubsubService.sub(PubsubService.KEY_LOGIN).subscribe((obj:any)=> {
       if (obj) {
         this.setState({
           isLogined: obj.login

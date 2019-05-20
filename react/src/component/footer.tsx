@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 
 export default class Footer extends React.Component {
-  styleFooter = {
+  styleFooter:any = {
     position:'absolute',
     bottom: '0',
     width: '100%'
