@@ -4,22 +4,22 @@ export default class PubsubService {
 
     static KEY_LOGIN = 'login';
 
-    static streams = {};
+    static streams:any = {};
 
-    static sub(key) {
+    static sub(key:string) {
         if (!(key in this.streams)) {
             this.streams[key] = new BehaviorSubject(undefined);
         }
         return this.streams[key];
     }
 
-    static unsub(key) {
+    static unsub(key:string) {
         if (key in this.streams) {
             delete this.streams[key];
         }
     }
 
-    static pub(key, value) {
+    static pub(key:string, value:any) {
         if (key in this.streams) {
             this.streams[key].next(value);
         }

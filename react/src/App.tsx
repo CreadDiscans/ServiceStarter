@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import Header from './component/header';
-import Footer from './component/footer';
-import Home from './component/home';
-import Login from './component/auth/login';
-import Next from './component/next';
+import HomeComponent from './component/home';
 import PubsubService from './service/pubsub.service';
 import AuthService from './service/auth.service';
-import SignUp from './component/auth/signup';
 
 class App extends Component {
   state = {
     isLogined: false
   }
+
+  links = [
+    {link:'/', component:HomeComponent}
+  ]
 
   componentWillMount() {
     PubsubService.sub(PubsubService.KEY_LOGIN).subscribe((obj:any)=> {
@@ -28,15 +27,13 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header />
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/signup" component={SignUp} />
-          {this.state.isLogined && <Route exact={true} path="/next" component={Next} />}
+          {this.links.map(item=> <Route 
+            exact path={item.link} key={item.link}
+            component={item.component}
+          />)}
           <Route path="*" render={() => (<Redirect to="/" />)} />
         </Switch>
-        <Footer />
       </div>
     );
   }

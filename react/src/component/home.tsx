@@ -1,11 +1,11 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-const Home = () => {
-  return (
-    <div>
-      <Link to="next">next</Link>
-    </div>
-  );
-};
+import { withRouter } from 'react-router';
 
-export default Home;
+class HomeComponent extends React.Component<any> {
+
+  render() {
+    return <div>Hello</div> 
+  }
+}
+
+export default withRouter(HomeComponent);
