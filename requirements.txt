@@ -4,6 +4,7 @@ djangorestframework-jwt
 django-sslserver
 django-cors-headers
 django-rest-swagger
+django-webpack-loader
 pymysql
 requests
 coreapi
