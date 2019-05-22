@@ -22,3 +22,6 @@ yarn-error.log*
 
 .vscode
 /assets
+
+webpack-stats.dev.json
+webpack-stats.prod.json

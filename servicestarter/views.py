@@ -45,9 +45,9 @@ def index(request):
   return render(request, 'index.html')
 
 def favicon(request):
-  icon = open(os.path.join(settings.BASE_DIR, 'react/build/favicon.ico'), 'rb').read()
+  icon = open(os.path.join(settings.BASE_DIR, 'react/public/favicon.ico'), 'rb').read()
   return HttpResponse(icon, content_type="image/png")
 
 def manifest(request):
-  mani = open(os.path.join(settings.BASE_DIR, 'react/build/manifest.json'), 'rb').read()
+  mani = open(os.path.join(settings.BASE_DIR, 'react/public/manifest.json'), 'rb').read()
   return HttpResponse(mani, content_type="application/json")
