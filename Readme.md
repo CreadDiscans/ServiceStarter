@@ -20,13 +20,13 @@ python manage.py migrate
 
 python manage.py runserver
 
+python manage.py runserver --settings=servicestarter.production_settings
+
 # React Development Guide
 
 cd react
 
 npm install
-
-npm install -g react-scripts
 
 npm start (for realtime react development)
 

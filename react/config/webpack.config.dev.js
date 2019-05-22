@@ -123,7 +123,7 @@ module.exports = function(webpackEnv) {
     entry: [
         require.resolve("webpack-dev-server/client") + "?http://localhost:3000",
         require.resolve("webpack/hot/dev-server"),
-        require.resolve("react-dev-utils/webpackHotDevClient"),
+        // require.resolve("react-dev-utils/webpackHotDevClient"),
         paths.appIndexJs
     ].filter(Boolean),
     output: {
