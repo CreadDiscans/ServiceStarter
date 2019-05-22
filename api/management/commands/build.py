@@ -7,6 +7,7 @@ class Command(BaseCommand):
     pass
 
   def handle(self, *args, **options):
+    os.system('pip install -U -r requirements.txt')
     os.system('cd react && npm install')
     os.system('cd react && npm run build')
     os.system('python manage.py migrate --settings=servicestarter.production_settings')
