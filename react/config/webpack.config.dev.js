@@ -121,10 +121,11 @@ module.exports = function(webpackEnv) {
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
-        require.resolve("webpack-dev-server/client") + "?http://localhost:3000",
-        require.resolve("webpack/hot/dev-server"),
-        // require.resolve("react-dev-utils/webpackHotDevClient"),
-        paths.appIndexJs
+      'react-hot-loader/patch',
+      require.resolve("webpack-dev-server/client") + "?http://localhost:3000",
+      require.resolve("webpack/hot/dev-server"),
+      // require.resolve("react-dev-utils/webpackHotDevClient"),
+      paths.appIndexJs
     ].filter(Boolean),
     output: {
       // The build folder.
@@ -310,11 +311,13 @@ module.exports = function(webpackEnv) {
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
+                cacheDirectory: true,
                 customize: require.resolve(
                   'babel-preset-react-app/webpack-overrides'
                 ),
                 
                 plugins: [
+                  'react-hot-loader/babel',
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
