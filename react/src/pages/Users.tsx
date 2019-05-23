@@ -29,7 +29,7 @@ class Users extends React.Component<any> {
 
 const mapStateToProps = (state:any) => {
   return {
-    data:state.user.data
+    data:state.users.data
   }
 }
 

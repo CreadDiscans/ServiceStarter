@@ -70,6 +70,7 @@
     "resolve": "1.8.1",
     "rxjs": "^6.4.0",
     "sass-loader": "7.1.0",
+    "serialize-javascript": "^1.7.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
     "typescript": "^3.4.5",
@@ -84,7 +85,7 @@
     "start": "cross-env NODE_PATH=src node scripts/start.js",
     "start:server": "node server",
     "build": "cross-env NODE_PATH=src node scripts/build.js",
-    "build:server": "node scripts/build.server.js",
+    "build:server": "cross-env NODE_PATH=src node scripts/build.server.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
