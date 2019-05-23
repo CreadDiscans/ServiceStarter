@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as userActions from '../redux/modules/users';
+import * as usersActions from '../redux/modules/users';
 import { withDone } from 'react-router-server';
 
 class Users extends React.Component<any> {
@@ -27,21 +27,15 @@ class Users extends React.Component<any> {
   }
 }
 
-const mapStateToProps = (state:any) => {
-  return {
-    data:state.users.data
-  }
-}
+const connectedPage:any = connect(
+  (state: any) => ({
+    data: state.users.data
+  }),
+  (dispatch:any) => ({
+    UsersActions: bindActionCreators(usersActions, dispatch)
+  })
+)(Users)
 
-const mapDispatchToProps = (dispatch:any) => {
-  return {
-    UsersActions: bindActionCreators(userActions, dispatch)
-  }
-}
+const done:any = withDone(connectedPage)
 
-const connectItem:any = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Users);
-
-export default withDone(connectItem);
+export default done;
