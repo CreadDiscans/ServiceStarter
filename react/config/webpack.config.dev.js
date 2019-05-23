@@ -120,13 +120,15 @@ module.exports = function(webpackEnv) {
       : isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: [
-      'react-hot-loader/patch',
-      require.resolve("webpack-dev-server/client") + "?http://localhost:3000",
-      require.resolve("webpack/hot/dev-server"),
-      // require.resolve("react-dev-utils/webpackHotDevClient"),
-      paths.appIndexJs
-    ].filter(Boolean),
+    entry: {
+      main: [
+        'react-hot-loader/patch',
+        require.resolve("webpack-dev-server/client") + "?http://localhost:3000",
+        require.resolve("webpack/hot/dev-server"),
+        // require.resolve("react-dev-utils/webpackHotDevClient"),
+        paths.appIndexJs
+      ]
+    },
     output: {
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
@@ -217,7 +219,7 @@ module.exports = function(webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
-        name: false,
+        name: true,
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985

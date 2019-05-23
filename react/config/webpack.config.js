@@ -125,12 +125,12 @@ module.exports = function(webpackEnv) {
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry:  {
-      vendor: [
+      main: [
         'react',
         'react-dom',
-        'react-router-dom'
-      ],
-      app: paths.appIndexJs
+        'react-router-dom',
+        paths.appIndexJs
+      ]
     },
     output: {
       // The build folder.
@@ -222,7 +222,7 @@ module.exports = function(webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
-        name: false,
+        name: true,
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -452,18 +452,6 @@ module.exports = function(webpackEnv) {
           ],
         },
       ],
-    },
-    optimization: {
-      splitChunks: {
-        cacheGroups: {
-          vendor: {
-            chunks: "initial",
-            test: "vendor",
-            name: "vendor",
-            enforce: true
-          }
-        }
-      }
     },
     plugins: [
       

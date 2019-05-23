@@ -163,3 +163,5 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json')
     }
 }
+
+WEBPACK_TEMPLATE = 'index.dev.html'
