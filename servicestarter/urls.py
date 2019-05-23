@@ -17,12 +17,13 @@ urlpatterns = [
     path('api/token-auth/', obtain_jwt_token),
     path('api/token-refresh/', refresh_jwt_token),
     path('api/token-verify/', verify_jwt_token),
-    path('', TemplateView.as_view(template_name=settings.WEBPACK_TEMPLATE)),
+    path('', index),
     path('', include('api.urls')),
     path('favicon.ico', favicon),
     path('manifest.json', manifest),
 ]
 urlpatterns += router.urls
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

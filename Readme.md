@@ -31,3 +31,9 @@ npm install
 npm start (for realtime react development)
 
 npm run build (for frontend rendered by django)
+
+# Command
+
+dev : python manage.py start
+
+prod : pyhon manage.py build

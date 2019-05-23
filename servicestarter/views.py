@@ -6,6 +6,7 @@ from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
+import requests
 import os
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,7 +43,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 def index(request):
-  return render(request, 'index.html')
+  return HttpResponse(requests.get(settings.REACT_HOST+request.path).text)
 
 def favicon(request):
   icon = open(os.path.join(settings.BASE_DIR, 'react/public/favicon.ico'), 'rb').read()

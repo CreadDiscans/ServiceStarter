@@ -1,21 +1,12 @@
 from .settings import *
 
+SETTING_MODE = 'production'
+
 DEBUG=True
 
 ALLOWED_HOSTS = ['*']
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "react/build"),
-]
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-            'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.prod.json'),
-        }
-}
-
-WEBPACK_TEMPLATE = 'index.prod.html'
+REACT_HOST = 'http://localhost:3001'
 
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SECURE_SSL_REDIRECT = True

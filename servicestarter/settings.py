@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'corsheaders',
     'sslserver',
-    'webpack_loader',
     'api',
 ]
 
@@ -157,11 +156,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json')
-    }
-}
-
-WEBPACK_TEMPLATE = 'index.dev.html'
+REACT_HOST = 'http://localhost:3000'

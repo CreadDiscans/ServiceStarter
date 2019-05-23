@@ -20,4 +20,5 @@ class Command(BaseCommand):
     os.system('cd react && npm run build:server')
     os.system('python manage.py migrate --settings=servicestarter.production_settings')
     os.system('python manage.py collectstatic --no-input --settings=servicestarter.production_settings')
+    os.system('forever start react/server')
     print('build success, time : ', time.time() - start)
