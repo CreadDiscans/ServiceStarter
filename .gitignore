@@ -25,3 +25,5 @@ yarn-error.log*
 
 webpack-stats.dev.json
 webpack-stats.prod.json
+
+react/server/render/render.js

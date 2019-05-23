@@ -10,12 +10,14 @@ export default class AuthService {
     auth:any;
 
     constructor() {
-        this.auth = {
-            token: localStorage.getItem(AuthService.STORAGE_KEY_TOKEN)
-        }
-        if (!this.isExpired()) {
-            PubsubService.pub(PubsubService.KEY_LOGIN, {login: true})
-            RequestService.setHeader('Authorization', 'JWT ' + this.auth.token)
+        if (localStorage) {
+            this.auth = {
+                token: localStorage.getItem(AuthService.STORAGE_KEY_TOKEN)
+            }
+            if (!this.isExpired()) {
+                PubsubService.pub(PubsubService.KEY_LOGIN, {login: true})
+                RequestService.setHeader('Authorization', 'JWT ' + this.auth.token)
+            }
         }
     }
 
