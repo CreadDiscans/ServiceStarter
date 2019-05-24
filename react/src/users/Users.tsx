@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import * as usersActions from 'users/Users.action';
-import connectWithDone from 'app/core/connectWithDone';
+import { connectWithDone } from 'app/core/connection';
 
 class Users extends React.Component<any> {
   componentWillMount() {

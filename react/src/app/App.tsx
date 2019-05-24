@@ -4,9 +4,9 @@ import { Home, About, Users, SingIn, SignUp } from 'app/Routes';
 import { Helmet } from "react-helmet";
 import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
-import connectWithDone from './core/connectWithDone';
 import * as authActions from 'auth/Auth.action';
 import { bindActionCreators } from 'redux';
+import { connectWithoutDone } from './core/connection';
 
 class App extends Component<any> {
     
@@ -40,7 +40,7 @@ class App extends Component<any> {
     }
 }
 
-export default connectWithDone(
+export default connectWithoutDone(
     (state:any)=> ({
       data: state.auth  
     }),

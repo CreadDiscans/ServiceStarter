@@ -1,5 +1,5 @@
 import React from 'react';
-import connectWithDone from 'app/core/connectWithDone';
+import { connectWithoutDone } from 'app/core/connection';
 import { bindActionCreators } from 'redux';
 import * as authActions from 'auth/Auth.action';
 
@@ -44,7 +44,7 @@ class SignIn extends React.Component<any> {
   }
 }
 
-export default connectWithDone(
+export default connectWithoutDone(
   (state:any)=> ({
     data: state.auth
   }),
