@@ -4,9 +4,20 @@ import { Home, About, Users, SingIn, SignUp } from 'app/Routes';
 import { Helmet } from "react-helmet";
 import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
+import connectWithDone from './core/connectWithDone';
+import * as authActions from 'auth/Auth.action';
+import { bindActionCreators } from 'redux';
 
-class App extends Component {
+class App extends Component<any> {
     
+    componentDidMount() {
+        const token = sessionStorage.getItem('token');
+        if (token !== null) {
+            const { AuthActions } = this.props;
+            AuthActions.keep(token);
+        }
+    }
+
     render() {
         return (
             <div>
@@ -29,4 +40,12 @@ class App extends Component {
     }
 }
 
-export default App;
+export default connectWithDone(
+    (state:any)=> ({
+      data: state.auth  
+    }),
+    (dispatch:any)=> ({
+        AuthActions: bindActionCreators(authActions, dispatch)
+    }),
+    App
+);
