@@ -45,10 +45,12 @@ class UserViewSet(viewsets.ModelViewSet):
     })
 
     def list(self, request):
-        if request.user.is_authenticated:
-            if request.GET.get('self') == 'true':
+        if request.GET.get('self') == 'true':
+            if request.user.is_authenticated:
                 serializer = self.serializer_class(request.user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializers = self.serializer_class(self.queryset, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
 

@@ -1,5 +1,7 @@
 import React from 'react';
-import { login } from 'auth/Auth.api';
+import connectWithDone from 'app/core/connectWithDone';
+import { bindActionCreators } from 'redux';
+import * as authActions from 'auth/Auth.action';
 
 class SignIn extends React.Component<any> {
 
@@ -9,9 +11,13 @@ class SignIn extends React.Component<any> {
   }
 
   signIn() {
-    login(this.state.username, this.state.password)
-      .then(res=>console.log(res)) // 로그인 성공
-      .catch(err=> console.log(err)) // 로그인 실패
+    const { AuthActions } = this.props;
+    AuthActions.login(this.state.username, this.state.password);
+  }
+
+  signOut() {
+    const { AuthActions } = this.props;
+    AuthActions.logout();
   }
 
   render() {
@@ -31,8 +37,19 @@ class SignIn extends React.Component<any> {
       <div>
         <button onClick={()=> this.signIn()}>Login</button>
       </div>
+      <div>
+        <button onClick={()=> this.signOut()}>Logout</button>
+      </div>
     </div>
   }
 }
 
-export default SignIn;
+export default connectWithDone(
+  (state:any)=> ({
+    data: state.auth
+  }),
+  (dispatch:any)=>({
+    AuthActions: bindActionCreators(authActions, dispatch)
+  }),
+  SignIn
+);
