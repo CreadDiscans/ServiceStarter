@@ -1,16 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Home = () => {
-    return (
-        <div>
-            <h2>
-                홈
-            </h2>
-            <div><Link to="/about">about</Link></div>
-            <div><Link to="/users">users</Link></div>
-        </div>
-    );
-};
+class Home extends React.Component<any> {
+
+    move(link:string) {
+        this.props.history.push(link)
+    }
+
+    render() {
+        return (
+            <div>
+                <h2>
+                    홈
+                </h2>
+                <div><a onClick={()=> this.move("/about")}>about</a></div>
+                <div><Link to="/users">users</Link></div>
+                <div><Link to="/signin">signin</Link></div>
+                <div><Link to="/signup">signup</Link></div>
+            </div>
+        );
+    }
+}
 
 export default Home;

@@ -454,8 +454,8 @@ module.exports = function(webpackEnv) {
     plugins: [
       
       new webpack.NormalModuleReplacementPlugin(
-        'app/Routes',
-        'app/Route.async.ts'
+        /^app\/Routes$/,
+        'app/Routes.async'
       ),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(

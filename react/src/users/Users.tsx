@@ -1,8 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as usersActions from 'users/Users.action';
-import { withDone } from 'react-router-server';
+import connectWithDone from 'app/core/connectWithDone';
 
 class Users extends React.Component<any> {
   componentWillMount() {
@@ -27,15 +26,12 @@ class Users extends React.Component<any> {
   }
 }
 
-const connectedPage:any = connect(
+export default connectWithDone(
   (state: any) => ({
     data: state.users.data
   }),
   (dispatch:any) => ({
     UsersActions: bindActionCreators(usersActions, dispatch)
-  })
-)(Users)
-
-const done:any = withDone(connectedPage)
-
-export default done;
+  }), 
+  Users
+);

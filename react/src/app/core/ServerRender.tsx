@@ -1,7 +1,7 @@
 import React from 'react';
 import { StaticRouter } from 'react-router';
 import App from 'app/App';
-import configureStore from 'app/ConfigureStore';
+import { configureStore } from 'app/core/Store';
 import { Provider } from 'react-redux';
 
 /* react-router-server 의 renderToString 은 비동기로 작동하며,
