@@ -1,13 +1,15 @@
 from django.shortcuts import HttpResponse, render
 from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework import serializers
+from rest_framework.response import Response
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
+from servicestarter.utils import CustomSchema
 import requests
-import os
+import coreapi
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -35,6 +37,20 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+    schema = CustomSchema({
+        'list': [
+            coreapi.Field('self', required=False, location='query', type='string', description='get auth user data')
+        ]
+    })
+
+    def list(self, request):
+        if request.user.is_authenticated:
+            if request.GET.get('self') == 'true':
+                serializer = self.serializer_class(request.user)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        serializers = self.serializer_class(self.queryset, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 @permission_classes((IsAuthenticatedOrReadOnly,))
 @authentication_classes((JSONWebTokenAuthentication,))
