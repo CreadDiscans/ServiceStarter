@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import penderMiddleware from 'redux-pender';
 
-import modules from './modules';
+import modules from 'app/ReduceModules';
 
 declare var window:any;
 declare var module:any;
@@ -14,8 +14,8 @@ const configureStore = (initialState:any) => {
     applyMiddleware(penderMiddleware())
   ));
   if(module.hot) {
-    module.hot.accept('./modules', ()=> {
-      const nextRootReducer = require('./modules').default;
+    module.hot.accept('./ReduceModules', ()=> {
+      const nextRootReducer = require('./ReduceModules').default;
       store.replaceReducer(nextRootReducer);
     });
   }

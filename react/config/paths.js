@@ -72,7 +72,7 @@ module.exports = {
   appBuild: resolveApp('build/bundles'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appIndexJs: resolveModule(resolveApp, 'src/app/index'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),
@@ -83,7 +83,7 @@ module.exports = {
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
   statsRoot: resolveApp('../'),
-  serverRenderJs: resolveApp('src/server/render.tsx'),
+  serverRenderJs: resolveApp('src/app/ServerRender.tsx'),
   server: resolveApp('server/render')
 };
 

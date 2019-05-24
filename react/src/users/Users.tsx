@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as usersActions from '../redux/modules/users';
+import * as usersActions from 'users/Users.action';
 import { withDone } from 'react-router-server';
 
 class Users extends React.Component<any> {

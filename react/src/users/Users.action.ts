@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 import { pender } from 'redux-pender';
-import * as api from '../../lib/api';
+import * as api from 'users/Users.api';
 
 const GET_USERS = 'users/GET_USERS';
 
