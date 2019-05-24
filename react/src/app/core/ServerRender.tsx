@@ -1,7 +1,6 @@
 import React from 'react';
 import { StaticRouter } from 'react-router';
 import App from 'app/App';
-import { configureStore } from 'app/core/Store';
 import { Provider } from 'react-redux';
 
 /* react-router-server 의 renderToString 은 비동기로 작동하며,
@@ -10,6 +9,7 @@ import { Provider } from 'react-redux';
 import { renderToString } from 'react-router-server';
 
 import { Helmet } from 'react-helmet';
+import configureStore from './configureStore';
 
 const render = async (location:any) => {
     // 서버사이드에선, 매 요청마다 새 store 를 생성해주어야 합니다.
