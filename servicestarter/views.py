@@ -44,11 +44,3 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 def index(request):
   return HttpResponse(requests.get(settings.REACT_HOST+request.path).text)
-
-def favicon(request):
-  icon = open(os.path.join(settings.BASE_DIR, 'react/public/favicon.ico'), 'rb').read()
-  return HttpResponse(icon, content_type="image/png")
-
-def manifest(request):
-  mani = open(os.path.join(settings.BASE_DIR, 'react/public/manifest.json'), 'rb').read()
-  return HttpResponse(mani, content_type="application/json")

@@ -2,7 +2,7 @@ from .settings import *
 
 SETTING_MODE = 'production'
 
-DEBUG=True
+DEBUG=False
 
 ALLOWED_HOSTS = ['*']
 

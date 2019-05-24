@@ -19,9 +19,7 @@ urlpatterns = [
     path('api/token-refresh/', refresh_jwt_token),
     path('api/token-verify/', verify_jwt_token),
     path('', index),
-    path('', include('api.urls')),
-    path('favicon.ico', favicon),
-    path('manifest.json', manifest),
+    path('', include('api.urls'))
 ]
 urlpatterns += router.urls
 
