@@ -10,13 +10,17 @@ export const signIn = (username:string, password:string) => axios.post('/api/tok
   return Promise.all([axios.get('/api-user/?self=true'), res]);
 })
 
-export const signUp = (username:string, email:string, password:string) => {
-  return axios.post('/api-user/', {
+export const signUp = (username:string, email:string, password:string) => 
+  axios.post('/api-user/', {
     username:username,
     email:email,
     password:password
   })
-}
+  .then(() => signIn(username, password))
+  .then((res) => axios.post('/api-profile/', {
+    user: res[0].data.id
+  }))
+  .then(() => delete axios.defaults.headers.common['Authorization'])
 
 export const setToken = (token:string|null) => {
   axios.defaults.headers.common['X-CSRFToken'] = csrf_token;
