@@ -13,7 +13,7 @@ class SignIn extends React.Component<any> {
   signIn() {
     const { AuthActions } = this.props;
     AuthActions.signIn(this.state.username, this.state.password)
-    .then(()=>console.log('성공'))
+    .then((res:any)=>console.log('성공', res))
     .catch(()=>console.log('실패'))
   }
 
