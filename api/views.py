@@ -68,12 +68,15 @@ def addAllFieldToSchema(model, schema):
   return schema
 
 
-def applyDepth(item, depth):
+def applyDepth(item, depth, skip=[]):
   if depth == -1:
     return item.id
+  skip.append(item)
   data = getSerializer(item.__class__)(item).data
   for field in item.__class__._meta.get_fields():
     if field.many_to_one or field.one_to_one:
+      if getattr(item, field.name) in skip:
+        continue
       data[field.name] = applyDepth(getattr(item, field.name), depth-1)
   return data
 
