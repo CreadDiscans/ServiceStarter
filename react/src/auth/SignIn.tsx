@@ -12,12 +12,15 @@ class SignIn extends React.Component<any> {
 
   signIn() {
     const { AuthActions } = this.props;
-    AuthActions.login(this.state.username, this.state.password);
+    AuthActions.signIn(this.state.username, this.state.password)
+    .then(()=>console.log('성공'))
+    .catch(()=>console.log('실패'))
   }
 
   signOut() {
     const { AuthActions } = this.props;
-    AuthActions.logout();
+    AuthActions.signOut();
+    console.log('로그아웃');
   }
 
   render() {

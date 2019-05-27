@@ -2,59 +2,44 @@ import { createAction, handleActions } from 'redux-actions';
 import * as api from 'auth/Auth.api';
 import { pender } from 'redux-pender';
 
-const LOGIN_REQUEST = 'LOGIN_REQUEST';
-const LOGOUT = 'LOGOUT';
-const KEEP_AUTH = 'KEEP_AUTH';
+const AUTH_SIGNIN = 'AUTH_SIGNIN';
+const AUTH_SIGNUP = 'AUTH_SIGNUP';
+const AUTH_SIGNOUT = 'AUTH_SIGNOUT';
+const AUTH_SET_TOKEN = 'AUTH_SET_TOKEN';
 
-export const login = createAction(LOGIN_REQUEST, api.tokenAuth); // username, password
-export const logout = createAction(LOGOUT, api.logout);
-export const keep = createAction(KEEP_AUTH, api.keepAuth);
+export const signIn = createAction(AUTH_SIGNIN, api.signIn); // username, password
+export const signUp = createAction(AUTH_SIGNUP, api.signUp); // username, email, password
+export const signOut = createAction(AUTH_SIGNOUT, api.signOut);
+export const setToken = createAction(AUTH_SET_TOKEN, api.setToken); // token
 
 const initialState = {
-  auth: {
-    isLoggedIn: false,
-    token: undefined,
-    user: {}
-  }
+  isLoggedIn: false,
+  token: undefined,
+  user: {}
 };
 
 export default handleActions({
-  [LOGOUT]: (state, action) => {
-    return {
-      ...state,
-      auth: {
-        isLoggedIn: false,
-        token: undefined,
-        user: {}
-      }
-    }
-  },
+  [AUTH_SIGNOUT]: () => ({
+    isLoggedIn: false,
+    token: undefined,
+    user: {}
+  }),
   ...pender({
-    type:LOGIN_REQUEST,
-    onSuccess: (state, {payload})=> {
-      return {
-        ...state,
-        auth: {
-          isLoggedIn: true,
-          token: payload[1].data.token,
-          user: payload[0].data
-        }
-      }
-    },
+    type:AUTH_SIGNIN,
+    onSuccess: (state, {payload})=> ({
+      isLoggedIn: true,
+      token: payload[1].data.token,
+      user: payload[0].data
+    }),
     // onPending: (state, action) => {}
     // onError: (state, action) => {}
   }),
   ...pender({
-    type:KEEP_AUTH,
-    onSuccess: (state, {payload}) => {
-      return {
-        ...state,
-        auth: {
-          isLoggedIn: true,
-          token: payload[1],
-          user: payload[0].data
-        }
-      }
-    }
+    type:AUTH_SET_TOKEN,
+    onSuccess: (state, {payload}) => ({
+      isLoggedIn: true,
+      token: payload[1],
+      user: payload[0].data
+    })
   })
 }, initialState)

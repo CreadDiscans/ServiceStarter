@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponse, render
 from django.contrib.auth.models import User, Group
+from django.middleware.csrf import get_token
 from rest_framework import viewsets, status
 from rest_framework import serializers
 from rest_framework.response import Response
@@ -61,4 +62,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 def index(request):
-  return HttpResponse(requests.get(settings.REACT_HOST+request.path).text)
+    contents = requests.get(settings.REACT_HOST+request.path).text
+    contents = contents.replace('{% csrf_token %}', get_token(request))
+    return HttpResponse(contents)

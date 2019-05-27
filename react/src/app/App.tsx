@@ -12,10 +12,8 @@ class App extends Component<any> {
     
     componentDidMount() {
         const token = sessionStorage.getItem('token');
-        if (token !== null) {
-            const { AuthActions } = this.props;
-            AuthActions.keep(token);
-        }
+        const { AuthActions } = this.props;
+        AuthActions.setToken(token);
     }
 
     render() {
