@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
+from django.contrib.auth.models import User
+from servicestarter.views import UserSerializer
 from rest_framework import viewsets, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.response import Response
@@ -20,6 +22,8 @@ CHAIN_FILTER = [
   'exact', 'iexact']
 
 def getSerializer(modelClass):
+  if modelClass == User:
+    return UserSerializer
   class ApiSerializer(serializers.ModelSerializer):
     class Meta:
         model = modelClass
@@ -63,6 +67,16 @@ def addAllFieldToSchema(model, schema):
     schema.append(coreapi.Field(name, location='query'))
   return schema
 
+
+def applyDepth(item, depth):
+  if depth == -1:
+    return item.id
+  data = getSerializer(item.__class__)(item).data
+  for field in item.__class__._meta.get_fields():
+    if field.many_to_one or field.one_to_one:
+      data[field.name] = applyDepth(getattr(item, field.name), depth-1)
+  return data
+
 def getViewSet(modelClass):
   @permission_classes((IsAuthenticatedOrReadOnly,))
   @authentication_classes((JSONWebTokenAuthentication, SessionAuthentication))
@@ -73,8 +87,11 @@ def getViewSet(modelClass):
     schema = CustomSchema({
       'list': addAllFieldToSchema(modelClass, [
         coreapi.Field('page', required=False, location='query', type='int',description='It is for pagination. If not set, no pagination'),
-        coreapi.Field('filter', required=False, location='query', type='string',description='support : '+', '.join(CHAIN_FILTER)),
-      ])
+        coreapi.Field('filter', required=False, location='query', type='string',description='support : '+', '.join(CHAIN_FILTER))
+      ]),
+      'retrieve': [
+        coreapi.Field('depth', required=False, location='query', type='int', description='query with models connected by foreignKey')
+      ]
     })
 
     def list(self, request):
@@ -90,4 +107,15 @@ def getViewSet(modelClass):
 
       return Response(res, status=status.HTTP_200_OK)
 
+    def retrieve(self, request, pk=None):
+      try:
+        item = self.queryset.get(pk=pk)
+      except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+      depth = request.GET.get('depth')
+      if depth:
+        return Response(data=applyDepth(item, int(depth)), status=status.HTTP_200_OK)
+      else:
+        return Response(data=self.serializer_class(item).data, status=status.HTTP_200_OK)
+      
   return ApiViewSet
