@@ -24,3 +24,5 @@ yarn-error.log*
 /models
 
 react/server/render/render.js
+
+log
