@@ -7,4 +7,3 @@ django-rest-swagger
 pymysql
 requests
 coreapi
-uwsgi

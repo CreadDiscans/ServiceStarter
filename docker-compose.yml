@@ -1,20 +1,6 @@
 version: '3'
 
 services:
-  dev:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./:/app
-    ports:
-      - "8000:8000"
-      - "3000:3000"
-    command:
-      - python3 
-      - manage.py
-      - start
-
   prod:
     build:
       context: .
