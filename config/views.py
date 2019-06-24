@@ -8,7 +8,7 @@ from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
-from servicestarter.utils import CustomSchema
+from config.utils import CustomSchema
 import requests
 import coreapi
 

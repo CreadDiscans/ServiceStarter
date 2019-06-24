@@ -11,11 +11,21 @@ services:
       - ./uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
-      # - /etc/letsencrpt:/etc/letsencrypt
+      # - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "80:80"
       - "443:443"
-    command:
-      - python3 
-      - manage.py
-      - build
+    command: >
+      sh -c " cd react &&
+        npm install &&
+        npm run build &&
+        npm run build:server &&
+        cd .. &&
+        python3 -m pip install -U -r requirements.txt &&
+        python3 manage.py migrate --settings=config.production_settings &&
+        python3 manage.py collectstatic --no-input --settings=config.production_settings &&
+        forever start react/server &&
+        python3 manage.py uwsgi &&
+        service nginx start &&
+        tail -f /dev/null
+      "
