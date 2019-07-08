@@ -5,15 +5,23 @@ import { Helmet } from "react-helmet";
 import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
 import * as authActions from 'auth/Auth.action';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { connectWithoutDone } from './core/connection';
+import { AuthActions } from 'auth/Auth.type';
+import { AppState } from './Reducers';
 
-class App extends Component<any> {
+interface Props {
+    AuthActions: AuthActions;
+}
+
+class App extends Component<Props> {
     
     componentDidMount() {
         const token = sessionStorage.getItem('token');
-        const { AuthActions } = this.props;
-        AuthActions.setToken(token);
+        if (token) {
+            const { AuthActions } = this.props;
+            AuthActions.setToken(token);
+        }
     }
 
     render() {
@@ -39,10 +47,8 @@ class App extends Component<any> {
 }
 
 export default connectWithoutDone(
-    (state:any)=> ({
-      data: state.auth  
-    }),
-    (dispatch:any)=> ({
+    (state: AppState)=> ({}),
+    (dispatch:Dispatch)=> ({
         AuthActions: bindActionCreators(authActions, dispatch)
     }),
     App

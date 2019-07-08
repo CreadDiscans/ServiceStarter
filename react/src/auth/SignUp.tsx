@@ -1,9 +1,15 @@
 import React from 'react';
 import { connectWithoutDone } from 'app/core/connection';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import * as authActions from 'auth/Auth.action';
+import { AuthActions } from './Auth.type';
+import { AppState } from 'app/Reducers';
 
-class SignUp extends React.Component<any> {
+interface Props {
+  AuthActions: AuthActions;
+}
+
+class SignUp extends React.Component<Props> {
 
   state = {
     username: '',
@@ -29,8 +35,8 @@ class SignUp extends React.Component<any> {
 }
 
 export default connectWithoutDone(
-  (state:any)=>({}),
-  (dispatch:any)=>({
+  (state:AppState)=>({}),
+  (dispatch:Dispatch)=>({
     AuthActions: bindActionCreators(authActions, dispatch)
   }),
   SignUp

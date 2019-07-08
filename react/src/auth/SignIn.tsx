@@ -1,9 +1,15 @@
 import React from 'react';
 import { connectWithoutDone } from 'app/core/connection';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import * as authActions from 'auth/Auth.action';
+import { AuthActions } from './Auth.type';
+import { AppState } from 'app/Reducers';
 
-class SignIn extends React.Component<any> {
+interface Props {
+  AuthActions: AuthActions;
+}
+
+class SignIn extends React.Component<Props> {
 
   state = {
     username:'',
@@ -13,7 +19,7 @@ class SignIn extends React.Component<any> {
   signIn() {
     const { AuthActions } = this.props;
     AuthActions.signIn(this.state.username, this.state.password)
-    .then((res:any)=>console.log('성공', res))
+    .then(res=>console.log('성공', res))
     .catch(()=>console.log('실패'))
   }
 
@@ -28,13 +34,13 @@ class SignIn extends React.Component<any> {
       <div>
         <input type="text" 
           value={this.state.username}  
-          onChange={(e:any)=> this.setState({username:e.target.value})}
+          onChange={e=> this.setState({username:e.target.value})}
           placeholder={'username'} />
       </div>
       <div>
         <input type="password"
           value={this.state.password}
-          onChange={(e:any)=> this.setState({password:e.target.value})}
+          onChange={e=> this.setState({password:e.target.value})}
           placeholder={'password'} />
       </div>
       <div>
@@ -48,10 +54,8 @@ class SignIn extends React.Component<any> {
 }
 
 export default connectWithoutDone(
-  (state:any)=> ({
-    data: state.auth
-  }),
-  (dispatch:any)=>({
+  (state:AppState)=> ({}),
+  (dispatch:Dispatch)=>({
     AuthActions: bindActionCreators(authActions, dispatch)
   }),
   SignIn

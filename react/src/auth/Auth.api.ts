@@ -8,6 +8,8 @@ export const signIn = (username:string, password:string) => axios.post('/api/tok
   axios.defaults.headers.common['Authorization'] = 'JWT ' + res.data.token;
   sessionStorage.setItem('token', res.data.token);
   return Promise.all([axios.get('/api-user/?self=true'), res]);
+}).then(res => {
+  return res.map(res=>res.data)
 })
 
 export const signUp = (username:string, email:string, password:string) => 
