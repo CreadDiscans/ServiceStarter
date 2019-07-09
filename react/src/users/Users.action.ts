@@ -1,14 +1,29 @@
 import { createAction, handleActions } from 'redux-actions';
 import { pender } from 'redux-pender';
-import * as api from 'users/Users.api';
+import axios from 'axios';
 
 const GET_USERS = 'users/GET_USERS';
 
-export const getUsers = createAction(GET_USERS, api.getUsers);
+export type UserState = {
+  data: Array<UserUser>
+}
 
-const initialState = {
-  data:[]
-};
+export type UserUser = {
+  id:number;
+  name:string;
+}
+
+const initState: UserState = {
+  data: []
+}
+
+export const UserAction = {
+  getUsers: () => axios.get('https://jsonplaceholder.typicode.com/users')
+}
+
+export const userActions = {
+  getUsers: createAction(GET_USERS, UserAction.getUsers)
+}
 
 export default handleActions({
   ...pender({
@@ -19,4 +34,4 @@ export default handleActions({
       }
     }
   })
-}, initialState);
+}, initState);

@@ -1,19 +1,18 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import * as usersActions from 'users/Users.action';
-import { connectWithDone } from 'app/core/connection';
+import { connection, Props } from 'app/Reducers';
+import { UserUser } from './Users.action';
 
-class Users extends React.Component<any> {
+class Users extends React.Component<Props> {
   componentWillMount() {
-    const { UsersActions, data, done } = this.props;
-    if (data.length !== 0) return false;
-    UsersActions.getUsers().then(done, done);
+    const { UserAction, data, done } = this.props;
+    if (data.user.data.length !== 0) return false;
+    UserAction.getUsers().then(()=>done(),()=> done());
   }
 
   render() {
     const { data } = this.props;
-    const userList = data.map(
-      (user:any) => <li key={user.id}>{user.name}</li>
+    const userList = data.user.data.map(
+      (user:UserUser) => <li key={user.id}>{user.name}</li>
     );
 
     return (
@@ -26,12 +25,4 @@ class Users extends React.Component<any> {
   }
 }
 
-export default connectWithDone(
-  (state: any) => ({
-    data: state.users.data
-  }),
-  (dispatch:any) => ({
-    UsersActions: bindActionCreators(usersActions, dispatch)
-  }), 
-  Users
-);
+export default connection(Users);

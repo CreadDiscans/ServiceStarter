@@ -1,13 +1,5 @@
 import React from 'react';
-import { connectWithoutDone } from 'app/core/connection';
-import { bindActionCreators, Dispatch } from 'redux';
-import * as authActions from 'auth/Auth.action';
-import { AuthActions } from './Auth.type';
-import { AppState } from 'app/Reducers';
-
-interface Props {
-  AuthActions: AuthActions;
-}
+import {  connection, Props } from 'app/Reducers';
 
 class SignIn extends React.Component<Props> {
 
@@ -16,16 +8,20 @@ class SignIn extends React.Component<Props> {
     password:''
   }
 
+  componentWillMount() {
+      this.props.done();
+  }
+
   signIn() {
-    const { AuthActions } = this.props;
-    AuthActions.signIn(this.state.username, this.state.password)
+    const { AuthAction } = this.props;
+    AuthAction.signIn(this.state.username, this.state.password)
     .then(res=>console.log('성공', res))
     .catch(()=>console.log('실패'))
   }
 
   signOut() {
-    const { AuthActions } = this.props;
-    AuthActions.signOut();
+    const { AuthAction } = this.props;
+    AuthAction.signOut();
     console.log('로그아웃');
   }
 
@@ -53,10 +49,4 @@ class SignIn extends React.Component<Props> {
   }
 }
 
-export default connectWithoutDone(
-  (state:AppState)=> ({}),
-  (dispatch:Dispatch)=>({
-    AuthActions: bindActionCreators(authActions, dispatch)
-  }),
-  SignIn
-);
+export default connection(SignIn);
