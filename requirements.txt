@@ -1,5 +1,5 @@
 Django
-djangorestframework
+djangorestframework==3.9.4
 djangorestframework-jwt
 django-sslserver
 django-cors-headers
