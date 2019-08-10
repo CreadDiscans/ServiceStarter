@@ -1,24 +1,17 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Home, About, Users, SingIn, SignUp } from 'app/Routes';
+import { Home, About, SingIn, SignUp } from 'app/Routes';
 import { Helmet } from "react-helmet";
 import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
-import { connection, Props } from './Reducers';
+import { connectWithoutDone } from './core/connection';
+import { RootState } from './Reducers';
+import { Dispatch } from 'redux';
+
+interface Props {
+}
 
 class App extends Component<Props> {
-    
-    componentWillMount() {
-        this.props.done();
-    }
-
-    componentDidMount() {
-        const token = sessionStorage.getItem('token');
-        if (token) {
-            const { AuthAction } = this.props;
-            AuthAction.setToken(token);
-        }
-    }
 
     render() {
         return (
@@ -31,7 +24,6 @@ class App extends Component<Props> {
                     <Route exact path="/" component={Home}/>
                     <Route eaxct path="/about/:name" component={About}/>
                     <Route eaxct path="/about" component={About}/>
-                    <Route eaxct path="/users" component={Users}/>
                     <Route eaxct path="/signin" component={SingIn}/>
                     <Route eaxct path="/signup" component={SignUp}/>
                     <Route path="*" component={()=><Redirect to="/" />} />
@@ -42,4 +34,8 @@ class App extends Component<Props> {
     }
 }
 
-export default connection(App)
+export default connectWithoutDone(
+    (state:RootState)=> ({}),
+    (dispatch:Dispatch)=> ({}),
+    App
+)

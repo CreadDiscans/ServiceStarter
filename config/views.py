@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
 from config.utils import CustomSchema
+from django.views.decorators.cache import never_cache
 import requests
 import coreapi
 
@@ -35,6 +36,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 @permission_classes((AllowAny,))
+@authentication_classes((JSONWebTokenAuthentication,))
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
@@ -45,6 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
         ]
     })
 
+    @never_cache
     def list(self, request):
         if request.GET.get('self') == 'true':
             if request.user.is_authenticated:

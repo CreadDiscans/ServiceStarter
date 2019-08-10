@@ -1,15 +1,20 @@
 import React from 'react';
-import {  connection, Props } from 'app/Reducers';
+import { bindActionCreators, Dispatch } from 'redux';
+import { AuthAction, authActions } from './Auth.action';
+import { RootState } from 'app/Reducers';
+import { connectWithoutDone } from 'app/core/connection';
+import { AuthState } from './Auth.type';
+
+interface Props {
+  auth: AuthState,
+  AuthAction: typeof AuthAction
+}
 
 class SignIn extends React.Component<Props> {
 
   state = {
     username:'',
     password:''
-  }
-
-  componentWillMount() {
-      this.props.done();
   }
 
   signIn() {
@@ -49,4 +54,12 @@ class SignIn extends React.Component<Props> {
   }
 }
 
-export default connection(SignIn);
+export default connectWithoutDone(
+    (state:RootState)=> ({
+      auth: state.auth
+    }),
+    (dispatch:Dispatch)=> ({
+        AuthAction: bindActionCreators(authActions, dispatch)
+    }),
+    SignIn
+)
