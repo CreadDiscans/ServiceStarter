@@ -5,11 +5,13 @@ const KEY_JWT_TOKEN = 'jwt_token';
 const KEY_USER_ID = 'user_id';
 
 const setHeader = () => {
-    const token = localStorage.getItem(KEY_JWT_TOKEN);
-    if (token === null) {
-        delete axios.defaults.headers.common['Authorization']
-    } else {
-        axios.defaults.headers.common['Authorization'] = 'JWT '+token;
+    if (typeof localStorage !== 'undefined') {
+        const token = localStorage.getItem(KEY_JWT_TOKEN);
+        if (token === null) {
+            delete axios.defaults.headers.common['Authorization']
+        } else {
+            axios.defaults.headers.common['Authorization'] = 'JWT '+token;
+        }
     }
     axios.defaults.headers.common['X-CSRFToken'] = csrf_token;
 }
@@ -59,11 +61,15 @@ export const Api = {
         return axios.delete(queryUrl(url, {}, id)).then(res=>res.data);
     },
     signIn:(jwt_token:string, user_id:string|number)=> {
-        localStorage.setItem(KEY_JWT_TOKEN, jwt_token);
-        localStorage.setItem(KEY_USER_ID, String(user_id));
+        if (typeof localStorage !== 'undefined') {
+            localStorage.setItem(KEY_JWT_TOKEN, jwt_token);
+            localStorage.setItem(KEY_USER_ID, String(user_id));
+        }
     },
     signOut: ()=> {
-        localStorage.removeItem(KEY_JWT_TOKEN);
-        localStorage.removeItem(KEY_USER_ID);
+        if (typeof localStorage !== 'undefined') {
+            localStorage.removeItem(KEY_JWT_TOKEN);
+            localStorage.removeItem(KEY_USER_ID);
+        }
     }
 }
