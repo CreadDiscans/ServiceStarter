@@ -9,4 +9,4 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
       subprocess.Popen(['python', 'manage.py', 'runserver'])
-      os.system('cd react && npm start')
+      os.system('cd react && npm run start:backend')

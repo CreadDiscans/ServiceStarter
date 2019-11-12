@@ -7,24 +7,26 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./:/app
-      - ./nginx.conf:/etc/nginx/sites-enabled/nginx.conf
-      - ./uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
+      - ./config/service/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
+      - ./config/service/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
-      # - /etc/letsencrypt:/etc/letsencrypt
     ports:
-      - "80:80"
-      - "443:443"
+      - "8000:80"
     command: >
-      sh -c " cd react &&
+      sh -c " 
+        redis-server --daemonize yes &&
+        redis-cli flushall &&  
+        cd react &&
+        npm i koa koa-static koa-mount serialize-javascript &&
         npm install &&
         npm run build &&
         npm run build:server &&
         cd .. &&
         python3 -m pip install -U -r requirements.txt &&
-        python3 manage.py migrate --settings=config.production_settings &&
-        python3 manage.py collectstatic --no-input --settings=config.production_settings &&
-        forever start react/server &&
+        python3 manage.py migrate --settings=config.production.settings &&
+        python3 manage.py collectstatic --no-input --settings=config.production.settings &&
+        forever start -a -l /app/log/forever.log react/server &&
         python3 manage.py uwsgi &&
         service nginx start &&
         tail -f /dev/null

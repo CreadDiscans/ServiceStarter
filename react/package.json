@@ -86,6 +86,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src node scripts/start.js",
+    "start:backend": "cross-env NODE_PATH=src node scripts/start.backend.js",
     "start:server": "node server",
     "build": "cross-env NODE_PATH=src node scripts/build.js",
     "build:server": "cross-env NODE_PATH=src node scripts/build.server.js",

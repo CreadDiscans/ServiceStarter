@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
 from config.utils import CustomSchema
-from django.views.decorators.cache import never_cache
+from django.core.cache import cache
 import requests
 import coreapi
 
@@ -47,7 +47,6 @@ class UserViewSet(viewsets.ModelViewSet):
         ]
     })
 
-    @never_cache
     def list(self, request):
         if request.GET.get('self') == 'true':
             if request.user.is_authenticated:
@@ -65,6 +64,9 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 def index(request):
-    contents = requests.get(settings.REACT_HOST+request.path).text
+    contents = cache.get(request.path)
+    if not contents:
+        contents = requests.get(settings.REACT_HOST+request.path).text
+        cache.set(request.path, contents)
     contents = contents.replace('{% csrf_token %}', get_token(request))
     return HttpResponse(contents)

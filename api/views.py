@@ -8,7 +8,6 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import serializers
 from config.utils import CustomSchema
-from django.views.decorators.cache import never_cache
 import coreapi
 import re
 
@@ -106,7 +105,6 @@ def getViewSet(modelClass):
       ]
     })
 
-    @never_cache
     def list(self, request):
       page = request.GET.get('page')
       depth = request.GET.get('depth')
@@ -124,7 +122,6 @@ def getViewSet(modelClass):
 
       return Response(res, status=status.HTTP_200_OK)
 
-    @never_cache
     def retrieve(self, request, pk=None):
       try:
         item = self.queryset.get(pk=pk)

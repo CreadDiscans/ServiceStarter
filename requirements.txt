@@ -1,9 +1,9 @@
 Django
 djangorestframework==3.9.4
 djangorestframework-jwt
-django-sslserver
 django-cors-headers
 django-rest-swagger
+django-redis
 pymysql
 requests
 coreapi
