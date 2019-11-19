@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.authentication import SessionAuthentication
@@ -77,7 +78,10 @@ def applyDepth(item, depth):
   data = getSerializer(item.__class__)(item).data
   for field in item.__class__._meta.get_fields():
     if field.many_to_one or field.one_to_one:
-      data[field.name] = applyDepth(getattr(item, field.name), depth-1)
+      try:
+        data[field.name] = applyDepth(getattr(item, field.name), depth-1)
+      except ObjectDoesNotExist:
+        data[field.name] = None
     elif field.many_to_many:
       if not hasattr(item, field.name):
         continue
