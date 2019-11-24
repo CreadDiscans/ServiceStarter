@@ -1,19 +1,46 @@
 import axios from 'axios';
+import { BehaviorSubject } from 'rxjs';
 declare var csrf_token:string;
+
+const domain = process.env.API_DOMAIN;
+const jwtRefreshExp = 3 * 60 * 60 * 1000; // 만료 3시간 전
 
 const KEY_JWT_TOKEN = 'jwt_token';
 const KEY_USER_ID = 'user_id';
+export const tokenExpiredSubject = new BehaviorSubject<boolean>(false);
 
-const setHeader = () => {
-    if (typeof localStorage !== 'undefined') {
-        const token = localStorage.getItem(KEY_JWT_TOKEN);
-        if (token === null) {
-            delete axios.defaults.headers.common['Authorization']
+const setHeader = async() => {
+    return new Promise(resolve=> {
+        axios.defaults.headers.common['X-CSRFToken'] = csrf_token;
+        if (typeof localStorage !== 'undefined') {
+            const token = localStorage.getItem(KEY_JWT_TOKEN);
+            if (token === null) {
+                delete axios.defaults.headers.common['Authorization']
+                resolve()
+            } else {
+                const state = checkTokenExpired(token)
+                if(state === 'valid') {
+                    axios.defaults.headers.common['Authorization'] = 'JWT '+token;
+                    resolve()
+                } else if(state === 'refresh') {
+                    delete axios.defaults.headers.common['Authorization']
+                    axios.post(domain+'/api/token-refresh', {
+                        token: token
+                    }).then((res:any)=> {
+                        localStorage.setItem(KEY_JWT_TOKEN, res.token);
+                        axios.defaults.headers.common['Authorization'] = 'JWT '+res.token;
+                        resolve();
+                    })
+                } else if (state === 'invalid') {
+                    tokenExpiredSubject.next(true);
+                    delete axios.defaults.headers.common['Authorization'];
+                    resolve();
+                }
+            }
         } else {
-            axios.defaults.headers.common['Authorization'] = 'JWT '+token;
+            resolve()
         }
-    }
-    axios.defaults.headers.common['X-CSRFToken'] = csrf_token;
+    })
 }
 
 const queryUrl = (url:string, query:any, id:number|undefined|string=undefined)=> {
@@ -35,30 +62,54 @@ const queryUrl = (url:string, query:any, id:number|undefined|string=undefined)=>
     return url;
 }
 
+const checkTokenExpired = (token:string) => {
+    const payload = parseJwt(token);
+    const expDate = new Date(payload.exp*1000);
+    const refreshDate = new Date(payload.exp*1000 - jwtRefreshExp);
+    const current = new Date();
+    if (current < refreshDate) {
+        return 'valid';
+    } 
+    if (current < expDate) {
+        return 'refresh';
+    }
+    return 'invalid'
+}
+
+const parseJwt = (token:string) => {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+
 export const Api = {
-    list:(url:string, query:object)=> {
-        setHeader();
-        return axios.get(queryUrl(url, query)).then(res=>res.data);
+    list:async (url:string, query:object)=> {
+        await setHeader();
+        return axios.get(domain+queryUrl(url, query)).then(res=>res.data)
     },
-    create:(url:string, body:object)=> {
-        setHeader();
-        return axios.post(url, body).then(res=>res.data);
+    create:async (url:string, body:object)=> {
+        await setHeader();
+        return axios.post(domain+url, body).then(res=>res.data);
     },
-    retrieve:(url:string, id:number|string, query:object)=> {
-        setHeader();
-        return axios.get(queryUrl(url, query, id)).then(res=>res.data)
+    retrieve:async (url:string, id:number|string, query:object)=> {
+        await setHeader();
+        return axios.get(domain+queryUrl(url, query, id)).then(res=>res.data)
     },
-    update:(url:string, id:number|string, body:object)=> {
-        setHeader();
-        return axios.put(queryUrl(url, {}, id), body).then(res=>res.data)
+    update:async (url:string, id:number|string, body:object)=> {
+        await setHeader();
+        return axios.put(domain+queryUrl(url, {}, id), body).then(res=>res.data)
     },
-    patch:(url:string, id:number|string, body:object)=> {
-        setHeader();
-        return axios.patch(queryUrl(url, {}, id), body).then(res=>res.data);
+    patch:async (url:string, id:number|string, body:object)=> {
+        await setHeader();
+        return axios.patch(domain+queryUrl(url, {}, id), body).then(res=>res.data);
     },
-    delete:(url:string, id:number|string)=> {
-        setHeader();
-        return axios.delete(queryUrl(url, {}, id)).then(res=>res.data);
+    delete:async (url:string, id:number|string)=> {
+        await setHeader();
+        return axios.delete(domain+queryUrl(url, {}, id)).then(res=>res.data);
     },
     signIn:(jwt_token:string, user_id:string|number)=> {
         if (typeof localStorage !== 'undefined') {

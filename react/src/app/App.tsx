@@ -6,13 +6,26 @@ import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
 import { connectWithoutDone } from './core/connection';
 import { RootState } from './Reducers';
-import { Dispatch } from 'redux';
+import { Dispatch, bindActionCreators } from 'redux';
+import { AuthAction, authActions } from 'auth/Auth.action';
+import { tokenExpiredSubject } from './core/Api';
 
 interface Props {
+    AuthAction: typeof AuthAction
 }
 
 class App extends Component<Props> {
 
+
+    componentDidMount() {
+        tokenExpiredSubject.subscribe(val=> {
+            if(val) {
+                const { AuthAction } = this.props;
+                AuthAction.signOut();
+            }
+        })
+    }
+    
     render() {
         return (
             <div>
@@ -36,6 +49,8 @@ class App extends Component<Props> {
 
 export default connectWithoutDone(
     (state:RootState)=> ({}),
-    (dispatch:Dispatch)=> ({}),
+    (dispatch:Dispatch)=> ({
+        AuthAction: bindActionCreators(authActions, dispatch)
+    }),
     App
 )
