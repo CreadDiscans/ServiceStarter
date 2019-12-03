@@ -9,11 +9,13 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import serializers
 from config.utils import CustomSchema
+from django.db.models import Q
+from functools import reduce
 import coreapi
 import re
 
 ITEM_COUNT_PER_PAGE = 20
-SCHEMA_FILED_EXCEPT = ['page', 'filter', 'id', 'count_per_page', 'depth']
+SCHEMA_FILED_EXCEPT = ['page', 'id', 'count_per_page', 'depth', 'logic']
 CHAIN_FILTER = [
   'startswith', 'endwith', 
   'lte', 'gte', 'gt', 'lt', 
@@ -49,17 +51,22 @@ def applyPagination(queryset, serializer_class,  page, count, depth):
   return res
 
 def applyOption(request, queryset):
-  op = request.GET.get('filter')
+  logic = request.GET.get('logic')
+  where = []
+  if logic:
+    keys = logic.split('__OR__')
+    for key in keys:
+      value = request.GET.get(key)
+      where.append(Q(**{key:value}))
   params = {}
   for key in request.GET:
     if key in SCHEMA_FILED_EXCEPT:
       continue
-    if op in CHAIN_FILTER:
-      params[key+'__'+op] = request.GET.get(key)
-    else:
-      params[key] = request.GET.get(key)
-
-  return queryset.filter(**params)
+    params[key] = request.GET.get(key)
+  if len(where) == 0:
+    return queryset.filter(**params)
+  else:
+    return queryset.filter(reduce(lambda x, y: x|y, where), **params)
 
 def addAllFieldToSchema(model, schema):
   for field in model._meta.fields:
@@ -101,8 +108,8 @@ def getViewSet(modelClass):
       'list': addAllFieldToSchema(modelClass, [
         coreapi.Field('page', required=False, location='query', type='int',description='It is for pagination. If not set, no pagination'),
         coreapi.Field('count_per_page', required=False, location='query', type='int', description='item count per page. defuault is 20'),
-        coreapi.Field('filter', required=False, location='query', type='string',description='support : '+', '.join(CHAIN_FILTER)),
-        coreapi.Field('depth', required=False, location='query', type='int', description='query with models connected by foreignKey')
+        coreapi.Field('depth', required=False, location='query', type='int', description='query with models connected by foreignKey'),
+        coreapi.Field('logic', required=False, location='query', type='string', description='split keys with __OR__ ')
       ]),
       'retrieve': [
         coreapi.Field('depth', required=False, location='query', type='int', description='query with models connected by foreignKey')
