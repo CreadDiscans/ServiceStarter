@@ -14,6 +14,7 @@ class Home extends React.Component<any> {
                     홈
                 </h2>
                 <div><a onClick={()=> this.move("/about")}>about</a></div>
+                <div><a onClick={()=> this.move("/message")}>message</a></div>
                 <div><Link to="/signin">signin</Link></div>
                 <div><Link to="/signup">signup</Link></div>
             </div>

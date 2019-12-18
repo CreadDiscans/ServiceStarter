@@ -1,6 +1,8 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y nginx uwsgi python3 python3-pip libmysqlclient-dev uwsgi-plugin-python3 locales nodejs npm redis
+RUN apt-get update && apt-get install -y nginx uwsgi python3 python3-pip libmysqlclient-dev uwsgi-plugin-python3 locales nodejs npm redis supervisor wget
+RUN npm install -g n
+RUN n stable
 RUN npm install -g forever
 RUN rm /etc/nginx/sites-enabled/default
 RUN mkdir /app

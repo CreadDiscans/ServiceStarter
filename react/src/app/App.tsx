@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Home, About, SingIn, SignUp } from 'app/Routes';
+import { Home, About, SingIn, SignUp, Message } from 'app/Routes';
 import { Helmet } from "react-helmet";
 import { Header } from 'layout/header';
 import { Footer } from 'layout/footer';
@@ -37,6 +37,7 @@ class App extends Component<Props> {
                     <Route exact path="/" component={Home}/>
                     <Route eaxct path="/about/:name" component={About}/>
                     <Route eaxct path="/about" component={About}/>
+                    <Route eaxct path="/message" component={Message}/>
                     <Route eaxct path="/signin" component={SingIn}/>
                     <Route eaxct path="/signup" component={SignUp}/>
                     <Route path="*" component={()=><Redirect to="/" />} />

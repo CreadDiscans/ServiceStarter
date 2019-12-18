@@ -1,9 +1,11 @@
-Django
+Django==2.2.8
 djangorestframework==3.9.4
 djangorestframework-jwt
 django-cors-headers
 django-rest-swagger
 django-redis
+channels
+channels_redis
 pymysql
 requests
 coreapi

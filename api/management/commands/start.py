@@ -8,5 +8,6 @@ class Command(BaseCommand):
       pass
 
   def handle(self, *args, **options):
+      subprocess.Popen(['redis-server'])
       subprocess.Popen(['python', 'manage.py', 'runserver'])
       os.system('cd react && npm run start:backend')

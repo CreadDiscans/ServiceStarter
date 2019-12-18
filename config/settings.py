@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'corsheaders',
-    'api',
+    'channels',
+    'api'
 ]
 
 MIDDLEWARE = [
@@ -156,3 +157,13 @@ LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
 REACT_HOST = 'http://localhost:3000'
+
+ASGI_APPLICATION = 'api.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]
+        }
+    }
+}

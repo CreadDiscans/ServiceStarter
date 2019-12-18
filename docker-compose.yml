@@ -5,10 +5,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    restart: always
     volumes:
       - ./:/app
       - ./config/service/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
       - ./config/service/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
+      - ./config/service/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
     ports:
@@ -28,6 +30,7 @@ services:
         python3 manage.py collectstatic --no-input --settings=config.production.settings &&
         forever start -a -l /app/log/forever.log react/server &&
         python3 manage.py uwsgi &&
+        service supervisor start &&
         service nginx start &&
         tail -f /dev/null
       "
