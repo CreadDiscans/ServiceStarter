@@ -8,14 +8,48 @@ services:
     restart: always
     volumes:
       - ./:/app
-      - ./config/service/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
-      - ./config/service/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
-      - ./config/service/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+      - ./config/production/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
+      - ./config/production/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
+      - ./config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "8000:443"
+    command: >
+      sh -c " 
+        redis-server --daemonize yes &&
+        redis-cli flushall &&  
+        cd react &&
+        npm i koa koa-static koa-mount serialize-javascript &&
+        npm install &&
+        npm run build &&
+        npm run build:server &&
+        cd .. &&
+        python3 -m pip install -U -r requirements.txt &&
+        python3 manage.py migrate --settings=config.production.settings &&
+        python3 manage.py collectstatic --no-input --settings=config.production.settings &&
+        forever start -a -l /app/log/forever.log react/server &&
+        python3 manage.py uwsgi &&
+        service supervisor start &&
+        service nginx start &&
+        tail -f /dev/null
+      "
+
+  staging:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./:/app
+      - ./config/staging/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
+      - ./config/staging/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
+      - ./config/staging/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+      - ./log:/var/log/nginx
+      - ./log:/var/log/uwsgi/app
+    ports:
+      - "8000:80"
     command: >
       sh -c " 
         redis-server --daemonize yes &&
