@@ -4,6 +4,7 @@ djangorestframework-jwt
 django-cors-headers
 django-rest-swagger
 django-redis
+django-sslserver
 channels
 channels_redis
 pymysql

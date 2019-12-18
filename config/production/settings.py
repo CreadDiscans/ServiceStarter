@@ -3,9 +3,11 @@ from config.settings import *
 
 SETTING_MODE = 'production'
 
+INSTALLED_APPS += ['sslserver']
+
 DEBUG=False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['your.domain.co.kr']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "react/build"),
@@ -14,16 +16,7 @@ STATICFILES_DIRS = [
 REACT_HOST = 'http://localhost:3001'
 
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1", # 1번 DB
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
 CSRF_COOKIE_SECURE = True
 CORS_ALLOW_CREDENTIALS = False
 CORS_ORIGIN_ALLOW_ALL = False
+SECURE_SSL_REDIRECT = True

@@ -13,6 +13,11 @@ python manage.py start
 
 # Production
 
+fix ssl domain
+- config/service/nginx.conf
+- config/service/supervisor.conf
+- config/production/settings.py
+
 docker-compose down && docker-compose up -d --build
 
 # License

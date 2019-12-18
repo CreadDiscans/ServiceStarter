@@ -13,8 +13,9 @@ services:
       - ./config/service/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
-      - "8000:80"
+      - "8000:443"
     command: >
       sh -c " 
         redis-server --daemonize yes &&
