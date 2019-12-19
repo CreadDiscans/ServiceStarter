@@ -7,3 +7,11 @@ from django.conf import settings
 def debug():
     now = datetime.now()
     print(now, settings.SETTING_MODE)
+
+# from channels.layers import get_channel_layer
+
+# channel_layer = get_channel_layer()
+# await channel_layer.send("channel_name", {
+#     "type": "chat.message",
+#     "text": "Hello there!",
+# })

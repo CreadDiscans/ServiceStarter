@@ -20,7 +20,10 @@ fix ssl domain
 
 docker-compose down && docker-compose up -d --build
 
+![architecture](./asset/architecture.png)
+
 # License
 
 The project is commercial license. 
 If you want to be supported, please contact CreadDiscans@gmail.com.
+
