@@ -24,10 +24,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'jxhzzb^%x(5f!xlew!sr&y!3)1s12nz@=hcttlo70b$0%n1-e7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -42,6 +38,8 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'corsheaders',
     'channels',
+    'django_celery_beat',
+    'django_celery_results',
     'api'
 ]
 
@@ -156,8 +154,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = 'rest_framework:login'
 LOGOUT_URL = 'rest_framework:logout'
 
-REACT_HOST = 'http://localhost:3000'
-
 ASGI_APPLICATION = 'api.routing.application'
 CHANNEL_LAYERS = {
     'default': {
@@ -177,3 +173,12 @@ CACHES = {
         }
     }
 }
+
+CELERY_BROKER_URL  = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TAST_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'

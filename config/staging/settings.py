@@ -1,5 +1,5 @@
 import os
-from config.settings import *
+from config.base import *
 
 SETTING_MODE = 'staging'
 

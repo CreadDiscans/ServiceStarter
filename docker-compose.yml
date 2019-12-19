@@ -46,6 +46,7 @@ services:
       - ./config/staging/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
       - ./config/staging/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
       - ./config/staging/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+      - ./config/staging/celery.conf:/etc/supervisor/conf.d/celery.conf
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
     ports:

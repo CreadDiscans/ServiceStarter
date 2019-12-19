@@ -10,3 +10,6 @@ channels_redis
 pymysql
 requests
 coreapi
+celery[redis]
+django-celery-beat
+django-celery-results

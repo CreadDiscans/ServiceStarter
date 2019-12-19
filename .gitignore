@@ -27,3 +27,6 @@ react/server/render/render.js
 
 log
 dump.rdb
+celerybeat-schedule.db
+celerybeat-schedule
+celerybeat.pid
