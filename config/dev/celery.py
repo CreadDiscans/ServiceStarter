@@ -14,10 +14,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'add-every-30-minute-contrab': {
-        'task': 'api.tasks.debug',
-        # 'schedule': crontab(minute='*/1'),  # 30분마다
-        'schedule': 5.0,  # 5초마다
-        # 'args': (16, 16), # optional
-    }
+    # 'add-every-30-minute-contrab': {
+    #     'task': 'api.tasks.debug',
+    #     # 'schedule': crontab(minute='*/1'),  # 30분마다
+    #     'schedule': 5.0,  # 5초마다
+    #     # 'args': (16, 16), # optional
+    # }
 }
