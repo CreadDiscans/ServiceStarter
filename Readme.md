@@ -20,7 +20,7 @@ fix ssl domain
 
 docker-compose down && docker-compose up -d --build
 
-![architecture](./asset/architecture.png)
+![architecture](./assest/architecture.png)
 
 # License
 
