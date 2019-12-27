@@ -7,6 +7,9 @@ export class NotificationService extends Singletone<NotificationService>{
     removeNotificationDisplayedListener:any;
     removeNotificationListener:any;
     removeNotificationOpenedListener:any;
+    removeTokenRefreshListener:any;
+    removeMessageListener:any;
+
 
     init() {
         firebase.messaging().hasPermission().then(enable=> {
@@ -33,6 +36,9 @@ export class NotificationService extends Singletone<NotificationService>{
 
     onNotification() {
         this.createChannel('default', 'default', 'default')
+        this.removeTokenRefreshListener = firebase.messaging().onTokenRefresh(fcmToken=> {
+            console.log(fcmToken)
+        })
         // local notification
         this.removeNotificationDisplayedListener = firebase.notifications().onNotificationDisplayed(notification=> {
             console.log(notification)
@@ -45,23 +51,9 @@ export class NotificationService extends Singletone<NotificationService>{
         this.removeNotificationOpenedListener = firebase.notifications().onNotificationOpened(notification=> {
             console.log(notification)
         })
-    }
-
-    send(id:string, title:string='', body:string='', channel:string='default', data:any=null) {
-        const notification = new firebase.notifications.Notification()
-        .setNotificationId(id)
-        .setTitle(title)
-        .setBody(body)
-        if (data) {
-            notification.setData(data)
-        }
-        if (Platform.OS === 'ios') {
-
-        } else if (Platform.OS === 'android') {
-            notification.android.setChannelId(channel)
-            // notification.android.setSmallIcon('ic_launcher')
-        }
-        firebase.notifications().displayNotification(notification);
+        this.removeMessageListener = firebase.messaging().onMessage(message=> {
+            console.log(message)
+        })
     }
 
     destroy() {
@@ -70,6 +62,15 @@ export class NotificationService extends Singletone<NotificationService>{
         }
         if(this.removeNotificationListener) {
             this.removeNotificationListener()
+        }
+        if(this.removeNotificationOpenedListener) {
+            this.removeNotificationOpenedListener()
+        }
+        if (this.removeTokenRefreshListener) {
+            this.removeTokenRefreshListener()
+        }
+        if(this.removeMessageListener) {
+            this.removeMessageListener()
         }
     }
 }

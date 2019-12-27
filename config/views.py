@@ -8,7 +8,7 @@ from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.conf import settings
-from config.utils import CustomSchema
+from config.utils import CustomSchema, send_fcm
 from django.core.cache import cache
 import requests
 import coreapi
@@ -70,3 +70,12 @@ def index(request):
         cache.set(request.path, contents)
     contents = contents.replace('{% csrf_token %}', get_token(request))
     return HttpResponse(contents)
+
+from django.views.decorators.csrf import csrf_exempt
+import json
+@csrf_exempt
+def fcm_test(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        send_fcm(body['token'], data=body['data'])
+    return HttpResponse('ok')

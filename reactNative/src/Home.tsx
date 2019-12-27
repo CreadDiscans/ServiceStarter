@@ -1,9 +1,8 @@
 
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
-import { Button, ThemeProvider } from 'react-native-elements';
-import { NotificationService } from './service/NotificationService';
+import { Button } from 'react-native-elements';
 
 interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>

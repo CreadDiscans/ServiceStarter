@@ -1,5 +1,8 @@
 
 from rest_framework.schemas import AutoSchema
+from django.conf import settings
+import requests
+import json
 
 class CustomSchema(AutoSchema):
     schema_list = []
@@ -57,3 +60,18 @@ class CustomSchema(AutoSchema):
             return self.schema_partial_update
         elif self.is_delete(path, method):
             return self.schema_delete
+
+def send_fcm(token, notification=None, data=None):
+    url = 'https://fcm.googleapis.com/fcm/send'
+    headers = {
+        'Authorization': 'key=%s'%settings.FCM_SERVER_KEY,
+        'Content-Type': 'application/json; UTF-8',
+    }
+    content = {
+        'to':token
+    }
+    if notification: 
+        content['notification'] = notification
+    if data:
+        content['data'] = data
+    r = requests.post(url, data=json.dumps(content), headers=headers)
