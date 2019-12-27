@@ -3,13 +3,12 @@
 export UML.mdj to django models in Star UML
 (https://github.com/CreadDiscans/staruml-django)
 
-cd react && npm install && cd ..
-
-pip install -r requirements.txt
-python manage.py copymodels
-python manage.py makemigrations
-python manage.py migrate
-python manage.py start
+- cd react && npm install && cd ..
+- pip install -r requirements.txt
+- python manage.py copymodels
+- python manage.py makemigrations
+- python manage.py migrate
+- python manage.py start
 
 # Production
 
