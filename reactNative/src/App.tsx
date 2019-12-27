@@ -4,6 +4,7 @@ import { createStackNavigator  } from 'react-navigation-stack';
 import SplashScreen from './Splash';
 import HomeScreen from './Home';
 import SiginInScreen from './SignIn';
+import { ThemeProvider } from 'react-native-elements';
 
 const AppStack = createStackNavigator({
   Home:HomeScreen
@@ -23,8 +24,12 @@ const AppContainer = createAppContainer(
   })
 );
 
+const theme = {}
+
 export default class AppScreen extends React.Component<any> {
   render() {
-    return <AppContainer />;
+    return <ThemeProvider theme={theme}>
+      <AppContainer />
+    </ThemeProvider>
   }
 }

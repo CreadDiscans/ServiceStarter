@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { View, Text } from 'react-native';
-import { NavigationScreenProp, NavigationState, NavigationParams, withNavigation, NavigationActions } from 'react-navigation';
+import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
+import { Button, ThemeProvider } from 'react-native-elements';
 
 interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>
@@ -10,8 +11,6 @@ interface Props {
 export default class Home extends React.Component<Props> {
 
     render() {
-        return <View>
-            <Text>home</Text>
-        </View>
+        return <Button title="Hey!" />
     }
 }
