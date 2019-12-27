@@ -9,12 +9,13 @@ interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
-export default class Home extends React.Component<Props> {
+export default class Test extends React.Component<Props> {
 
     render() {
         return <View>
-            <Button title="Test" onPress={()=>this.props.navigation.navigate('Test')} />
-            <Button title="Setting" onPress={()=>this.props.navigation.navigate('Setting')}/>
+            <Button title="send notification" onPress={()=> 
+                NotificationService.getInstance<NotificationService>()
+                .send('id', 'title', 'body', 'default', {'key':'value'})} />
         </View>
     }
 }

@@ -6,10 +6,13 @@ import SplashScreen from './Splash';
 import HomeScreen from './Home';
 import SiginInScreen from './SignIn';
 import SettingScreen from './Setting';
+import TestScreen from './Test';
+import { NotificationService } from './service/NotificationService';
 
 const AppStack = createStackNavigator({
   Home:HomeScreen,
-  Setting:SettingScreen
+  Setting:SettingScreen,
+  Test:TestScreen
 })
 
 const AuthStack = createStackNavigator({
@@ -29,6 +32,15 @@ const AppContainer = createAppContainer(
 const theme = {}
 
 export default class AppScreen extends React.Component<any> {
+
+  componentDidMount() {
+    NotificationService.getInstance<NotificationService>().init()
+  }
+
+  componentWillUnmount() {
+    NotificationService.getInstance<NotificationService>().destroy()
+  }
+
   render() {
     return <ThemeProvider theme={theme}>
       <AppContainer />
