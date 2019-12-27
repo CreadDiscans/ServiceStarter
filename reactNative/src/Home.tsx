@@ -11,6 +11,6 @@ interface Props {
 export default class Home extends React.Component<Props> {
 
     render() {
-        return <Button title="Hey!" />
+        return <Button title="Setting" onPress={()=>this.props.navigation.navigate('Setting')}/>
     }
 }
