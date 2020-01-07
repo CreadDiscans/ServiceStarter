@@ -1,4 +1,4 @@
-package com.reactnative;
+package com.service.starter;
 
 import android.app.Application;
 import android.content.Context;
