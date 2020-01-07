@@ -5,6 +5,8 @@ import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-n
 import { Button, ThemeProvider } from 'react-native-elements';
 import { NotificationService } from './service/NotificationService';
 import firebase from 'react-native-firebase';
+import DeviceInfo from 'react-native-device-info';
+import { ApiService } from './service/ApiService';
 
 interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>
@@ -33,30 +35,32 @@ export default class Test extends React.Component<Props> {
     sendFcm() {
         firebase.messaging().getToken().then(fcmToken => {
             if (fcmToken) {
-                fetch('http://localhost:8000/fcm_test', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        token: fcmToken,
-                        data: {
-                            'key': 'value'
-                        }
-                    })
+                ApiService.getInstance<ApiService>().post('/fcm_test', {
+                    token: fcmToken,
+                    data: {
+                        'key': 'value'
+                    }
                 }).then(res=> console.log(res))
-                .catch(err=> console.log(err))
             } else {
                 console.log('no token')
             }
         })
     }
 
+    signin() {
+        ApiService.getInstance<ApiService>().signin('test1', 'test1')
+    }
+
+    signup() {
+        ApiService.getInstance<ApiService>().signup('test1', 'test1@test.com', 'test1')
+    }
+
     render() {
         return <View>
             <Button title="send notification" onPress={()=> this.sendNotification()} />
             <Button title="send fcm" onPress={()=> this.sendFcm()} /> 
+            <Button title="signin" onPress={()=> this.signin()} />
+            <Button title="signup" onPress={()=> this.signup()} />
         </View>
     }
 }

@@ -78,4 +78,4 @@ def fcm_test(request):
     if request.method == 'POST':
         body = json.loads(request.body)
         send_fcm(body['token'], data=body['data'])
-    return HttpResponse('ok')
+    return HttpResponse(json.dumps({'msg':'ok'}))
