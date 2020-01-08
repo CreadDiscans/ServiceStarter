@@ -29,14 +29,15 @@ export class BillingService extends Singletone<BillingService> {
     async init() {
         return this.action(async()=> {
             await InAppBilling.loadOwnedPurchasesFromGoogle()
-            this.subscriptions = await InAppBilling.getSubscriptionDetailsArray([
-                // Subsciption ID
-            ]);
-            this.products = await InAppBilling.getProductDetailsArray([
-                // Product ID
-            ]);
-            this.ownedSubscription = await InAppBilling.listOwnedSubscriptions()
-            this.ownedProducts = await InAppBilling.listOwnedProducts()
+            // After updating Google play console Lisence key, Uncomment below lines
+            // this.subscriptions = await InAppBilling.getSubscriptionDetailsArray([
+            //     // Subsciption ID
+            // ]);
+            // this.products = await InAppBilling.getProductDetailsArray([
+            //     // Product ID
+            // ]);
+            // this.ownedSubscription = await InAppBilling.listOwnedSubscriptions()
+            // this.ownedProducts = await InAppBilling.listOwnedProducts()
             return Promise.resolve()
         })
     }

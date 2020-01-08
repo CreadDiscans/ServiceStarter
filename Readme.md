@@ -23,6 +23,9 @@ docker-compose down && docker-compose up -d --build
 
 # React Native
 
+Server
+- change config/base.py FCM_SERVER_KEY
+
 Android
 - change android/app/google-services.json
 - update android/app/src/main/res/values/string.xml RNB_GOOGLE_PLAY_LICENSE_KEY string
