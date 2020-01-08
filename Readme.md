@@ -21,6 +21,12 @@ docker-compose down && docker-compose up -d --build
 
 ![architecture](./assest/architecture.png)
 
+# React Native
+
+Android
+- change android/app/google-services.json
+- update android/app/src/main/res/values/string.xml RNB_GOOGLE_PLAY_LICENSE_KEY string
+
 # License
 
 The project is commercial license. 
