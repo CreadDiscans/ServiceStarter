@@ -49,10 +49,14 @@ export default class Test extends React.Component<Props> {
 
     signin() {
         ApiService.getInstance<ApiService>().signin('test1', 'test1')
+        .then(res=> console.log(res))
+        .catch(err=>console.log(err))
     }
 
     signup() {
         ApiService.getInstance<ApiService>().signup('test1', 'test1@test.com', 'test1')
+        .then(res=>console.log(res))
+        .catch(err=>console.log(err))
     }
 
     render() {

@@ -1,6 +1,7 @@
 import { Singletone } from "./Singletone";
 import queryString from 'query-string';
 import { auth } from "../types/custom.types";
+import AsyncStorage from "@react-native-community/async-storage";
 
 export class ApiService extends Singletone<ApiService> {
 
@@ -17,20 +18,66 @@ export class ApiService extends Singletone<ApiService> {
             password:password
         }).then(res=> {
             this.headers.Authorization = 'JWT '+res.token
+            AsyncStorage.setItem('auth', JSON.stringify({
+                username:username,
+                password:password,
+                token:res.token
+            }))
             return this.get<auth.User>('/api-user/', {self:true})
-        }).catch(err=>console.log(err));
+        })
     }
 
     signup(username:string, email:string, password:string) {
-        return this.post<auth.User>('/api-user/', {
-            username:username,
-            email:email,
-            password:password
+        return this.get<auth.User[]>('/api-user/', {
+            username: username
+        }).then(res=> {
+            if (res.length > 0) {
+                return Promise.reject('exist User')
+            } else {
+                return this.post<auth.User>('/api-user/', {
+                    username:username,
+                    email:email,
+                    password:password
+                })
+            }
         })
     }
 
     signout() {
+        AsyncStorage.removeItem('auth')
         delete this.headers.Authorization
+    }
+
+    private parseJwt(token:string) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    
+        return JSON.parse(jsonPayload);
+    }
+
+    private isTokenExpired(token:string) {
+        const payload = this.parseJwt(token);
+        const expDate = new Date(payload.exp*1000);
+        const current = new Date();
+        if (current < expDate) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private async getHeader() {
+        const auth = await AsyncStorage.getItem('auth')
+        if (auth) {
+            const authObj = JSON.parse(auth)
+            if (this.isTokenExpired(authObj.token)) {
+                await this.signin(authObj.username, authObj.password)
+            }
+        }
+        return this.headers
     }
 
     get<T>(path:string, query:object={}):Promise<T> {
@@ -53,10 +100,10 @@ export class ApiService extends Singletone<ApiService> {
         return this.request<T>('PATCH', path, body)
     }
 
-    private request<T>(method:string, path:string, body:object={}):Promise<T>|any {
+    private async request<T>(method:string, path:string, body:object={}):Promise<T> {
         const data:RequestInit = {
             method: method,
-            headers: this.headers
+            headers: await this.getHeader()
         }
         if (Object.keys(body).length >0) {
             data.body = JSON.stringify(body)
