@@ -9,6 +9,7 @@ import SettingScreen from './Setting';
 import TestScreen from './Test';
 import { NotificationService } from './service/NotificationService';
 import { BillingService } from './service/BillingService';
+import { TaskService } from './service/TaskService';
 
 const AppStack = createStackNavigator({
   Home:HomeScreen,
@@ -35,8 +36,9 @@ const theme = {}
 export default class AppScreen extends React.Component<any> {
 
   componentDidMount() {
-    NotificationService.getInstance<NotificationService>().init()
-    BillingService.getInstance<BillingService>()
+    NotificationService.getInstance<NotificationService>()
+    // BillingService.getInstance<BillingService>()
+    // TaskService.getInstance<TaskService>()
   }
 
   componentWillUnmount() {

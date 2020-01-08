@@ -73,9 +73,11 @@ def index(request):
 
 from django.views.decorators.csrf import csrf_exempt
 import json
+import time
 @csrf_exempt
 def fcm_test(request):
     if request.method == 'POST':
         body = json.loads(request.body)
+        time.sleep(3)
         send_fcm(body['token'], data=body['data'])
     return HttpResponse(json.dumps({'msg':'ok'}))

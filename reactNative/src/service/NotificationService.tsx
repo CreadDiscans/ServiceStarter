@@ -1,7 +1,12 @@
 import { Singletone } from "./Singletone";
 import firebase from "react-native-firebase";
 import { Platform } from "react-native";
+import { RemoteMessage } from "react-native-firebase/messaging";
 
+export const BackgroundMessaging = async(message: RemoteMessage) => {
+    console.log(message)
+    return Promise.resolve() // must return a promise and resolve within 60 seconds.
+}
 export class NotificationService extends Singletone<NotificationService>{
 
     removeNotificationDisplayedListener:any;
@@ -10,8 +15,12 @@ export class NotificationService extends Singletone<NotificationService>{
     removeTokenRefreshListener:any;
     removeMessageListener:any;
 
+    constructor() {
+        super()
+        this.init()
+    }
 
-    init() {
+    private init() {
         firebase.messaging().hasPermission().then(enable=> {
             if (enable) {
                 this.onNotification() 

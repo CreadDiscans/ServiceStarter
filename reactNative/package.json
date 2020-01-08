@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
+    "@types/react-native-background-timer": "^2.0.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-background-fetch": "^2.7.1",
+    "react-native-background-timer": "^2.1.1",
     "react-native-billing": "^3.0.0",
     "react-native-device-info": "^5.4.0",
     "react-native-elements": "^1.2.7",

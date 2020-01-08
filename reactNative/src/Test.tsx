@@ -1,13 +1,11 @@
 
 import React from 'react';
-import { View, Text, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
-import { Button, ThemeProvider } from 'react-native-elements';
-import { NotificationService } from './service/NotificationService';
+import { Button } from 'react-native-elements';
 import firebase from 'react-native-firebase';
-import DeviceInfo from 'react-native-device-info';
 import { ApiService } from './service/ApiService';
-
+import BackgroundTimer from 'react-native-background-timer';
 interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
@@ -59,12 +57,27 @@ export default class Test extends React.Component<Props> {
         .catch(err=>console.log(err))
     }
 
+    background() {
+        if (Platform.OS === 'android') {
+            BackgroundTimer.setTimeout(()=> {
+                console.log('do in background')
+            }, 3000)
+        } else if (Platform.OS === 'ios') {
+            BackgroundTimer.start();
+            setTimeout(()=> {
+                console.log('do in background')
+            }, 3000)
+            BackgroundTimer.stop();
+        }
+    }
+
     render() {
         return <View>
             <Button title="send notification" onPress={()=> this.sendNotification()} />
             <Button title="send fcm" onPress={()=> this.sendFcm()} /> 
             <Button title="signin" onPress={()=> this.signin()} />
             <Button title="signup" onPress={()=> this.signup()} />
+            <Button title="background" onPress={()=> this.background()} />
         </View>
     }
 }
