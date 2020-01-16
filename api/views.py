@@ -15,7 +15,7 @@ import coreapi
 import re
 
 ITEM_COUNT_PER_PAGE = 20
-SCHEMA_FILED_EXCEPT = ['page', 'id', 'count_per_page', 'depth', 'logic']
+SCHEMA_FILED_EXCEPT = ['page', 'id', 'count_per_page', 'depth', 'logic', 'order_by']
 CHAIN_FILTER = [
   'startswith', 'endwith', 
   'lte', 'gte', 'gt', 'lt', 
@@ -120,7 +120,10 @@ def getViewSet(modelClass):
       page = request.GET.get('page')
       depth = request.GET.get('depth')
       count = request.GET.get('count_per_page')
+      order = request.GET.get('order_by')
       queryset = applyOption(request, self.queryset)
+      if order:
+        queryset = queryset.order_by(order)
       if page:
         res = applyPagination(queryset, self.serializer_class, page, count, depth)
       else:
