@@ -15,7 +15,7 @@ import coreapi
 import re
 
 ITEM_COUNT_PER_PAGE = 20
-SCHEMA_FILED_EXCEPT = ['page', 'id', 'count_per_page', 'depth', 'logic', 'order_by']
+SCHEMA_FILED_EXCEPT = ['page', 'id', 'count_per_page', 'depth', 'logic', 'order_by', 'ignore[]']
 CHAIN_FILTER = [
   'startswith', 'endwith', 
   'lte', 'gte', 'gt', 'lt', 
@@ -29,7 +29,7 @@ def getSerializer(modelClass):
         fields = '__all__'
   return ApiSerializer
 
-def applyPagination(queryset, serializer_class,  page, count, depth):
+def applyPagination(queryset, serializer_class,  page, count, depth, ignore):
   count_val = int(count) if count else ITEM_COUNT_PER_PAGE
   paginator = Paginator(queryset, count_val)
   try:
@@ -41,7 +41,7 @@ def applyPagination(queryset, serializer_class,  page, count, depth):
   output = []
   if depth:
     for item in items:
-      output.append(applyDepth(item, int(depth)))
+      output.append(applyDepth(item, int(depth), ignore))
   else:
     output = serializer_class(items, many=True).data
   res = {
@@ -80,16 +80,18 @@ def addAllFieldToSchema(model, schema):
     schema.append(coreapi.Field(name, location='query'))
   return schema
 
-def applyDepth(item, depth):
+def applyDepth(item, depth, ignore):
   if item is None:
     return None
   if depth == -1:
     return item.id
   data = getSerializer(item.__class__)(item).data
   for field in item.__class__._meta.get_fields():
+    if field.name in ignore:
+      continue
     if field.many_to_one or field.one_to_one:
       try:
-        data[field.name] = applyDepth(getattr(item, field.name), depth-1)
+        data[field.name] = applyDepth(getattr(item, field.name), depth-1, ignore)
       except ObjectDoesNotExist:
         data[field.name] = None
     elif field.many_to_many:
@@ -97,7 +99,7 @@ def applyDepth(item, depth):
         continue
       data[field.name] = []
       for m2m_item in getattr(item, field.name).all():
-        data[field.name].append(applyDepth(m2m_item, depth-1))
+        data[field.name].append(applyDepth(m2m_item, depth-1, ignore))
   return data
 
 def getViewSet(modelClass):
@@ -124,16 +126,21 @@ def getViewSet(modelClass):
       depth = request.GET.get('depth')
       count = request.GET.get('count_per_page')
       order = request.GET.get('order_by')
+      ignore = request.GET.get('ignore[]')
+      if ignore:
+        ignore = request.GET.getlist(ignore)
+      else:
+        ignore = []
       queryset = applyOption(request, self.queryset)
       if order:
         queryset = queryset.order_by(order)
       if page:
-        res = applyPagination(queryset, self.serializer_class, page, count, depth)
+        res = applyPagination(queryset, self.serializer_class, page, count, depth, ignore)
       else:
         res = []
         if depth:
           for item in queryset.all():
-            res.append(applyDepth(item, int(depth)))
+            res.append(applyDepth(item, int(depth), ignore))
         else:
           res = self.serializer_class(queryset, many=True).data
 
@@ -146,7 +153,7 @@ def getViewSet(modelClass):
         return Response(status=status.HTTP_404_NOT_FOUND)
       depth = request.GET.get('depth')
       if depth:
-        return Response(data=applyDepth(item, int(depth)), status=status.HTTP_200_OK)
+        return Response(data=applyDepth(item, int(depth), []), status=status.HTTP_200_OK)
       else:
         return Response(data=self.serializer_class(item).data, status=status.HTTP_200_OK)
 
