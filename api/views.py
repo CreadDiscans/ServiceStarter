@@ -157,4 +157,40 @@ def getViewSet(modelClass):
       else:
         return Response(data=self.serializer_class(item).data, status=status.HTTP_200_OK)
 
+    def partial_update(self, request, pk=None):
+      try:
+        item = modelClass.objects.get(pk=pk)
+      except:
+        raise Response(status=status.HTTP_404_NOT_FOUND)
+
+      d = {}
+      delta = {}
+      depth = 0
+      for key in request.data:
+        if '__delta' in key:
+          delta[key.replace('__delta', '')] = request.data[key]
+        elif '__add' in key:
+          getattr(item, key.replace('__add', '')).add(request.data[key])
+        elif '__remove' in key:
+          getattr(item, key.replace('__remove', '')).remove(request.data[key])
+        elif '__toggle' in key:
+          field = getattr(item, key.replace('__toggle', ''))
+          if field.filter(pk=request.data[key]).count() > 0:
+            field.remove(request.data[key])
+          else:
+            field.add(request.data[key])
+        elif key == 'depth':
+          depth = int(request.data[key])
+        else:
+          d[key] = request.data[key]
+
+      for key in delta:
+        d[key] = getattr(item, key) + delta[key]
+
+      serializer = self.serializer_class(item, data=d, partial=True)
+      if serializer.is_valid():
+        serializer.save()
+        return Response(applyDepth(modelClass.objects.get(pk=pk), int(depth), []))
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
   return ApiViewSet
