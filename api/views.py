@@ -62,7 +62,11 @@ def applyOption(request, queryset):
   for key in request.GET:
     if key in SCHEMA_FILED_EXCEPT:
       continue
-    params[key] = request.GET.get(key)
+    if '[]' in key:
+      request.GET.getlist(key)
+      params[key.replace('[]', '')] = request.GET.getlist(key)
+    else:
+      params[key] = request.GET.get(key)
   if len(where) == 0:
     return queryset.filter(**params)
   else:
@@ -75,7 +79,6 @@ def addAllFieldToSchema(model, schema):
       continue
     schema.append(coreapi.Field(name, location='query'))
   return schema
-
 
 def applyDepth(item, depth):
   if item is None:
