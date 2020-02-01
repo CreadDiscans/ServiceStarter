@@ -7,15 +7,8 @@ const AUTH_SIGNIN = 'AUTH_SIGNIN';
 const AUTH_SIGNUP = 'AUTH_SIGNUP';
 const AUTH_SIGNOUT = 'AUTH_SIGNOUT';
 
-let user_id;
-if (typeof localStorage === 'undefined') {
-  user_id = undefined;
-} else {
-  user_id = localStorage.getItem('user_id')? Number(localStorage.getItem('user_id')):undefined
-}
-
 const initState:AuthState = {
-  user_id: user_id
+  user_id: undefined
 };
 
 export const AuthAction = {
