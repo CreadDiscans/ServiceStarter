@@ -71,6 +71,14 @@ def index(request):
     contents = contents.replace('{% csrf_token %}', get_token(request))
     return HttpResponse(contents)
 
+def assets(request):
+    response = requests.get(settings.REACT_HOST+request.path, stream=True)
+    return HttpResponse(
+        content=response.content,
+        status=response.status_code,
+        content_type=response.headers['Content-Type']
+    )
+    
 from django.views.decorators.csrf import csrf_exempt
 import json
 import time

@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from .views import index, UserViewSet, GroupViewSet, fcm_test
+from .views import index, UserViewSet, GroupViewSet, fcm_test, assets
   
 router = routers.DefaultRouter()
 router.register(r'api-user', UserViewSet)
@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/token-verify/', verify_jwt_token),
     path('api-', include('api.urls')),
     path('fcm_test', fcm_test),
+    url(r'assets/', assets),
     path('', index)
 ]
 urlpatterns += router.urls

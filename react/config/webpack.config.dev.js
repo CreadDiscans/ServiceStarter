@@ -309,18 +309,30 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
+              exclude: /node_modules/,
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
                 cacheDirectory: true,
+                babelrc: false,
                 customize: require.resolve(
                   'babel-preset-react-app/webpack-overrides'
                 ),
-                
+                presets: [
+                  [
+                    "@babel/preset-env",
+                    { targets: { browsers: "last 2 versions" } } // or whatever your project requires
+                  ],
+                  "@babel/preset-typescript",
+                  "@babel/preset-react"
+                ],
                 plugins: [
                   'react-hot-loader/babel',
+                  ["@babel/plugin-proposal-decorators", { legacy: true }],
+                  ["@babel/plugin-proposal-class-properties", { loose: true }],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
+
                     {
                       loaderMap: {
                         svg: {
@@ -334,7 +346,6 @@ module.exports = function(webpackEnv) {
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
                 // directory for faster rebuilds.
-                cacheDirectory: true,
                 cacheCompression: isEnvProduction,
                 compact: isEnvProduction,
               },
@@ -547,35 +558,35 @@ module.exports = function(webpackEnv) {
             new RegExp('/[^/]+\\.[^/]+$'),
           ],
         }),
-      // TypeScript type checking
-      useTypeScript &&
-        new ForkTsCheckerWebpackPlugin({
-          typescript: resolve.sync('typescript', {
-            basedir: paths.appNodeModules,
-          }),
-          async: false,
-          checkSyntacticErrors: true,
-          tsconfig: paths.appTsConfig,
-          compilerOptions: {
-            module: 'esnext',
-            moduleResolution: 'node',
-            resolveJsonModule: true,
-            isolatedModules: true,
-            noEmit: true,
-            jsx: 'preserve',
-          },
-          reportFiles: [
-            '**',
-            '!**/*.json',
-            '!**/__tests__/**',
-            '!**/?(*.)(spec|test).*',
-            '!**/src/setupProxy.*',
-            '!**/src/setupTests.*',
-          ],
-          watch: paths.appSrc,
-          silent: true,
-          formatter: typescriptFormatter,
-        }),
+      // // TypeScript type checking
+      // useTypeScript &&
+      //   new ForkTsCheckerWebpackPlugin({
+      //     typescript: resolve.sync('typescript', {
+      //       basedir: paths.appNodeModules,
+      //     }),
+      //     async: false,
+      //     checkSyntacticErrors: true,
+      //     tsconfig: paths.appTsConfig,
+      //     compilerOptions: {
+      //       module: 'esnext',
+      //       moduleResolution: 'node',
+      //       resolveJsonModule: true,
+      //       isolatedModules: true,
+      //       noEmit: true,
+      //       jsx: 'preserve',
+      //     },
+      //     reportFiles: [
+      //       '**',
+      //       '!**/*.json',
+      //       '!**/__tests__/**',
+      //       '!**/?(*.)(spec|test).*',
+      //       '!**/src/setupProxy.*',
+      //       '!**/src/setupTests.*',
+      //     ],
+      //     watch: paths.appSrc,
+      //     silent: true,
+      //     formatter: typescriptFormatter,
+      //   }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
@@ -589,5 +600,6 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
+    cache: true,
   };
 };

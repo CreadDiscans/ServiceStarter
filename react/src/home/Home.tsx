@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 class Home extends React.Component<any> {
 
@@ -10,13 +9,15 @@ class Home extends React.Component<any> {
     render() {
         return (
             <div>
-                <h2>
-                    홈
-                </h2>
-                <div><a onClick={()=> this.move("/about")}>about</a></div>
-                <div><a onClick={()=> this.move("/message")}>message</a></div>
-                <div><Link to="/signin">signin</Link></div>
-                <div><Link to="/signup">signup</Link></div>
+                <header className="masthead">
+                    <div className="container">
+                    <div className="intro-text">
+                        <div className="intro-lead-in">Welcome To Our Studio!</div>
+                        <div className="intro-heading text-uppercase">It's Nice To Meet You</div>
+                        <a className="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="#services">Tell Me More</a>
+                    </div>
+                    </div>
+                </header>
             </div>
         );
     }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Root from './ClientRoot';
 import { register } from './serviceWorker';
 import { AppContainer } from 'react-hot-loader';
-import './index.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 declare var module:any;
 
 const render = (Component:any) => {
