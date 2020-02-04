@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Home, About, SingIn, SignUp, Message } from 'app/Routes';
-import { Helmet } from "react-helmet";
-import { Header } from 'layout/header';
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import Header from 'layout/header';
 import { Footer } from 'layout/footer';
 import { connectWithoutDone } from './core/connection';
 import { RootState } from './Reducers';
 import { Dispatch, bindActionCreators } from 'redux';
 import { AuthAction, authActions } from 'auth/Auth.action';
 import { tokenExpiredSubject } from './core/Api';
+import { Alert } from 'component/Alert';
 
 interface Props {
     AuthAction: typeof AuthAction
@@ -28,7 +29,7 @@ class App extends Component<Props> {
     
     render() {
         return (
-            <div>
+            <HelmetProvider>
                 <Helmet>
                     <title>React Router & SSR</title>
                 </Helmet>
@@ -43,7 +44,8 @@ class App extends Component<Props> {
                     <Route path="*" component={()=><Redirect to="/" />} />
                 </Switch>
                 <Footer />
-            </div>
+                <Alert />
+            </HelmetProvider>
         );
     }
 }

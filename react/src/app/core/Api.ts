@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { BehaviorSubject } from 'rxjs';
+import * as ApiType from 'types/api.types';
 declare var csrf_token:string;
 
 const domain = process.env.API_DOMAIN;
 const jwtRefreshExp = 3 * 60 * 60 * 1000; // 만료 3시간 전
 
 const KEY_JWT_TOKEN = 'jwt_token';
-const KEY_USER_ID = 'user_id';
+const KEY_USER_PROFILE = 'user_profile';
 export const tokenExpiredSubject = new BehaviorSubject<boolean>(false);
 
 const setHeader = async() => {
@@ -86,41 +87,42 @@ const parseJwt = (token:string) => {
     return JSON.parse(jsonPayload);
 };
 
-export const Api = {
-    list:async (url:string, query:object)=> {
+export class Api{
+    static async list<T>(url:string, query:object):Promise<T>{
         await setHeader();
         return axios.get(domain+queryUrl(url, query)).then(res=>res.data)
-    },
-    create:async (url:string, body:object)=> {
+    }
+    static async create<T>(url:string, body:object):Promise<T> {
         await setHeader();
         return axios.post(domain+url, body).then(res=>res.data);
-    },
-    retrieve:async (url:string, id:number|string, query:object)=> {
+    }
+    static async retrieve<T>(url:string, id:number|string, query:object):Promise<T> {
         await setHeader();
         return axios.get(domain+queryUrl(url, query, id)).then(res=>res.data)
-    },
-    update:async (url:string, id:number|string, body:object)=> {
+    }
+    static async update<T>(url:string, id:number|string, body:object):Promise<T> {
         await setHeader();
         return axios.put(domain+queryUrl(url, {}, id), body).then(res=>res.data)
-    },
-    patch:async (url:string, id:number|string, body:object)=> {
+    }
+    static async patch<T> (url:string, id:number|string, body:object):Promise<T> {
         await setHeader();
         return axios.patch(domain+queryUrl(url, {}, id), body).then(res=>res.data);
-    },
-    delete:async (url:string, id:number|string)=> {
+    }
+    static async delete<T> (url:string, id:number|string):Promise<T> {
         await setHeader();
         return axios.delete(domain+queryUrl(url, {}, id)).then(res=>res.data);
-    },
-    signIn:(jwt_token:string, user_id:string|number)=> {
+    }
+    static signIn(jwt_token:string, user_profile:ApiType.Profile|undefined) {
         if (typeof localStorage !== 'undefined') {
             localStorage.setItem(KEY_JWT_TOKEN, jwt_token);
-            localStorage.setItem(KEY_USER_ID, String(user_id));
+            if (user_profile)
+                localStorage.setItem(KEY_USER_PROFILE, JSON.stringify(user_profile));
         }
-    },
-    signOut: ()=> {
+    }
+    static signOut() {
         if (typeof localStorage !== 'undefined') {
             localStorage.removeItem(KEY_JWT_TOKEN);
-            localStorage.removeItem(KEY_USER_ID);
+            localStorage.removeItem(KEY_USER_PROFILE);
         }
     }
 }

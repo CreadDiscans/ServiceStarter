@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import penderMiddleware from 'redux-pender';
 
-import modules from 'app/Reducers';
+import modules, { RootState } from 'app/Reducers';
+import * as ApiType from 'types/api.types';
 
 declare var window:any;
 declare var module:any;
@@ -10,19 +11,23 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const composeEnhancers = isDevelopment ? (window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] || compose) : compose;
 
 const initState = () => {
-  let user_id;
+  let userProfile:ApiType.Profile|undefined;
   if (typeof localStorage === 'undefined') {
-    user_id = undefined;
+    userProfile = undefined;
   } else {
-    user_id = localStorage.getItem('user_id')? Number(localStorage.getItem('user_id')):undefined
+    const str = localStorage.getItem('user_profile')
+    userProfile = str? JSON.parse(str):undefined
   }
-  return user_id
+  return userProfile
 }
 
-const configureStore = (initialState:any) => {
-  if (initialState && initialState.auth) {
-    initialState.auth.user_id = initState();
-  }
+const configureStore = (initialState:RootState|undefined) => {
+  //@ts-ignore
+  if (initialState === undefined) initialState = {}
+  //@ts-ignore
+  if (initialState.auth === undefined) initialState.auth = {}
+  //@ts-ignore
+  initialState.auth.userProfile = initState();
   const store = createStore(modules, initialState, composeEnhancers(
     applyMiddleware(penderMiddleware())
   ));

@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 import { penderReducer } from 'redux-pender';
 
-import auth from 'auth/Auth.action';
-import { AuthState } from 'auth/Auth.type';
+import auth, { AuthState } from 'auth/Auth.action';
 
 export default combineReducers({
   auth,
