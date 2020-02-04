@@ -184,3 +184,11 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 REACT_API_TYPE_PATH = 'react/src/types'
 FCM_SERVER_KEY = 'AAAAxrvqcWo:APA91bGDJcI0EAiNi-PJZb5h4xCbT6HOiyarOZ93HTFpGlEc9pWR9TOPMScIfagdHL8dxP_AteVacZ0bM7gs-rLDY61Gdjb_jluijMAGC3mjx8v0OpddsqZQwCwq1ASz6ta7krXr1Jk3'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'servicetester0@gmail.com'
+EMAIL_HOST_PASSWORD = '1q2w3e4r..'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 interface States {
     title:string
@@ -17,15 +17,20 @@ export class Alert extends React.Component{
         title:'',
         content:'',
     }
+    sub!:Subscription
 
     componentDidMount() {
-        AlertSubject.subscribe(val=> {
+        this.sub = AlertSubject.subscribe(val=> {
             if (val) {
                 this.setState(val)
             } else {
                 this.setState({})
             }
         })
+    }
+
+    componentWillUnmount() {
+        this.sub.unsubscribe()
     }
 
     render() {

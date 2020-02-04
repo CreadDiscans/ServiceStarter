@@ -20,13 +20,27 @@ class SignIn extends React.Component<Props> {
     password:'',
     invalid:{
       username:false,
-      password:false
+      password:false,
+      activate:false
     }
   }
 
   async submit(e:React.FormEvent<HTMLFormElement>) {
     e.stopPropagation()
     e.preventDefault()
+    const res = await Api.list<{username:boolean, email:boolean}>('/api-user/',{
+      username:this.state.username
+    })
+    if (!res.username) {
+      this.setState({
+        invalid:{
+          password:false,
+          username:true,
+          activate:false
+        }
+      })
+      return Promise.resolve()
+    }
     const profile = await Api.list<ApiType.Profile[]>('/api-profile/', {
       user__username:this.state.username,
     })
@@ -34,7 +48,8 @@ class SignIn extends React.Component<Props> {
       this.setState({
         invalid:{
           password:false,
-          username:true
+          username:true,
+          activate:true
         }
       })
       return Promise.resolve()
@@ -70,7 +85,9 @@ class SignIn extends React.Component<Props> {
             <Label>Username</Label>
             <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
               invalid={this.state.invalid.username} />
-            <FormFeedback>The username not existed</FormFeedback>
+            {this.state.invalid.activate ? 
+              <FormFeedback>The username is not activated. Check the email.</FormFeedback> :
+              <FormFeedback>The username not existed.</FormFeedback>}
           </FormGroup>
           <FormGroup>
             <Label>Password</Label>
@@ -78,7 +95,15 @@ class SignIn extends React.Component<Props> {
               invalid={this.state.invalid.password} />
             <FormFeedback>The password was not wrong</FormFeedback>
           </FormGroup>
-          <Button color="primary" className="float-right" >Sign In</Button>
+          <div className="text-center">
+            <Button className="mx-2" color="secondary" onClick={()=>this.props.history.push('/signup')} >Sign Up</Button>
+            <Button className="mx-2" color="primary" >Sign In</Button>
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col className="text-center">
+          <Button className="btn-sm my-2" color="light" onClick={()=>this.props.history.push('/reset')}>forgot password</Button>
         </Col>
       </Row>
     </Form>

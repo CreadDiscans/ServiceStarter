@@ -39,14 +39,6 @@ class SignUp extends React.Component<Props> {
       email:this.state.email.trim(),
       password:this.state.password
     })
-    const jwt = await Api.create<{token:string}>('/api/token-auth/', {
-      username:this.state.username.trim(),
-      password:this.state.password
-    })
-    Api.signIn(jwt.token, undefined);
-    const profile = await Api.create<ApiType.Profile>('/api-profile/', {
-      user: user.id
-    })
     AlertSubject.next({
       title:'Successful Sing Up.',
       content:'Please login after checking Activation email.',
@@ -60,18 +52,13 @@ class SignUp extends React.Component<Props> {
   submit(e:React.FormEvent<HTMLFormElement>) {
     e.stopPropagation()
     e.preventDefault()
-    Promise.all([
-      Api.list<ApiType.Profile[]>('/api-profile/',{
-        user__username:this.state.username.trim()
-      }),
-      Api.list<ApiType.Profile[]>('/api-profile/',{
-        user__email:this.state.email.trim()
-      })
-    ]).then(res=>{
-      console.log(res)
+    Api.list<{username:boolean, email:boolean}>('/api-user/',{
+      username:this.state.username.trim(),
+      email:this.state.email.trim()
+    }).then(res=> {
       let state:any = {invalid:{...this.state.invalid}, valid:{...this.state.valid}}
-      this.checkValid(res[0].length !== 0, 'username', state, this.state.username.trim() === '')
-      this.checkValid(res[1].length !== 0, 'email', state, this.state.email.trim() === '')
+      this.checkValid(res.username, 'username', state, this.state.username.trim() === '')
+      this.checkValid(res.email, 'email', state, this.state.email.trim() === '')
       this.checkValid(this.state.password.length < 7, 'password', state)
       this.checkValid(this.state.password !== this.state.password2, 'password2', state)
       this.setState(state)
@@ -118,7 +105,7 @@ class SignUp extends React.Component<Props> {
               <Label>Password</Label>
               <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
                 invalid={this.state.invalid.password} valid={this.state.valid.password}/>
-              <FormFeedback>The Password should be longer than 7 character.</FormFeedback>
+              <FormFeedback>The password should be longer than 7 character.</FormFeedback>
             </FormGroup>
             <FormGroup>
               <Label>Password Confirm</Label>

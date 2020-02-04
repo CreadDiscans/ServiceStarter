@@ -1,22 +1,34 @@
 from django.contrib import admin
+from django.contrib.auth.models import update_last_login
 from django.urls import path, include
 from django.conf.urls import url
 from django.conf import settings
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework import routers
-from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from .views import index, UserViewSet, GroupViewSet, fcm_test, assets
+from rest_framework_jwt.views import ObtainJSONWebToken, obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+from .views import index, UserViewSet, GroupViewSet, fcm_test, assets, activate, send_reset_mail
   
 router = routers.DefaultRouter()
 router.register(r'api-user', UserViewSet)
 router.register(r'api-group', GroupViewSet)
 
+class ObtainAuthTokenWithLogin(ObtainJSONWebToken):
+    def post(self, request):
+        result = super().post(request)
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.object.get('user')
+            update_last_login(None, user)
+        return result
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token-auth/', obtain_jwt_token),
+    path('api/token-auth/', ObtainAuthTokenWithLogin.as_view()),
     path('api/token-refresh/', refresh_jwt_token),
     path('api/token-verify/', verify_jwt_token),
     path('api-', include('api.urls')),
+    path('activate/<str:uid64>/<str:token>/', activate),
+    path('send_reset_mail', send_reset_mail),
     path('fcm_test', fcm_test),
     url(r'assets/', assets),
     path('', index)

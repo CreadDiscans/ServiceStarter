@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import { Home, About, SingIn, SignUp, Message } from 'app/Routes';
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import Header from 'layout/header';
 import { Footer } from 'layout/footer';
@@ -10,6 +9,13 @@ import { Dispatch, bindActionCreators } from 'redux';
 import { AuthAction, authActions } from 'auth/Auth.action';
 import { tokenExpiredSubject } from './core/Api';
 import { Alert } from 'component/Alert';
+import { 
+    Home, 
+    SingIn, 
+    SignUp, 
+    Activation, 
+    Reset
+} from 'app/Routes';
 
 interface Props {
     AuthAction: typeof AuthAction
@@ -36,11 +42,10 @@ class App extends Component<Props> {
                 <Header />
                 <Switch>
                     <Route exact path="/" component={Home}/>
-                    <Route eaxct path="/about/:name" component={About}/>
-                    <Route eaxct path="/about" component={About}/>
-                    <Route eaxct path="/message" component={Message}/>
                     <Route eaxct path="/signin" component={SingIn}/>
                     <Route eaxct path="/signup" component={SignUp}/>
+                    <Route eaxct path="/activation" component={Activation}/>
+                    <Route eaxct path="/reset" component={Reset}/>
                     <Route path="*" component={()=><Redirect to="/" />} />
                 </Switch>
                 <Footer />
