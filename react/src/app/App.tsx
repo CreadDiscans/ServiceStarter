@@ -14,7 +14,8 @@ import {
     SingIn, 
     SignUp, 
     Activation, 
-    Reset
+    Reset,
+    MyPage
 } from 'app/Routes';
 
 interface Props {
@@ -46,6 +47,7 @@ class App extends Component<Props> {
                     <Route eaxct path="/signup" component={SignUp}/>
                     <Route eaxct path="/activation" component={Activation}/>
                     <Route eaxct path="/reset" component={Reset}/>
+                    <Route exact path="/mypage" component={MyPage}/>
                     <Route path="*" component={()=><Redirect to="/" />} />
                 </Switch>
                 <Footer />
