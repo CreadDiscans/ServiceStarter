@@ -52,7 +52,8 @@ class Reset extends React.Component<Props> {
             AlertSubject.next({
                 title:'Password Reset',
                 content:'Password Reset Mail sent. Check the email.',
-                onConfirm:()=>AlertSubject.next(undefined)
+                onConfirm:()=>AlertSubject.next(undefined),
+                onCancel:undefined
             })
         })
     }
@@ -76,7 +77,8 @@ class Reset extends React.Component<Props> {
                     onConfirm:()=> {
                         this.props.history.push('/signin')
                         AlertSubject.next(undefined)
-                    }
+                    },
+                    onCancel:undefined
                 })
             })
             .catch(err=> {
@@ -85,7 +87,8 @@ class Reset extends React.Component<Props> {
                     content:'This link was expired. please try from sending reset email.',
                     onConfirm:()=> {
                         AlertSubject.next(undefined)
-                    }
+                    },
+                    onCancel:undefined
                 })
             })
         }

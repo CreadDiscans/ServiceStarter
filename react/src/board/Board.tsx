@@ -9,6 +9,7 @@ import BoardList from './BoardList';
 import { Switch, Route } from 'react-router-dom';
 import BoardWrite from './BoardWrite';
 import { History } from 'history';
+import BoardDetail from './BoardDetail';
 
 interface Props {
     board:BoardState
@@ -52,6 +53,7 @@ class Board extends React.Component<Props> {
                     <Switch>
                         <Route exact path="/board" component={BoardList}/>
                         <Route exact path="/board/write" component={BoardWrite}/>
+                        <Route exact path="/board/:id" component={BoardDetail}/>
                     </Switch>
                 </Col>
             </Row>

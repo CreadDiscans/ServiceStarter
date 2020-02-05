@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BehaviorSubject } from 'rxjs';
+import queryString from 'query-string';
 import * as ApiType from 'types/api.types';
 declare var csrf_token:string;
 
@@ -90,7 +91,7 @@ const parseJwt = (token:string) => {
 export class Api{
     static async list<T>(url:string, query:object):Promise<T>{
         await setHeader();
-        return axios.get(domain+queryUrl(url, query)).then(res=>res.data)
+        return axios.get(domain+url+'?'+queryString.stringify(query)).then(res=>res.data)
     }
     static async create<T>(url:string, body:object):Promise<T> {
         await setHeader();

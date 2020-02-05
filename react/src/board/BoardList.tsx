@@ -48,10 +48,10 @@ class BoardList extends React.Component<Props> {
                 </thead>
                 <tbody>
                     {board.list.map(item=> <tr key={item.id}>
-                        <th scope="row">{item.id}</th>
-                        <td>{item.title}</td>
-                        <td>{item.author_name}</td>
-                        <td>{moment(item.created).fromNow()}</td>
+                        <th scope="row"><a onClick={()=>history.push('/board/'+item.id)}>{item.id}</a></th>
+                        <td><a onClick={()=>history.push('/board/'+item.id)}>{item.title}</a></td>
+                        <td><a onClick={()=>history.push('/board/'+item.id)}>{item.author_name}</a></td>
+                        <td><a onClick={()=>history.push('/board/'+item.id)}>{moment(item.created).fromNow()}</a></td>
                     </tr>)}
                 </tbody>
             </Table>

@@ -18,6 +18,7 @@ export type BoardComment = {
     id:number
     content:string
     created:string
+    author_name:string
     item:number|BoardItem
     parent:number|BoardComment
     author:number|Profile

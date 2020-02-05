@@ -32,7 +32,8 @@ class BoardComment(models.Model):
         verbose_name_plural='댓글'
 
     content = models.TextField(null=True)
-    created = models.DateField(auto_now=True)
+    created = models.DateTimeField(auto_now=True)
+    author_name = models.CharField(max_length=100)
 
     item = models.ForeignKey('BoardItem', on_delete=models.CASCADE)
     parent = models.ForeignKey('BoardComment', null=True, on_delete=models.CASCADE)

@@ -45,7 +45,8 @@ class SignUp extends React.Component<Props> {
       onConfirm:()=> {
         this.props.history.push('/signin')
         AlertSubject.next(undefined)
-      }
+      },
+      onCancel:undefined
     })
   }
 
