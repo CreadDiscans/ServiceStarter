@@ -5,6 +5,7 @@ import { register } from './serviceWorker';
 import { AppContainer } from 'react-hot-loader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './agency.min.css';
+import './index.css';
 declare var module:any;
 
 const render = (Component:any) => {

@@ -10,6 +10,7 @@ export type BoardItem = {
     content:string
     created:string
     modified:string
+    author_name:string
     group:number|BoardGroup
     author:number|Profile
 }

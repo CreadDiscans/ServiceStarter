@@ -1,0 +1,76 @@
+import React from 'react';
+import { RootState } from 'app/Reducers';
+import { Dispatch } from 'redux';
+import { binding, connectWithoutDone } from 'app/core/connection';
+import { BoardState, BoardAction } from './Board.action';
+import { Paginator } from 'component/Paginator';
+import { Button, Table } from 'reactstrap';
+import { AuthState } from 'auth/Auth.action';
+import { History } from 'history';
+import moment from 'moment';
+
+interface Props {
+    auth:AuthState
+    board:BoardState
+    BoardAction:typeof BoardAction
+    done:any
+    history:History
+}
+
+class BoardList extends React.Component<Props> {
+
+    componentDidMount() {
+        const {board, BoardAction} = this.props;
+        if (board.activeGroup) {
+            BoardAction.boardList(1, board.activeGroup)
+        }
+    }
+
+    changePage(page:number) {
+        const {BoardAction, board} = this.props;
+        if (board.activeGroup) {
+            BoardAction.boardList(page, board.activeGroup)
+        }
+    }
+
+    render() {
+        const {auth, board, history} = this.props;
+        return <div>
+            <h4>{board.activeGroup && board.activeGroup.name}</h4>
+            <Table hover>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {board.list.map(item=> <tr key={item.id}>
+                        <th scope="row">{item.id}</th>
+                        <td>{item.title}</td>
+                        <td>{item.author_name}</td>
+                        <td>{moment(item.created).fromNow()}</td>
+                    </tr>)}
+                </tbody>
+            </Table>
+            {auth.userProfile && <Button color="primary" className="float-right" onClick={()=>history.push('/board/write')}>Write</Button>}
+            <Paginator 
+                currentPage={board.currentPage}
+                totalPage={board.totalPage}
+                onSelect={(page:number)=>this.changePage(page)}/>
+        </div>
+    }
+}
+
+export default connectWithoutDone(
+    (state:RootState)=>({
+        auth:state.auth,
+        board:state.board
+    }),
+    (dispatch:Dispatch)=>({
+        BoardAction:binding(BoardAction, dispatch)
+    }),
+    BoardList
+)

@@ -31,6 +31,9 @@ class Header extends React.Component<Props> {
         </Button>
         <Collapse isOpen={this.state.collapse} className="navbar-collapse" id="navbarResponsive">
           <ul className="navbar-nav text-uppercase ml-auto">
+            <li className="nav-item">
+              <a className="nav-link js-scroll-trigger" onClick={()=>this.props.history.push('/board')}>Board</a>
+            </li>
             {auth.userProfile ? [
               <li className="nav-item" key={0}>
                 <a className="nav-link js-scroll-trigger" onClick={()=>this.props.history.push('/mypage')}>MyPage</a>

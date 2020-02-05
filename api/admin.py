@@ -1,14 +1,9 @@
 from django.contrib import admin
-import importlib
-import os
+from .models import *
 
-# def register():
-#   mod = importlib.import_module('api.models')
+class BoardGroupAdmin(admin.ModelAdmin):
 
-#   for klassName in dir(mod):
-#     if '__' in klassName: continue
-#     if klassName == 'models': continue
-#     klass = getattr(mod,klassName)
-#     admin.site.register(klass)
+    list_display = ('name',)
 
-# register()
+admin.site.register(BoardGroup, BoardGroupAdmin)
+admin.site.register(BoardItem)

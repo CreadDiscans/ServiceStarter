@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import penderMiddleware from 'redux-pender';
 
-import modules, { RootState } from 'app/Reducers';
+import modules from 'app/Reducers';
 import * as ApiType from 'types/api.types';
 
 declare var window:any;
@@ -21,12 +21,9 @@ const initState = () => {
   return userProfile
 }
 
-const configureStore = (initialState:RootState|undefined) => {
-  //@ts-ignore
+const configureStore = (initialState:any) => {
   if (initialState === undefined) initialState = {}
-  //@ts-ignore
   if (initialState.auth === undefined) initialState.auth = {}
-  //@ts-ignore
   initialState.auth.userProfile = initState();
   const store = createStore(modules, initialState, composeEnhancers(
     applyMiddleware(penderMiddleware())

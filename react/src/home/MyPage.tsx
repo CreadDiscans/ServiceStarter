@@ -44,22 +44,18 @@ class MyPage extends React.Component<Props> {
         const {auth, history} = this.props;
         return <Container className="py-5 my-5">
             <SessionChecker auth={auth} history={history}/>
-            <Row>
-                <Col>
-                    <h3>My Page</h3>
-                    <div className="py-2">
-                        {[
-                            {key:'Username', val:this.state.username},
-                            {key:'Email', val:this.state.email},
-                            {key:'Last Login', val:this.state.last_login},
-                            {key:'Joined', val:this.state.date_joined},
-                        ].map((item, i)=> <div className="d-flex flex-row m-2" key={i}>
-                            <div className="w-25 font-weight-bold">{item.key}</div>
-                            <div>{item.val}</div>
-                        </div>)}
-                    </div>
-                </Col>
-            </Row>
+            <h3>My Page</h3>
+            <div className="py-2">
+                {[
+                    {key:'Username', val:this.state.username},
+                    {key:'Email', val:this.state.email},
+                    {key:'Last Login', val:this.state.last_login},
+                    {key:'Joined', val:this.state.date_joined},
+                ].map((item, i)=> <div className="d-flex flex-row m-2" key={i}>
+                    <div className="w-25 font-weight-bold">{item.key}</div>
+                    <div>{item.val}</div>
+                </div>)}
+            </div>
         </Container>
     }
 }

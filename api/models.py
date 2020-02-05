@@ -22,6 +22,7 @@ class BoardItem(models.Model):
     content = models.TextField(null=True)
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now_add=True)
+    author_name = models.CharField(max_length=100)
 
     group = models.ForeignKey('BoardGroup', on_delete=models.CASCADE)
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)
