@@ -2,15 +2,17 @@ from django.contrib import admin
 from django.contrib.auth.models import update_last_login
 from django.urls import path, include
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework import routers
 from rest_framework_jwt.views import ObtainJSONWebToken, obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from .views import index, UserViewSet, GroupViewSet, fcm_test, assets, activate, send_reset_mail
+from .views import index, UserViewSet, GroupViewSet, fcm_test, assets, activate, send_reset_mail, UploadViewset
   
 router = routers.DefaultRouter()
 router.register(r'api-user', UserViewSet)
 router.register(r'api-group', GroupViewSet)
+router.register(r'upload', UploadViewset, basename='uploader')
 
 class ObtainAuthTokenWithLogin(ObtainJSONWebToken):
     def post(self, request):
@@ -40,5 +42,6 @@ if settings.DEBUG:
         path('swagger/', get_swagger_view(title='Pastebin API')),
         path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns +=[url('', index)]

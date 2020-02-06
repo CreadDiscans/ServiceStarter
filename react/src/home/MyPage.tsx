@@ -19,7 +19,8 @@ class MyPage extends React.Component<Props> {
         username:'',
         email:'',
         last_login:'',
-        date_joined:''
+        date_joined:'',
+        name:''
     }
 
     componentDidMount() {
@@ -28,12 +29,13 @@ class MyPage extends React.Component<Props> {
             Api.retrieve<ApiType.Profile>('/api-profile/', auth.userProfile.id, {
                 depth:1
             }).then(res=> {
-                if (typeof res.user == 'object') {
+                if (typeof res.user == 'object' && auth.userProfile) {
                     this.setState({
                         username:res.user.username,
                         email:res.user.email,
                         last_login: new Date(res.user.last_login).toLocaleString(),
-                        date_joined:new Date(res.user.date_joined).toLocaleString()
+                        date_joined:new Date(res.user.date_joined).toLocaleString(),
+                        name: auth.userProfile.name
                     })
                 }
             })
@@ -51,6 +53,7 @@ class MyPage extends React.Component<Props> {
                     {key:'Email', val:this.state.email},
                     {key:'Last Login', val:this.state.last_login},
                     {key:'Joined', val:this.state.date_joined},
+                    {key:'Name', val:this.state.name}
                 ].map((item, i)=> <div className="d-flex flex-row m-2" key={i}>
                     <div className="w-25 font-weight-bold">{item.key}</div>
                     <div>{item.val}</div>

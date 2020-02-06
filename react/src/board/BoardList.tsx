@@ -8,7 +8,8 @@ import { Button, Table } from 'reactstrap';
 import { AuthState } from 'auth/Auth.action';
 import { History } from 'history';
 import moment from 'moment';
-
+import { Api } from 'app/core/Api';
+import * as ApiType from 'types/api.types';
 interface Props {
     auth:AuthState
     board:BoardState
@@ -30,6 +31,19 @@ class BoardList extends React.Component<Props> {
         const {BoardAction, board} = this.props;
         if (board.activeGroup) {
             BoardAction.boardList(page, board.activeGroup)
+        }
+    }
+
+    write() {
+        const { board, auth, history } = this.props;
+        if (board.activeGroup && auth.userProfile) {
+            Api.create<ApiType.BoardItem>('/api-board/item/', {
+                title:'',
+                content:'',
+                group:board.activeGroup.id,
+                author:auth.userProfile.id,
+                author_name:auth.userProfile.name
+            }).then(res=> history.push('/board/write/'+res.id))
         }
     }
 
@@ -55,7 +69,7 @@ class BoardList extends React.Component<Props> {
                     </tr>)}
                 </tbody>
             </Table>
-            {auth.userProfile && <Button color="primary" className="float-right" onClick={()=>history.push('/board/write')}>Write</Button>}
+            {auth.userProfile && <Button color="primary" className="float-right" onClick={()=>this.write()}>Write</Button>}
             <Paginator 
                 currentPage={board.currentPage}
                 totalPage={board.totalPage}

@@ -52,7 +52,7 @@ class Board extends React.Component<Props> {
                 <Col xs={12} md={9}>
                     <Switch>
                         <Route exact path="/board" component={BoardList}/>
-                        <Route exact path="/board/write" component={BoardWrite}/>
+                        <Route exact path="/board/write/:id" component={BoardWrite}/>
                         <Route exact path="/board/:id" component={BoardDetail}/>
                     </Switch>
                 </Col>

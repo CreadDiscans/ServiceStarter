@@ -28,3 +28,4 @@ react/server/render/render.js
 log
 dump.rdb
 celerybeat*
+media

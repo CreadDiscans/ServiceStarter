@@ -8,13 +8,13 @@ import { SessionChecker } from 'component/SesstionChecker';
 import { Input, InputGroup, InputGroupButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button } from 'reactstrap';
 import { BoardState } from './Board.action';
 import * as ApiType from 'types/api.types';
-import * as CustomType from 'types/custom.types';
 import { Api } from 'app/core/Api';
 
 interface Props {
     auth:AuthState
     board:BoardState
     history:History
+    location:Location
 }
 
 let CKEditor: any;
@@ -22,34 +22,38 @@ let ClassicEditor: any;
 class BoardWrite extends React.Component<Props> {
 
     state:{
+        item?:ApiType.BoardItem
         group?:ApiType.BoardGroup
-        title:string
-        content:string
         toggle:boolean
     } = {
-        group:undefined,
-        title:'',
-        content:'',
         toggle:false
     }
 
     componentDidMount() {
         CKEditor = require('@ckeditor/ckeditor5-react')
         ClassicEditor = require('@ckeditor/ckeditor5-build-classic')
-        const {board} = this.props;
-        this.setState({group:board.activeGroup})
+        const {auth, location, history, board} = this.props;
+        const path = location.pathname.split('/')
+        const id = path[path.length-1]
+        Api.retrieve<ApiType.BoardItem>('/api-board/item/', id, {}).then(item=> {
+            if (auth.userProfile && auth.userProfile.id !== item.author) {
+                history.push('/board')
+                return
+            }
+            this.setState({item, group:board.activeGroup})
+        }).catch(err=>history.push('/board'))
     }
 
     async complete() {
         const {auth, history} = this.props;
-        if (this.state.group && auth.userProfile && typeof(auth.userProfile.user)==='number') {
-            const user = await Api.retrieve<CustomType.auth.User>('/api-user/',auth.userProfile.user, {})
-            Api.create<ApiType.BoardItem>('/api-board/item/', {
-                title:this.state.title,
-                content:this.state.content,
+        if (this.state.item && this.state.group && auth.userProfile) {
+            Api.update<ApiType.BoardItem>('/api-board/item/', this.state.item.id, {
+                title:this.state.item.title,
+                content:this.state.item.content,
                 group:this.state.group.id,
                 author:auth.userProfile.id,
-                author_name:user.username
+                author_name:auth.userProfile.name,
+                valid:1
             }).then(res=> history.push('/board'))
         }
     }
@@ -69,15 +73,18 @@ class BoardWrite extends React.Component<Props> {
                         {board.groups.map(item=> <DropdownItem onClick={()=>this.setState({group:item})} key={item.id}>{item.name}</DropdownItem>)}
                     </DropdownMenu>
                 </InputGroupButtonDropdown>
-                <Input placeholder="Title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})}/>
+                <Input placeholder="Title" value={this.state.item ? this.state.item.title: ''} 
+                    onChange={(e)=>this.setState({item: {...this.state.item, title:e.target.value}})}/>
             </InputGroup>
             {CKEditor && <CKEditor 
                 editor={ClassicEditor}
                 config={{
                     ckfinder:{uploadUrl:'/upload/'}
                 }}
-                data={this.state.content}
-                onChange={(event:any,editor:any)=> this.setState({content:editor.getData()})}
+                data={this.state.item ? this.state.item.content: ''}
+                onChange={(event:any,editor:any)=> {
+                    this.setState({item:{...this.state.item, content:editor.getData()}})
+                }}
             />}
             <Button className="float-right" color="primary" onClick={()=>this.complete()}>Complete</Button>
         </div>

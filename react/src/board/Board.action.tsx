@@ -31,6 +31,7 @@ export const BoardAction = {
             page:page,
             count_per_page:10,
             group:group.id,
+            valid:1
         })
         return Promise.resolve({
             totalPage:res.total_page,

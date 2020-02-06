@@ -5,6 +5,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.core.mail import EmailMessage
+from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.middleware.csrf import get_token
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -18,10 +19,15 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from config.utils import CustomSchema, send_fcm
-from api.models import Profile
+from api.models import Profile, Media, BoardItem
 import requests
 import coreapi
 import json
+import time
+import random
+import string
+import os
+import urllib.parse
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -108,7 +114,7 @@ def activate(request, uid64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        profile = Profile(user=user)
+        profile = Profile(user=user, name=user.username)
         profile.save()
         return HttpResponseRedirect('/activation')
     else:
@@ -161,9 +167,24 @@ def assets(request):
         content_type=response.headers['Content-Type']
     )
     
-from django.views.decorators.csrf import csrf_exempt
-import json
-import time
+@permission_classes((AllowAny,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class UploadViewset(viewsets.ViewSet):
+
+    def create(self, request):
+        filename = ''.join([random.choice(string.ascii_letters) for i in range(20)])
+        ext = os.path.splitext(request.data['upload'].name)[-1]
+        path = os.path.split(urllib.parse.urlparse(request.META['HTTP_REFERER']).path)
+        request.data['upload'].name = filename+ext
+        m = Media(file=request.data['upload'])
+        if path[0] == '/board/write':
+            m.boarditem = BoardItem.objects.get(pk=int(path[1]))
+        m.save()
+        return Response({
+            'uploaded':True,
+            'url':'/media/'+str(m.file)
+        }, status=status.HTTP_200_OK)
+
 @csrf_exempt
 def fcm_test(request):
     if request.method == 'POST':

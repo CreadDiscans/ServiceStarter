@@ -4,7 +4,6 @@ import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
-import * as CustomType from 'types/custom.types';
 import { InputGroup, FormGroup, InputGroupAddon, Button, InputGroupText, CardBody, Card, CardHeader } from 'reactstrap';
 import { AuthState } from 'auth/Auth.action';
 import { FaPaperPlane, FaPen, FaTrash } from 'react-icons/fa';
@@ -30,7 +29,6 @@ class BoardDetail extends React.Component<Props> {
     textarea:any;
     state:{
         item?:ApiType.BoardItem
-        user?:CustomType.auth.User
         comments:CommentWrap[]
         commentInput:string
         currentPage:number
@@ -98,26 +96,18 @@ class BoardDetail extends React.Component<Props> {
         })
     }
 
-    componentDidMount() {
-        const {auth} = this.props;
-        if (auth.userProfile && typeof auth.userProfile.user === 'number') {
-            Api.retrieve<CustomType.auth.User>('/api-user/', auth.userProfile.user, {})
-            .then(user=> this.setState({user}))
-        }
-    }
-
     comment(parent:ApiType.BoardComment|null=null) {
         const {auth} = this.props;
-        if (this.state.item && auth.userProfile && this.state.user) {
+        if (this.state.item && auth.userProfile) {
             Api.create<ApiType.BoardComment>('/api-board/comment/', {
                 content:this.state.commentInput,
                 item:this.state.item.id,
                 parent:parent ? parent.id : null,
                 author:auth.userProfile.id,
-                author_name:this.state.user.username
+                author_name:auth.userProfile.name
             }).then(res=> {
                 this.state.item && this.loadComment(this.state.item, 1)
-                this.setState({commentInput:''})
+                this.setState({commentInput:'', nestTarget: -1})
             })
         }
     }
@@ -151,11 +141,11 @@ class BoardDetail extends React.Component<Props> {
     }
 
     renderInput(item:CommentWrap|null) {
-        if (!this.state.user) return <div></div>
+        const {auth} = this.props;
         return <FormGroup className="mt-3">
             <InputGroup>
                 <InputGroupAddon addonType="prepend">
-                    <InputGroupText>{this.state.user.username}</InputGroupText>
+                    <InputGroupText>{auth.userProfile && auth.userProfile.name}</InputGroupText>
                 </InputGroupAddon>
                 <textarea className="form-control" ref={c=>this.textarea=c} value={this.state.commentInput} onChange={(e)=>{
                     this.setState({commentInput:e.target.value})
@@ -176,7 +166,7 @@ class BoardDetail extends React.Component<Props> {
             </CardHeader>
             <CardBody className="pt-1" style={{whiteSpace:'pre'}}>
                 {item.d.content}
-                {this.state.user && <div className="float-right">
+                {auth.userProfile && <div className="float-right">
                     <Button className="btn-sm ml-1" color="dark" 
                         onClick={()=>this.setState({nestTarget: item.d.id === this.state.nestTarget ? -1 : item.d.id, commentInput:''})}>
                             <FaPen />
@@ -186,14 +176,14 @@ class BoardDetail extends React.Component<Props> {
                         <FaTrash></FaTrash>
                     </Button>}
                 </div>}
-                {this.state.user && item.d.id === this.state.nestTarget && this.renderInput(item)}
+                {auth.userProfile && item.d.id === this.state.nestTarget && this.renderInput(item)}
             </CardBody>
             <div className="pl-4">{item.children.map(child=> this.renderComment(child))}</div>
         </Card>
     }
 
     render() {
-        const {auth} = this.props;
+        const {auth, history} = this.props;
         if (!this.state.item) return <div></div>
         return <div>
             <h4>{this.state.item.title}</h4>
@@ -202,13 +192,16 @@ class BoardDetail extends React.Component<Props> {
             <div className="text-right" style={{color:'gray'}}>{this.state.item.author_name}</div>
             <div dangerouslySetInnerHTML={{__html:this.state.item.content}}></div>
             {auth.userProfile && auth.userProfile.id === this.state.item.author && <div className="text-right">
-                <Button color="danger" onClick={()=>this.deleteItem()}>
+                <Button className="mx-1" color="info" onClick={()=>this.state.item && history.push('/board/write/'+this.state.item.id)}>
+                    <FaPen />
+                </Button>
+                <Button className="mx-1" color="danger" onClick={()=>this.deleteItem()}>
                     <FaTrash />
                 </Button>
             </div>}
             <hr />
             {this.state.comments.map(item=> this.renderComment(item))}
-            {this.state.user && this.state.nestTarget === -1 && this.renderInput(null)}
+            {auth.userProfile && this.state.nestTarget === -1 && this.renderInput(null)}
             <div className="d-flex justify-content-center">
                 <Paginator 
                     currentPage={this.state.currentPage}

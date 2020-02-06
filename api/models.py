@@ -5,7 +5,16 @@ class Profile(models.Model):
         verbose_name_plural='사용자'
 
     user = models.OneToOneField(to='auth.User', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
 
+
+class Media(models.Model):
+    class Meta:
+        pass
+
+    file = models.FileField(upload_to='%Y/%m/%d')
+
+    boarditem = models.ForeignKey('BoardItem', null=True, on_delete=models.CASCADE)
 
 class BoardGroup(models.Model):
     class Meta:
@@ -18,11 +27,12 @@ class BoardItem(models.Model):
     class Meta:
         verbose_name_plural='게시글'
 
-    title = models.CharField(max_length=100)
-    content = models.TextField(null=True)
+    title = models.CharField(max_length=100, blank=True)
+    content = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now_add=True)
     author_name = models.CharField(max_length=100)
+    valid = models.BooleanField(default=False)
 
     group = models.ForeignKey('BoardGroup', on_delete=models.CASCADE)
     author = models.ForeignKey('Profile', on_delete=models.CASCADE)

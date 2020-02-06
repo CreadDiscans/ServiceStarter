@@ -53,6 +53,7 @@ services:
       - "8000:80"
     command: >
       sh -c " 
+        rm -rf celerybeat.pid &&
         redis-server --daemonize yes &&
         redis-cli flushall &&  
         cd react &&
