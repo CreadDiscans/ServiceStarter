@@ -6,8 +6,6 @@ import { Row, Container, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import { AuthState } from 'auth/Auth.action';
 import { SessionChecker } from 'component/SesstionChecker';
 import { History } from 'history';
-import { Api } from 'app/core/Api';
-import * as ApiType from 'types/api.types';
 import { Switch, Route } from 'react-router-dom';
 import MyProfile from './MyProfile';
 import Payment from './Payment';
