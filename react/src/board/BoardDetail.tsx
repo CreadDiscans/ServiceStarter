@@ -43,13 +43,16 @@ class BoardDetail extends React.Component<Props> {
     }
 
     UNSAFE_componentWillMount() {
-        const {location, done} = this.props;
+        const {location, done, history} = this.props;
         const path = location.pathname.split('/')
         const id = path[path.length-1]
         Api.retrieve<ApiType.BoardItem>('/api-board/item/',id, {
         }).then(item=> {
             this.loadComment(item, 1).then(done, done)
-        }, done)
+        }).catch(err=> {
+            history.push('/board')
+            done()
+        })
     }
 
     componentDidUpdate() {
