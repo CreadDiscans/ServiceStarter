@@ -40,7 +40,6 @@ class Board extends React.Component<Props> {
     render() {
         const {board} = this.props;
         return <Container className="my-5 py-5">
-            <h3>Board</h3>
             <Row>
                 <Col xs={12} md={3}>
                     <ListGroup>

@@ -2,12 +2,15 @@ import React from 'react';
 import { connectWithoutDone } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
-import { Row, Container, Col } from 'reactstrap';
+import { Row, Container, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import { AuthState } from 'auth/Auth.action';
 import { SessionChecker } from 'component/SesstionChecker';
 import { History } from 'history';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
+import { Switch, Route } from 'react-router-dom';
+import MyProfile from './MyProfile';
+import Payment from './Payment';
 interface Props {
     auth:AuthState
     history:History
@@ -46,19 +49,24 @@ class MyPage extends React.Component<Props> {
         const {auth, history} = this.props;
         return <Container className="py-5 my-5">
             <SessionChecker auth={auth} history={history}/>
-            <h3>My Page</h3>
-            <div className="py-2">
-                {[
-                    {key:'Username', val:this.state.username},
-                    {key:'Email', val:this.state.email},
-                    {key:'Last Login', val:this.state.last_login},
-                    {key:'Joined', val:this.state.date_joined},
-                    {key:'Name', val:this.state.name}
-                ].map((item, i)=> <div className="d-flex flex-row m-2" key={i}>
-                    <div className="w-25 font-weight-bold">{item.key}</div>
-                    <div>{item.val}</div>
-                </div>)}
-            </div>
+            <Row>
+                <Col xs={12} md={3}>
+                    <ListGroup>
+                        <ListGroupItem>
+                            <a onClick={()=> history.push('/mypage')}>MyPage</a>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <a onClick={()=> history.push('/mypage/payment')}>Payment</a>
+                        </ListGroupItem>
+                    </ListGroup>
+                </Col>
+                <Col xs={12} md={9}>
+                    <Switch>
+                        <Route exact path="/mypage" component={MyProfile} />
+                        <Route exact path="/mypage/payment" component={Payment} />
+                    </Switch>
+                </Col>
+            </Row>
         </Container>
     }
 }

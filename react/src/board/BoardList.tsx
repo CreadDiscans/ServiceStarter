@@ -50,7 +50,7 @@ class BoardList extends React.Component<Props> {
     render() {
         const {auth, board, history} = this.props;
         return <div>
-            <h4>{board.activeGroup && board.activeGroup.name}</h4>
+            <h3>{board.activeGroup && board.activeGroup.name}</h3>
             <Table hover>
                 <thead>
                     <tr>

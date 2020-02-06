@@ -1,8 +1,8 @@
 import React from 'react';
-import { bindActionCreators, Dispatch } from 'redux';
-import { AuthAction, authActions } from './Auth.action';
+import { Dispatch } from 'redux';
+import { AuthAction } from './Auth.action';
 import { RootState } from 'app/Reducers';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
@@ -114,7 +114,7 @@ class SignIn extends React.Component<Props> {
 export default connectWithoutDone(
     (state:RootState)=> ({}),
     (dispatch:Dispatch)=> ({
-        AuthAction: bindActionCreators(authActions, dispatch)
+        AuthAction: binding(AuthAction, dispatch)
     }),
     SignIn
 )

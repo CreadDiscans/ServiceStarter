@@ -4,7 +4,6 @@ import { RootState } from 'app/Reducers';
 import { connectWithoutDone } from 'app/core/connection';
 import { Container, Row, Col, Input, FormGroup, Label, Form, Button, FormFeedback } from 'reactstrap';
 import { Api } from 'app/core/Api';
-import * as ApiType from 'types/api.types';
 import * as CustomType from 'types/custom.types';
 import { History } from 'history';
 import { AlertSubject } from 'component/Alert';

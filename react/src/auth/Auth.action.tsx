@@ -1,10 +1,6 @@
-import { createAction, handleActions } from 'redux-actions';
-import { pender } from 'redux-pender';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
-
-const AUTH_SIGNIN = 'AUTH_SIGNIN';
-const AUTH_SIGNOUT = 'AUTH_SIGNOUT';
+import { getHandleActions } from 'app/core/connection';
 
 export type AuthState = {
   userProfile?:ApiType.Profile
@@ -15,28 +11,14 @@ const initState:AuthState = {
 };
 
 export const AuthAction = {
-  signIn: (args:{token:string, profile:ApiType.Profile}) => {},
-  signOut:()=>{}
-}
-
-export const authActions = {
-  signIn: createAction(AUTH_SIGNIN),
-  signOut: createAction(AUTH_SIGNOUT)
-}
-
-export default handleActions({
-  [AUTH_SIGNOUT]: (state:AuthState, {payload}) => {
-    Api.signOut();
-    return {
-      ...state,
-      userProfile: undefined
-    }
+  signIn: async (args:{token:string, profile:ApiType.Profile}) => {
+    Api.signIn(args.token, args.profile)
+    return Promise.resolve({userProfile: args.profile})
   },
-  [AUTH_SIGNIN]: (state:AuthState, {payload}:any) => {
-    Api.signIn(payload.token, payload.profile)
-    return {
-      ...state,
-      userProfile:payload.profile
-    }
+  signOut: async ()=>{
+    Api.signOut();
+    return Promise.resolve({userProfile:undefined})
   }
-}, initState);
+}
+
+export default getHandleActions(AuthAction, initState)

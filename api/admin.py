@@ -11,7 +11,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(BoardGroup, BoardGroupAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(BoardItem)
 
 @receiver(pre_delete, sender=Media)
 def on_delete(sender, **kwargs):

@@ -1,9 +1,9 @@
 import React from 'react';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch, bindActionCreators } from 'redux';
 import { History } from 'history';
-import { AuthState, AuthAction, authActions } from 'auth/Auth.action';
+import { AuthState, AuthAction } from 'auth/Auth.action';
 import { FaBars } from 'react-icons/fa';
 import { Collapse, Button } from 'reactstrap';
 interface Props {
@@ -61,7 +61,7 @@ export default connectWithoutDone(
     auth:state.auth
   }),
   (dispatch:Dispatch)=>({
-    AuthAction:bindActionCreators(authActions, dispatch)
+    AuthAction:binding(AuthAction, dispatch)
   }),
   Header
 )
