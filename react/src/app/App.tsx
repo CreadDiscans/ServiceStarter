@@ -18,6 +18,7 @@ import {
     MyPage,
     Board
 } from 'app/Routes';
+import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
 
 interface Props {
     AuthAction: typeof AuthAction
@@ -47,6 +48,7 @@ class App extends Component<Props> {
                     <Route eaxct path="/signin" component={SingIn}/>
                     <Route eaxct path="/signup" component={SignUp}/>
                     <Route eaxct path="/activation" component={Activation}/>
+                    <Route eaxct path="/naver" component={NaverAuthCallbackComponent}/>
                     <Route path="/reset" component={Reset}/>
                     <Route path="/mypage" component={MyPage}/>
                     <Route path="/board" component={Board}/>
