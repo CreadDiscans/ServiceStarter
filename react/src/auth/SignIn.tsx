@@ -7,6 +7,7 @@ import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Butto
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { History } from 'history';
+import SocialLogin from 'auth/SocialLogin';
 
 interface Props {
   AuthAction: typeof AuthAction
@@ -76,37 +77,42 @@ class SignIn extends React.Component<Props> {
   }
 
   render() {
-    return <Container className="my-5 py-5 d-flex justify-content-center">
-    <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
-      <Row form>
-        <Col>
-          <h2>Sign In</h2>
-          <FormGroup>
-            <Label>Username</Label>
-            <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
-              invalid={this.state.invalid.username} />
-            {this.state.invalid.activate ? 
-              <FormFeedback>The username is not activated. Check the email.</FormFeedback> :
-              <FormFeedback>The username not existed.</FormFeedback>}
-          </FormGroup>
-          <FormGroup>
-            <Label>Password</Label>
-            <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
-              invalid={this.state.invalid.password} />
-            <FormFeedback>The password was not wrong</FormFeedback>
-          </FormGroup>
-          <div className="text-center">
-            <Button className="mx-2" color="secondary" onClick={()=>this.props.history.push('/signup')} >Sign Up</Button>
-            <Button className="mx-2" color="primary" >Sign In</Button>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col className="text-center">
-          <Button className="btn-sm my-2" color="light" onClick={()=>this.props.history.push('/reset')}>forgot password</Button>
-        </Col>
-      </Row>
-    </Form>
+    return <Container className="my-5 py-5">
+      <div className="d-flex justify-content-center">
+        <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
+          <Row form>
+            <Col>
+              <h2>Sign In</h2>
+              <FormGroup>
+                <Label>Username</Label>
+                <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
+                  invalid={this.state.invalid.username} />
+                {this.state.invalid.activate ? 
+                  <FormFeedback>The username is not activated. Check the email.</FormFeedback> :
+                  <FormFeedback>The username not existed.</FormFeedback>}
+              </FormGroup>
+              <FormGroup>
+                <Label>Password</Label>
+                <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
+                  invalid={this.state.invalid.password} />
+                <FormFeedback>The password was not wrong</FormFeedback>
+              </FormGroup>
+              <div className="text-center">
+                <Button className="mx-2" color="secondary" onClick={()=>this.props.history.push('/signup')} >Sign Up</Button>
+                <Button className="mx-2" color="primary" >Sign In</Button>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col className="text-center">
+              <Button className="btn-sm my-2" color="light" onClick={()=>this.props.history.push('/reset')}>forgot password</Button>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+      <div className="text-center my-5">
+        <SocialLogin />
+      </div>
   </Container>
   }
 }

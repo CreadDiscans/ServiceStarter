@@ -7,6 +7,7 @@ import { Api } from 'app/core/Api';
 import * as CustomType from 'types/custom.types';
 import { History } from 'history';
 import { AlertSubject } from 'component/Alert';
+import SocialLogin from './SocialLogin';
 interface Props {
   history:History
 }
@@ -84,39 +85,46 @@ class SignUp extends React.Component<Props> {
   }
 
   render() {
-    return <Container className="my-5 py-5 d-flex justify-content-center">
-      <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
-        <Row form>
-          <Col>
-            <h2>Sign Up</h2>
-            <FormGroup>
-              <Label>Username</Label>
-              <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
-                invalid={this.state.invalid.username} valid={this.state.valid.username}/>
-              <FormFeedback>The username has already registered.</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-              <Label>Email</Label>
-              <Input type="email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} 
-                invalid={this.state.invalid.email} valid={this.state.valid.email}/>
-              <FormFeedback>The email has already registered.</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-              <Label>Password</Label>
-              <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
-                invalid={this.state.invalid.password} valid={this.state.valid.password}/>
-              <FormFeedback>The password should be longer than 7 character.</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-              <Label>Password Confirm</Label>
-              <Input type="password" value={this.state.password2} onChange={(e)=>this.setState({password2:e.target.value})} 
-                invalid={this.state.invalid.password2} valid={this.state.valid.password2}/>
-              <FormFeedback>Two passwords are not matched.</FormFeedback>
-            </FormGroup>
-            <Button color="primary" className="float-right" >Sign Up</Button>
-          </Col>
-        </Row>
-      </Form>
+    return <Container className="my-5 py-5">
+      <div className="d-flex justify-content-center">
+        <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
+          <Row form>
+            <Col>
+              <h2>Sign Up</h2>
+              <FormGroup>
+                <Label>Username</Label>
+                <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
+                  invalid={this.state.invalid.username} valid={this.state.valid.username}/>
+                <FormFeedback>The username has already registered.</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Label>Email</Label>
+                <Input type="email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} 
+                  invalid={this.state.invalid.email} valid={this.state.valid.email}/>
+                <FormFeedback>The email has already registered.</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Label>Password</Label>
+                <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
+                  invalid={this.state.invalid.password} valid={this.state.valid.password}/>
+                <FormFeedback>The password should be longer than 7 character.</FormFeedback>
+              </FormGroup>
+              <FormGroup>
+                <Label>Password Confirm</Label>
+                <Input type="password" value={this.state.password2} onChange={(e)=>this.setState({password2:e.target.value})} 
+                  invalid={this.state.invalid.password2} valid={this.state.valid.password2}/>
+                <FormFeedback>Two passwords are not matched.</FormFeedback>
+              </FormGroup>
+              <div className="text-center">
+                <Button color="primary">Sign Up</Button>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </div>
+      <div className="text-center my-5">
+        <SocialLogin />
+      </div>
     </Container>
   }
 }
