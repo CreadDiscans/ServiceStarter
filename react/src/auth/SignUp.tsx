@@ -1,14 +1,16 @@
 import React from 'react';
 import { Dispatch } from 'redux';
 import { RootState } from 'app/Reducers';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { Container, Row, Col, Input, FormGroup, Label, Form, Button, FormFeedback } from 'reactstrap';
 import { Api } from 'app/core/Api';
 import * as CustomType from 'types/custom.types';
 import { History } from 'history';
 import { AlertSubject } from 'component/Alert';
 import SocialLogin from './SocialLogin';
+import { AuthAction } from './Auth.action';
 interface Props {
+  AuthAction: typeof AuthAction
   history:History
 }
 
@@ -34,12 +36,12 @@ class SignUp extends React.Component<Props> {
   }
 
   async signUp() {
-    const user = await Api.create<CustomType.auth.User>('/api-user/',{
-      username:this.state.username.trim(),
-      email:this.state.email.trim(),
-      password:this.state.password
-    })
-    AlertSubject.next({
+    const { AuthAction } = this.props;
+    AuthAction.signUp(
+      this.state.username.trim(),
+      this.state.email.trim(),
+      this.state.password
+    ).then(()=> AlertSubject.next({
       title:'Successful Sing Up.',
       content:'Please login after checking Activation email.',
       onConfirm:()=> {
@@ -47,7 +49,12 @@ class SignUp extends React.Component<Props> {
         AlertSubject.next(undefined)
       },
       onCancel:undefined
-    })
+    })).catch(()=> AlertSubject.next({
+      title:'Fail in Sign Up.',
+      content:'Please check the invalid value.',
+      onConfirm:()=> AlertSubject.next(undefined),
+      onCancel:undefined
+    }))
   }
 
   submit(e:React.FormEvent<HTMLFormElement>) {
@@ -58,7 +65,7 @@ class SignUp extends React.Component<Props> {
       email:this.state.email.trim()
     }).then(res=> {
       let state:any = {invalid:{...this.state.invalid}, valid:{...this.state.valid}}
-      this.checkValid(res.username, 'username', state, this.state.username.trim() === '')
+      this.checkValid(res.username || this.state.username.indexOf('@') !== -1, 'username', state, this.state.username.trim() === '')
       this.checkValid(res.email, 'email', state, this.state.email.trim() === '')
       this.checkValid(this.state.password.length < 7, 'password', state)
       this.checkValid(this.state.password !== this.state.password2, 'password2', state)
@@ -95,7 +102,7 @@ class SignUp extends React.Component<Props> {
                 <Label>Username</Label>
                 <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
                   invalid={this.state.invalid.username} valid={this.state.valid.username}/>
-                <FormFeedback>The username has already registered.</FormFeedback>
+                <FormFeedback>The username has already registered or invalid.</FormFeedback>
               </FormGroup>
               <FormGroup>
                 <Label>Email</Label>
@@ -131,6 +138,8 @@ class SignUp extends React.Component<Props> {
 
 export default connectWithoutDone(
   (state:RootState)=> ({}),
-  (dispatch:Dispatch)=> ({}),
+  (dispatch:Dispatch)=> ({
+    AuthAction:binding(AuthAction, dispatch)
+  }),
   SignUp
 )

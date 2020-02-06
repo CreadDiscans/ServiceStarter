@@ -108,6 +108,29 @@ class UserViewSet(viewsets.ModelViewSet):
         email.send()
         return response
 
+    def update(self, request, pk): 
+        if pk == '0':# for social
+            sns = request.data['sns']
+            uid = request.data['uid']
+            token = request.data['token']
+            name = request.data['name']
+            username = sns + '@' + uid
+            user = User.objects.filter(username=username)
+            if user.count() > 0:
+                user = user[0]
+                user.set_password(token)
+                user.save()
+            else:
+                user = User(username=username)
+                user.set_password(token)
+                user.is_active = True
+                user.save()
+                profile = Profile(user=user, name=name)
+                profile.save()
+            return Response({}, status=status.HTTP_200_OK)
+        else:
+            return super().update(request, pk)
+
 def activate(request, uid64, token):
     uid = force_text(urlsafe_base64_decode(uid64))
     user = User.objects.get(pk=uid)

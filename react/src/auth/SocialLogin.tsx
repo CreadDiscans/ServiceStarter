@@ -1,10 +1,12 @@
 import React from 'react';
 import { Button } from 'reactstrap';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import firebase from 'firebase/app';
 import "firebase/auth";
+import { AuthAction } from './Auth.action';
+import { History } from 'history';
 
 const fbConfig = {
     apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
@@ -15,13 +17,25 @@ const fbConfig = {
 firebase.initializeApp(fbConfig)
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 
-class SocialLogin extends React.Component {
+interface Props {
+    AuthAction: typeof AuthAction
+    history: History
+}
+
+class SocialLogin extends React.Component<Props> {
 
     googleLogin() {
         firebase.auth().signInWithPopup(googleProvider).then((result:any)=> {
+            const {AuthAction, history} = this.props;
             const token = result.credential.accessToken
             const user = result.user
-            console.log(user, token)
+
+            AuthAction.socialSign(
+                'google',
+                user.uid,
+                user.displayName,
+                token
+            ).then(()=>history.push('/'))
         })
     }
 
@@ -53,6 +67,8 @@ class SocialLogin extends React.Component {
 
 export default connectWithoutDone(
     (state:RootState)=>({}),
-    (dispatch:Dispatch)=>({}),
+    (dispatch:Dispatch)=>({
+        AuthAction: binding(AuthAction, dispatch)
+    }),
     SocialLogin
 )

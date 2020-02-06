@@ -46,7 +46,7 @@ const setHeader = async() => {
 }
 
 const queryUrl = (url:string, query:any, id:number|undefined|string=undefined)=> {
-    if (id) {
+    if (id !== undefined) {
         if (url[url.length-1] !== '/') {
             url += '/';
         }

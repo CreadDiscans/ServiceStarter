@@ -18,33 +18,6 @@ interface Props {
 
 class MyPage extends React.Component<Props> {
 
-    state = {
-        username:'',
-        email:'',
-        last_login:'',
-        date_joined:'',
-        name:''
-    }
-
-    componentDidMount() {
-        const {auth} = this.props;
-        if (auth.userProfile) {
-            Api.retrieve<ApiType.Profile>('/api-profile/', auth.userProfile.id, {
-                depth:1
-            }).then(res=> {
-                if (typeof res.user == 'object' && auth.userProfile) {
-                    this.setState({
-                        username:res.user.username,
-                        email:res.user.email,
-                        last_login: new Date(res.user.last_login).toLocaleString(),
-                        date_joined:new Date(res.user.date_joined).toLocaleString(),
-                        name: auth.userProfile.name
-                    })
-                }
-            })
-        }
-    }
-
     render() {
         const {auth, history} = this.props;
         return <Container className="py-5 my-5">

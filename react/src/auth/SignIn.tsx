@@ -29,51 +29,35 @@ class SignIn extends React.Component<Props> {
   async submit(e:React.FormEvent<HTMLFormElement>) {
     e.stopPropagation()
     e.preventDefault()
-    const res = await Api.list<{username:boolean, email:boolean}>('/api-user/',{
-      username:this.state.username
+    const { AuthAction } = this.props;
+    AuthAction.signIn(this.state.username, this.state.password)
+    .then(res=> this.props.history.push('/'))
+    .catch(err=> {
+      if (err === 'no user') {
+        this.setState({
+          invalid:{
+            password:false,
+            username:true,
+            activate:false
+          }
+        })
+      } else if (err === 'not activate') {
+        this.setState({
+          invalid:{
+            password:false,
+            username:true,
+            activate:true
+          }
+        })
+      } else if (err === 'password wrong') {
+        this.setState({
+          invalid:{
+            password:true,
+            username:false
+          }
+        })
+      }
     })
-    if (!res.username) {
-      this.setState({
-        invalid:{
-          password:false,
-          username:true,
-          activate:false
-        }
-      })
-      return Promise.resolve()
-    }
-    const profile = await Api.list<ApiType.Profile[]>('/api-profile/', {
-      user__username:this.state.username,
-    })
-    if (profile.length === 0) {
-      this.setState({
-        invalid:{
-          password:false,
-          username:true,
-          activate:true
-        }
-      })
-      return Promise.resolve()
-    }
-    const jwt = await Api.create<{token:string}>('/api/token-auth/', {
-      username:this.state.username,
-      password:this.state.password
-    }).catch(err=>{
-      this.setState({
-        invalid:{
-          password:true,
-          username:false
-        }
-      })
-    })
-    if (jwt) {
-      const { AuthAction } = this.props;
-      AuthAction.signIn({
-        token:jwt.token,
-        profile: profile[0]
-      })
-      this.props.history.push('/')
-    }
   }
 
   render() {
