@@ -2,39 +2,40 @@ import React from 'react';
 import { connectWithoutDone } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
-import { Row, Container, Col, ListGroup, ListGroupItem } from 'reactstrap';
-import { AuthState } from 'auth/Auth.action';
+import { Container, Col, Row, ListGroupItem, ListGroup } from 'reactstrap';
 import { SessionChecker } from 'component/SesstionChecker';
+import { AuthState } from 'auth/Auth.action';
 import { History } from 'history';
 import { Switch, Route } from 'react-router-dom';
-import MyProfile from './MyProfile';
-import Payment from './MyPayment';
+import Shop from './Shop';
+import Payment from './Payment';
 interface Props {
     auth:AuthState
     history:History
 }
 
-class MyPage extends React.Component<Props> {
+class Dashboard extends React.Component<Props> {
 
     render() {
         const {auth, history} = this.props;
         return <Container className="py-5 my-5">
-            <SessionChecker auth={auth} history={history}/>
+            <SessionChecker auth={auth} history={history} />
             <Row>
                 <Col xs={12} md={3}>
                     <ListGroup>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage')}>MyPage</a>
+                            <a onClick={()=>history.push('/dashboard')}>Dashboard</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage/payment')}>Payment</a>
+                            <a onClick={()=>history.push('/dashboard/shop')}>Shop</a>
                         </ListGroupItem>
                     </ListGroup>
                 </Col>
                 <Col xs={12} md={9}>
                     <Switch>
-                        <Route exact path="/mypage" component={MyProfile} />
-                        <Route exact path="/mypage/payment" component={Payment} />
+                        <Route exact path="/dashboard" component={DashboardHome} />
+                        <Route exact path="/dashboard/shop" component={Shop} />
+                        <Route exact path="/dashboard/payment" component={Payment} />
                     </Switch>
                 </Col>
             </Row>
@@ -42,10 +43,18 @@ class MyPage extends React.Component<Props> {
     }
 }
 
+class DashboardHome extends React.Component {
+    render() {
+        return <div>
+            <h3>Dashboard</h3>
+        </div>
+    }
+}
+
 export default connectWithoutDone(
     (state:RootState)=>({
-        auth:state.auth
+        auth: state.auth
     }),
     (dispatch:Dispatch)=>({}),
-    MyPage
+    Dashboard
 )

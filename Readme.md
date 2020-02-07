@@ -26,6 +26,9 @@ docker-compose down && docker-compose up -d --build
 
 # React
 
+I'mport
+- update react/src/mypage/Payment.tsx IMP.init(가맹점 식별코드)
+
 Server SMTP Acount(for Activation, Password Reset)
 - update config/base.py (EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
 

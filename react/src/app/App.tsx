@@ -16,7 +16,8 @@ import {
     Activation, 
     Reset,
     MyPage,
-    Board
+    Board,
+    Dashboard
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
 
@@ -43,17 +44,20 @@ class App extends Component<Props> {
                     <title>React Router & SSR</title>
                 </Helmet>
                 <Header />
-                <Switch>
-                    <Route exact path="/" component={Home}/>
-                    <Route eaxct path="/signin" component={SingIn}/>
-                    <Route eaxct path="/signup" component={SignUp}/>
-                    <Route eaxct path="/activation" component={Activation}/>
-                    <Route eaxct path="/naver" component={NaverAuthCallbackComponent}/>
-                    <Route path="/reset" component={Reset}/>
-                    <Route path="/mypage" component={MyPage}/>
-                    <Route path="/board" component={Board}/>
-                    <Route path="*" component={()=><Redirect to="/" />} />
-                </Switch>
+                <div style={{flex:1}}>
+                    <Switch>
+                        <Route exact path="/" component={Home}/>
+                        <Route eaxct path="/signin" component={SingIn}/>
+                        <Route eaxct path="/signup" component={SignUp}/>
+                        <Route eaxct path="/activation" component={Activation}/>
+                        <Route eaxct path="/naver" component={NaverAuthCallbackComponent}/>
+                        <Route  path="/dashboard" component={Dashboard} />
+                        <Route path="/reset" component={Reset}/>
+                        <Route path="/mypage" component={MyPage}/>
+                        <Route path="/board" component={Board}/>
+                        <Route path="*" component={()=><Redirect to="/" />} />
+                    </Switch>
+                </div>
                 <Footer />
                 <Alert />
             </HelmetProvider>

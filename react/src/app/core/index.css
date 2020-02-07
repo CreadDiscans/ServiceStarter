@@ -13,6 +13,12 @@ code {
     monospace;
 } */
 
+#root {
+  min-height: 100vh;
+  display:flex;
+  flex-direction: column;
+}
+
 .ck-editor__editable {
   min-height: 500px;
 }
