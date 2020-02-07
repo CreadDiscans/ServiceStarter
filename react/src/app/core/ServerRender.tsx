@@ -1,5 +1,5 @@
 import React from 'react';
-import { StaticRouter } from 'react-router';
+import { StaticRouter } from 'react-router-dom';
 import App from 'app/App';
 import { Provider } from 'react-redux';
 
@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 
 import { renderToString } from 'react-router-server';
 
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 import configureStore from './configureStore';
 
 const render = async (location:any) => {
