@@ -97,8 +97,8 @@
     "start": "cross-env NODE_PATH=src node scripts/start.js",
     "start:backend": "cross-env NODE_PATH=src node scripts/start.backend.js",
     "start:server": "node server",
-    "build": "cross-env NODE_PATH=src node scripts/build.js",
-    "build:server": "cross-env NODE_PATH=src node scripts/build.server.js",
+    "build": "cross-env NODE_PATH=src node --max-old-space-size=4000 scripts/build.js",
+    "build:server": "cross-env NODE_PATH=src node --max-old-space-size=4000 scripts/build.server.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
