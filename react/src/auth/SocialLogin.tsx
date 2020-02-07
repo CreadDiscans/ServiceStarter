@@ -23,9 +23,10 @@ const naverConfig = {
     isPopup: true,
     loginButton: {color: "green", type: 3, height: 60}
 }
+const kakaoConfig = 'fc813981157c71f45cc878d9b26fd4d4'
 
 firebase.initializeApp(fbConfig)
-Kakao.init('fc813981157c71f45cc878d9b26fd4d4')
+Kakao.init(kakaoConfig)
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 const facebookProvider = new firebase.auth.FacebookAuthProvider()
 interface Props {

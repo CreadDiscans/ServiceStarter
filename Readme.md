@@ -12,6 +12,9 @@ export UML.mdj to django models in Star UML
 
 # Production
 
+Django SECRET_KEY
+- update config/base.py (SECRET_KEY)
+
 fix ssl domain
 - config/service/nginx.conf
 - config/service/supervisor.conf
@@ -20,6 +23,16 @@ fix ssl domain
 docker-compose down && docker-compose up -d --build
 
 ![architecture](./assest/architecture.png)
+
+# React
+
+Server SMTP Acount(for Activation, Password Reset)
+- update config/base.py (EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+
+Social Login
+- update react/src/auth/SocialLogin.tsx fbConfig for firebase(Google, Facebook)
+- update react/src/auth/SocialLogin.tsx naverConfig for Naver
+- update react/src/auth/SocialLogin.tsx kakaoConfig from Kakao
 
 # React Native
 
