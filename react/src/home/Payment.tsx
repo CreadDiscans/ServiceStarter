@@ -5,7 +5,9 @@ import { Dispatch } from 'redux';
 import { Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 declare var IMP:any;
-IMP.init('imp54267999')
+if (process.env.APP_ENV === 'browser') {
+    IMP.init('imp54267999')
+}
 
 type PayInfo = {
     pg: string; // PG'kakao':카카오페이, html5_inicis':이니시스(웹표준결제), 'nice':나이스페이, 'jtnet':제이티넷, 'uplus':LG유플러스, 'danal':다날, 'payco':페이코, 'syrup':시럽페이, 'paypal':페이팔
@@ -124,11 +126,11 @@ class Payment extends React.Component<Props> {
                 </FormGroup>
                 <FormGroup>
                     <Label>Amount</Label>
-                    <Input value={this.state.amount} disabled />
+                    <Input value={this.state.amount} readOnly />
                 </FormGroup>
                 <FormGroup>
                     <Label>Method</Label>
-                    <Input value={this.state.method} type="select">
+                    <Input value={this.state.method} type="select" onChange={(e)=>this.setState({method:e.target.value})}>
                         <option value={'card'}>카드</option>
                         <option value={'trans'}>실시간계좌이체</option>
                         <option value={'vbank'}>가상계좌</option>

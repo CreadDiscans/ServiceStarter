@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 
 import { renderToString } from 'react-router-server';
 
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import configureStore from './configureStore';
 
 const render = async (location:any) => {

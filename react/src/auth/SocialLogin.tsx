@@ -24,11 +24,14 @@ const naverConfig = {
     loginButton: {color: "green", type: 3, height: 60}
 }
 const kakaoConfig = 'fc813981157c71f45cc878d9b26fd4d4'
-
-firebase.initializeApp(fbConfig)
-Kakao.init(kakaoConfig)
-const googleProvider = new firebase.auth.GoogleAuthProvider()
-const facebookProvider = new firebase.auth.FacebookAuthProvider()
+let googleProvider:any = null
+let facebookProvider:any = null
+if (process.env.APP_ENV === 'browser') {
+    firebase.initializeApp(fbConfig)
+    Kakao.init(kakaoConfig)
+    googleProvider = new firebase.auth.GoogleAuthProvider()
+    facebookProvider = new firebase.auth.FacebookAuthProvider()
+}
 interface Props {
     AuthAction: typeof AuthAction
     history: History
