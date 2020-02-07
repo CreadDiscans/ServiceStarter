@@ -25,6 +25,7 @@ const naverConfig = {
 }
 
 firebase.initializeApp(fbConfig)
+Kakao.init('fc813981157c71f45cc878d9b26fd4d4')
 const googleProvider = new firebase.auth.GoogleAuthProvider()
 const facebookProvider = new firebase.auth.FacebookAuthProvider()
 interface Props {
@@ -68,7 +69,25 @@ class SocialLogin extends React.Component<Props> {
     }
 
     kakaoLogin() {
-
+        Kakao.Auth.createLoginButton({
+            container: '#kakao-login-btn',
+            success: (authObj:any)=>{
+                Kakao.API.request({
+                    url:'/v2/user/me',
+                    success:(user:any)=> {
+                        const { AuthAction, history } = this.props;
+                        AuthAction.socialSign(
+                            'kakao',
+                            String(user.id),
+                            user.properties.nickname,
+                            authObj.access_token
+                        ).then(()=>history.push('/'))
+                    }
+                })
+            }
+        })
+        const elem:any = document.getElementById('kakao-login-btn');
+        elem.click();
     }
 
     naverLogin() {
