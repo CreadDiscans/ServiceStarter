@@ -26,11 +26,11 @@ const setHeader = async() => {
                     resolve()
                 } else if(state === 'refresh') {
                     delete axios.defaults.headers.common['Authorization']
-                    axios.post(domain+'/api/token-refresh', {
+                    axios.post(domain+'/api/token-refresh/', {
                         token: token
                     }).then((res:any)=> {
-                        localStorage.setItem(KEY_JWT_TOKEN, res.token);
-                        axios.defaults.headers.common['Authorization'] = 'JWT '+res.token;
+                        localStorage.setItem(KEY_JWT_TOKEN, res.data.token);
+                        axios.defaults.headers.common['Authorization'] = 'JWT '+res.data.token;
                         resolve();
                     })
                 } else if (state === 'invalid') {
