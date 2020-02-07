@@ -32,7 +32,6 @@ urlpatterns = [
     path('activate/<str:uid64>/<str:token>/', activate),
     path('send_reset_mail', send_reset_mail),
     path('fcm_test', fcm_test),
-    url(r'assets/', assets),
     path('', index)
 ]
 urlpatterns += router.urls
@@ -41,6 +40,7 @@ if settings.DEBUG:
     urlpatterns += [
         path('swagger/', get_swagger_view(title='Pastebin API')),
         path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+        url(r'assets/', assets),
     ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

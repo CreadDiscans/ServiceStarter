@@ -7,7 +7,7 @@ INSTALLED_APPS += ['sslserver']
 
 DEBUG=False
 
-ALLOWED_HOSTS = ['your.domain.co.kr']
+ALLOWED_HOSTS = ['servicestarter.kro.kr']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "react/build"),
