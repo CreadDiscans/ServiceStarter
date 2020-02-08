@@ -10,11 +10,6 @@ import { AuthState } from 'auth/Auth.action';
 import { AlertSubject } from 'component/Alert';
 import { MypageAction } from 'mypage/Mypage.action';
 
-declare var IMP:any;
-if (process.env.APP_ENV === 'browser') {
-    IMP.init('imp54267999')
-}
-
 interface Props {
     auth:AuthState
     dashboard:DashboardState

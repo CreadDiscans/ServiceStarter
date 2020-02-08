@@ -8,6 +8,7 @@ import { ListGroup, ListGroupItem, Button } from 'reactstrap';
 import * as ApiType from 'types/api.types';
 import { U } from 'app/core/U';
 import { History } from 'history';
+import { Paginator } from 'component/Paginator';
 interface Props {
     auth:AuthState
     mypage:MypageState
@@ -39,26 +40,32 @@ class Cart extends React.Component<Props> {
     }
 
     render() {
-        const { mypage, history } = this.props;
+        const { MypageAction, mypage, history, auth } = this.props;
         return <div>
             <h3>Cart</h3>
-            {mypage.carts.filter(item=>item.product.length > 0).map(item=> <ListGroup key={item.id}>
-                <ListGroupItem>
-                    <h5>{!item.isOpen && '[구매완료] '} 
-                    {(item.product[0] as ApiType.ShopProduct).name}
-                    {item.product.length > 1 && ' 외 '+ (item.product.length-1) +'개'}</h5>
-                    <div className="p-3">
-                        {(item.product as ApiType.ShopProduct[]).map(product=><div key={product.id}>
-                            <a onClick={()=>product.valid && history.push('/dashboard/shop/'+product.id)}>{product.name} - {U.comma(product.price)}원</a>
-                            {item.isOpen ? 
-                            <Button className="btn-sm float-right" onClick={()=>this.remove(product, item)}>삭제</Button>:
-                            <Button className="btn-sm float-right" onClick={()=>this.addToCart(product)}>장바구니 담기</Button>}
-                        </div>)}
-                    </div>
-                    합계 : {U.comma((item.product as ApiType.ShopProduct[]).map(p=>p.price).reduce((a,b)=>a+b))}원
-                    {item.isOpen && <Button className="float-right" color="primary" onClick={()=>history.push('/mypage/cart/'+item.id)}>구매하기</Button>}
-                </ListGroupItem>
-            </ListGroup>)}
+            <ListGroup>
+                {mypage.carts.filter(item=>item.product.length > 0).map(item=> <ListGroupItem key={item.id}>
+                        <h5>{!item.isOpen && '[구매완료] '} 
+                        {(item.product[0] as ApiType.ShopProduct).name}
+                        {item.product.length > 1 && ' 외 '+ (item.product.length-1) +'개'}</h5>
+                        <div className="p-3">
+                            {(item.product as ApiType.ShopProduct[]).map(product=><div key={product.id}>
+                                <a onClick={()=>product.valid && history.push('/dashboard/shop/'+product.id)}>{product.name} - {U.comma(product.price)}원</a>
+                                {item.isOpen ? 
+                                <Button className="btn-sm float-right" onClick={()=>this.remove(product, item)}>삭제</Button>:
+                                <Button className="btn-sm float-right" onClick={()=>this.addToCart(product)}>장바구니 담기</Button>}
+                            </div>)}
+                        </div>
+                        합계 : {U.comma((item.product as ApiType.ShopProduct[]).map(p=>p.price).reduce((a,b)=>a+b))}원
+                        {item.isOpen && <Button className="float-right" color="primary" onClick={()=>history.push('/mypage/cart/'+item.id)}>구매하기</Button>}
+                </ListGroupItem>)}
+            </ListGroup>
+            <div className="my-3 d-flex flex-row justify-content-center">
+                <Paginator 
+                    currentPage={mypage.cartCurrentPage}
+                    totalPage={mypage.cartTotalPage}
+                    onSelect={(page:number)=> auth.userProfile && MypageAction.loadCart(page, auth.userProfile)}/>
+            </div>
         </div>
     }
 }

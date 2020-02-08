@@ -7,12 +7,14 @@ export type MypageState = {
     carts:ApiType.ShopCart[]
     cartCurrentPage:number
     cartTotalPage:number
+    products:ApiType.ShopProduct[]
 }
 
 const initState:MypageState = {
     carts:[],
     cartCurrentPage:1,
-    cartTotalPage:1
+    cartTotalPage:1,
+    products:[]
 }
 
 export const MypageAction = {
@@ -60,6 +62,18 @@ export const MypageAction = {
                 .map(item=>item.id)
         })
         return Promise.resolve({})
+    },
+    loadPayment:async(type:string, id:string)=> {
+        if (type === 'cart') {
+            const cart = await Api.retrieve<ApiType.ShopCart>('/api-shop/cart/', id, {})
+            const products = await Api.list<ApiType.ShopProduct[]>('/api-shop/product/', {
+                'id__in[]':cart.product
+            })
+            return Promise.resolve({products:products})
+        } else if (type === 'payment') {
+            const product = await Api.retrieve<ApiType.ShopProduct>('/api-shop/product/', id,{})
+            return Promise.resolve({products:[product]})
+        }
     }
 }
 

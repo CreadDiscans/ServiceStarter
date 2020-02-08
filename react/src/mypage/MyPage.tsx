@@ -36,6 +36,8 @@ class MyPage extends React.Component<Props> {
                     <Switch>
                         <Route exact path="/mypage" component={MyProfile} />
                         <Route exact path="/mypage/cart" component={Cart} />
+                        <Route exact path="/mypage/cart/:id" component={Payment} />
+                        <Route exact path="/mypage/payment" component={Payment} />
                         <Route exact path="/mypage/payment/:id" component={Payment} />
                     </Switch>
                 </Col>

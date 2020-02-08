@@ -1,34 +1,59 @@
 import React from 'react';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { Button, FormGroup, Label, Input, ListGroup, ListGroupItem } from 'reactstrap';
+import { MypageState, MypageAction } from './Mypage.action';
+import { U } from 'app/core/U';
 
 declare var IMP:any;
-// IMP.init('imp54267999')
+if (process.env.APP_ENV === 'browser') {
+    IMP.init('imp54267999')
+}
 
-class Payment extends React.Component {
+interface Props {
+    location:Location
+    mypage:MypageState
+    MypageAction:typeof MypageAction
+}
+class Payment extends React.Component<Props> {
 
     state = {
-        productName: 'Test Product',
         name:'김동삼',
         email:'creaddiscans@gmail.com',
         tel:'010-4045-0565',
-        amount:1000,
-        method:'card'
+        method:'card',
+        type:''
+    }
+
+    static getDerivedStateFromProps(props:Props, state:any) {
+        const {location} = props;
+        console.log(location)
+        return null;
+    }
+
+    componentDidMount() {
+        const {MypageAction, location} = this.props;
+        const path = location.pathname.split('/')
+        if (path.length > 2) {
+            this.setState({type:path[2]})
+            MypageAction.loadPayment(path[2], U.getId(location))
+        }
     }
 
     payImp() {
+        const {mypage} = this.props;
+        const productName = mypage.products[0].name + (mypage.products.length > 1 && ' 외' + (mypage.products.length-1)+'개')
         IMP.request_pay({
             pg: 'html5_inicis',
-            pay_method: 'card',
+            pay_method: this.state.method,
             merchant_uid: 'merchant_' + new Date().getTime(),
-            name: this.state.productName,
-            amount: this.state.amount,
+            name: productName,
+            amount: mypage.products.map(product=>product.price).reduce((a,b)=>a+b),
             buyer_email: this.state.email,
             buyer_name: this.state.name,
             buyer_tel: this.state.tel,
-            m_redirect_url: '/payment/redirect',
+            m_redirect_url: '/payment',
         }, (rsp:any)=> {
             if(rsp.success) {
                 this.postImpPayment(rsp.imp_uid, rsp.merchant_uid)
@@ -80,11 +105,20 @@ class Payment extends React.Component {
     }
 
     render() {
+        const {mypage} = this.props;
+        if (mypage.products.length === 0) return <div></div>
         return <div>
             <h3>Payment</h3>
-
+            
             <div className="border border-rounded p-3">
-                <h4>{this.state.productName}</h4>
+                <h4>{mypage.products[0].name}{mypage.products.length > 1 && ' 외' + (mypage.products.length-1)+'개'}</h4>
+                <ListGroup className="my-3">
+                    {mypage.products.map(item=><ListGroupItem className="d-flex flex-row justify-content-between" key={item.id}>
+                        <div>{item.name}</div>
+                        <div>{U.comma(item.price)}원</div>
+                    </ListGroupItem>)}
+                </ListGroup>
+                
                 <FormGroup>
                     <Label>Name</Label>
                     <Input value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})}/> 
@@ -99,7 +133,7 @@ class Payment extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <Label>Amount</Label>
-                    <Input value={this.state.amount} readOnly />
+                    <Input value={U.comma(mypage.products.map(product=>product.price).reduce((a,b)=>a+b))+'원'} readOnly />
                 </FormGroup>
                 <FormGroup>
                     <Label>Method</Label>
@@ -121,10 +155,10 @@ class Payment extends React.Component {
 
 export default connectWithoutDone(
     (state:RootState)=>({
-        dashboard:state.dashboard
+        mypage:state.mypage
     }),
     (dispatch:Dispatch)=>({
-        dispatch
+        MypageAction:binding(MypageAction, dispatch)
     }),
     Payment
 )
