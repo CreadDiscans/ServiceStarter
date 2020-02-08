@@ -7,11 +7,14 @@ interface Props {
 }
 export class SessionChecker extends React.Component<Props> {
 
-    componentDidUpdate() {
-        const {auth, history} = this.props;
+    state = {}
+
+    static getDerivedStateFromProps(props:Props, state:any) {
+        const {auth, history} = props;
         if (!auth.userProfile) {
             history.push('/signin')
         }
+        return null;
     }
 
     render() {
