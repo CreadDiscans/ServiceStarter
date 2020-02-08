@@ -36,7 +36,7 @@ export class Alert extends React.Component{
     render() {
         return <Modal isOpen={AlertSubject.value !== undefined}>
             <ModalHeader>{this.state.title}</ModalHeader>
-            <ModalBody>{this.state.content}</ModalBody>
+            <ModalBody style={{whiteSpace:'pre'}}>{this.state.content}</ModalBody>
             <ModalFooter>
                 {this.state.onConfirm && <Button color="primary" onClick={()=>this.state.onConfirm && this.state.onConfirm()}>Confirm</Button>}
                 {this.state.onCancel && <Button color="secondary" onClick={()=>this.state.onCancel && this.state.onCancel()}>Cancel</Button>}

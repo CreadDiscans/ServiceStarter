@@ -9,6 +9,7 @@ import { Input, InputGroup, InputGroupButtonDropdown, DropdownToggle, DropdownMe
 import { BoardState } from './Board.action';
 import * as ApiType from 'types/api.types';
 import { Api } from 'app/core/Api';
+import { U } from 'app/core/U';
 
 interface Props {
     auth:AuthState
@@ -33,9 +34,7 @@ class BoardWrite extends React.Component<Props> {
         CKEditor = require('@ckeditor/ckeditor5-react')
         ClassicEditor = require('@ckeditor/ckeditor5-build-classic')
         const {auth, location, history, board} = this.props;
-        const path = location.pathname.split('/')
-        const id = path[path.length-1]
-        Api.retrieve<ApiType.BoardItem>('/api-board/item/', id, {}).then(item=> {
+        Api.retrieve<ApiType.BoardItem>('/api-board/item/', U.getId(location), {}).then(item=> {
             if (auth.userProfile && auth.userProfile.id !== item.author) {
                 history.push('/board')
                 return

@@ -2,32 +2,13 @@ import React from 'react';
 import { connectWithoutDone } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
-import { Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, FormGroup, Label, Input } from 'reactstrap';
 
 declare var IMP:any;
-if (process.env.APP_ENV === 'browser') {
-    IMP.init('imp54267999')
-}
+// IMP.init('imp54267999')
 
-type PayInfo = {
-    pg: string; // PG'kakao':카카오페이, html5_inicis':이니시스(웹표준결제), 'nice':나이스페이, 'jtnet':제이티넷, 'uplus':LG유플러스, 'danal':다날, 'payco':페이코, 'syrup':시럽페이, 'paypal':페이팔
-    pay_method: string; // 'samsung':삼성페이, 'card':신용카드, 'trans':실시간계좌이체, 'vbank':가상계좌, 'phone':휴대폰소액결제
-    email: string;
-    amount: number; // 결제금액
-    buyer_tel: string;
-    buyer_name: string;
-    user_detail_id: string;
-    paid_name: string;
-    score_type_id: string;
-    customer_uid?: string;
-}
+class Payment extends React.Component {
 
-interface Props {
-
-}
-
-class Payment extends React.Component<Props> {
-    
     state = {
         productName: 'Test Product',
         name:'김동삼',
@@ -98,18 +79,10 @@ class Payment extends React.Component<Props> {
 // card_quota: 0
     }
 
-
     render() {
         return <div>
             <h3>Payment</h3>
-            <Jumbotron>
-                <h1 className="display-3">Hello, world!</h1>
-                <p className="lead">This is a simple hero unit, a simple Jumbotron-style component for calling extra attention to featured content or information.</p>
-                <hr className="my-2" />
-                <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-                <p className="lead">
-                </p>
-            </Jumbotron>
+
             <div className="border border-rounded p-3">
                 <h4>{this.state.productName}</h4>
                 <FormGroup>
@@ -147,7 +120,11 @@ class Payment extends React.Component<Props> {
 }
 
 export default connectWithoutDone(
-    (state:RootState)=>({}),
-    (dispatch:Dispatch)=>({}),
+    (state:RootState)=>({
+        dashboard:state.dashboard
+    }),
+    (dispatch:Dispatch)=>({
+        dispatch
+    }),
     Payment
 )

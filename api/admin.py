@@ -23,7 +23,7 @@ class BoardItemAdmin(admin.ModelAdmin):
     form = BoardItemForm
     def save_model(self, request, obj, form, change):
         result = super(BoardItemAdmin, self).save_model(request, obj, form, change)
-        save_media('boarditem', obj)
+        save_media('boarditem', obj, 'content')
         return result
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -38,7 +38,7 @@ class ShopProductAdmin(admin.ModelAdmin):
     form = ShopProductForm
     def save_model(self, request, obj, form, change):
         result = super(ShopProductAdmin, self).save_model(request, obj, form, change)
-        save_media('shopproduct', obj)
+        save_media('shopproduct', obj, 'content')
         return result
 
 admin.site.register(BoardGroup, BoardGroupAdmin)
@@ -50,7 +50,8 @@ def on_delete(sender, **kwargs):
     instance = kwargs['instance']
     instance.file.delete(False)
 
-def save_media(key, obj):
+def save_media(key, obj, field):
+    attr = 'src="/media%s"'
     for root, _, files in os.walk(os.path.join(settings.MEDIA_ROOT, settings.CKEDITOR_UPLOAD_PATH)):
         for file in files:
             fullname = os.path.join(root, file)
@@ -65,3 +66,6 @@ def save_media(key, obj):
             m.save()
             local_file.close()
             os.remove(fullname)
+            src = fullname.replace(settings.MEDIA_ROOT, '')
+            setattr(obj, field, getattr(obj, field).replace(attr%src, attr%('/'+m.file.name)))
+    obj.save()

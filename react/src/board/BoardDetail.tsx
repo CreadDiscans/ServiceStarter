@@ -12,6 +12,7 @@ import { Paginator } from 'component/Paginator';
 import autoresize from 'autoresize';
 import { AlertSubject } from 'component/Alert';
 import { History } from 'history';
+import { U } from 'app/core/U';
 
 interface Props {
     auth:AuthState
@@ -44,9 +45,7 @@ class BoardDetail extends React.Component<Props> {
 
     UNSAFE_componentWillMount() {
         const {location, done, history} = this.props;
-        const path = location.pathname.split('/')
-        const id = path[path.length-1]
-        Api.retrieve<ApiType.BoardItem>('/api-board/item/',id, {
+        Api.retrieve<ApiType.BoardItem>('/api-board/item/',U.getId(location), {
         }).then(item=> {
             this.loadComment(item, 1).then(done, done)
         }).catch(err=> {

@@ -8,7 +8,8 @@ import { SessionChecker } from 'component/SesstionChecker';
 import { History } from 'history';
 import { Switch, Route } from 'react-router-dom';
 import MyProfile from './MyProfile';
-import Payment from './MyPayment';
+import Payment from './Payment';
+import Cart from './Cart';
 interface Props {
     auth:AuthState
     history:History
@@ -27,14 +28,15 @@ class MyPage extends React.Component<Props> {
                             <a onClick={()=> history.push('/mypage')}>MyPage</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage/payment')}>Payment</a>
+                            <a onClick={()=> history.push('/mypage/cart')}>Cart</a>
                         </ListGroupItem>
                     </ListGroup>
                 </Col>
                 <Col xs={12} md={9}>
                     <Switch>
                         <Route exact path="/mypage" component={MyProfile} />
-                        <Route exact path="/mypage/payment" component={Payment} />
+                        <Route exact path="/mypage/cart" component={Cart} />
+                        <Route exact path="/mypage/payment/:id" component={Payment} />
                     </Switch>
                 </Col>
             </Row>

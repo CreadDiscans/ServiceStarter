@@ -8,7 +8,7 @@ import { AuthState } from 'auth/Auth.action';
 import { History } from 'history';
 import { Switch, Route } from 'react-router-dom';
 import Shop from './Shop';
-import Payment from './Payment';
+import Payment from './ShopDetail';
 interface Props {
     auth:AuthState
     history:History
@@ -35,7 +35,7 @@ class Dashboard extends React.Component<Props> {
                     <Switch>
                         <Route exact path="/dashboard" component={DashboardHome} />
                         <Route exact path="/dashboard/shop" component={Shop} />
-                        <Route exact path="/dashboard/payment" component={Payment} />
+                        <Route exact path="/dashboard/shop/:id" component={Payment} />
                     </Switch>
                 </Col>
             </Row>

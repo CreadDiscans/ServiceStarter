@@ -5,7 +5,7 @@ export { default as Activation } from 'auth/Activation';
 export { default as Reset } from 'auth/Reset';
 // Home
 export { default as Home } from 'home/Home';
-export { default as Dashboard } from 'home/Dashboard';
+export { default as Dashboard } from 'dashboard/Dashboard';
 // Board
 export { default as Board } from 'board/Board';
 // Mypage

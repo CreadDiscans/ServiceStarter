@@ -64,7 +64,7 @@ class ShopCart(models.Model):
     isOpen = models.BooleanField(default=True)
     profile = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
 
-    product = models.ManyToManyField('ShopProduct')
+    product = models.ManyToManyField('ShopProduct', blank=True)
 
 class ShopPayment(models.Model):
     class Meta:

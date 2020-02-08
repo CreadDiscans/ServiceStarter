@@ -5366,12 +5366,12 @@
 										"$ref": "AAAAAAFwIzAPg8p48ok="
 									},
 									"font": "Arial;13;0",
-									"left": 1184,
-									"top": 203,
+									"left": 1175,
+									"top": 191,
 									"width": 50.95263671875,
 									"height": 13,
-									"alpha": 0.9313179582726523,
-									"distance": 8.602325267042627,
+									"alpha": 0.7740492586118335,
+									"distance": 23.345235059857504,
 									"hostEdge": {
 										"$ref": "AAAAAAFwIzAPhMp8bbk="
 									},
@@ -5408,7 +5408,6 @@
 									"model": {
 										"$ref": "AAAAAAFwIzAPg8p48ok="
 									},
-									"visible": false,
 									"font": "Arial;13;0",
 									"left": 1110,
 									"top": 211,
@@ -5419,7 +5418,8 @@
 									"hostEdge": {
 										"$ref": "AAAAAAFwIzAPhMp8bbk="
 									},
-									"edgePosition": 1
+									"edgePosition": 1,
+									"text": "{blank=true}"
 								},
 								{
 									"_type": "EdgeLabelView",
@@ -7268,6 +7268,18 @@
 										"$ref": "AAAAAAFwIyuAArTf21w="
 									},
 									"name": "product",
+									"tags": [
+										{
+											"_type": "Tag",
+											"_id": "AAAAAAFwI9Hg8B4bj0g=",
+											"_parent": {
+												"$ref": "AAAAAAFwIzAPg8p48ok="
+											},
+											"name": "blank",
+											"kind": "boolean",
+											"checked": true
+										}
+									],
 									"end1": {
 										"_type": "UMLAssociationEnd",
 										"_id": "AAAAAAFwIzAPg8p5SAc=",
