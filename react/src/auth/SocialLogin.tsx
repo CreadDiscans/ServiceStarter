@@ -19,7 +19,7 @@ const fbConfig = {
 }
 const naverConfig = {
     clientId: "GfwH3vvqAGsA6nx8zX_X",
-    callbackUrl: "https://servicestarter.kro.kr/naver",
+    callbackUrl: "http://servicestarter.kro.kr/naver",
     isPopup: true,
     loginButton: {color: "green", type: 3, height: 60}
 }
