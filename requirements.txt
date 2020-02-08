@@ -5,6 +5,7 @@ django-cors-headers
 django-rest-swagger
 django-redis
 django-sslserver
+django-ckeditor
 channels
 channels_redis
 pymysql

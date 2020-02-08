@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import update_last_login
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
@@ -32,6 +32,7 @@ urlpatterns = [
     path('activate/<str:uid64>/<str:token>/', activate),
     path('send_reset_mail', send_reset_mail),
     path('fcm_test', fcm_test),
+    re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     path('', index)
 ]
 urlpatterns += router.urls

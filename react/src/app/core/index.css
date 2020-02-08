@@ -26,3 +26,11 @@ code {
 img {
   max-width:100%
 }
+
+figure.image > img  {
+  text-align: center;
+}
+
+figure.image-style-side {
+  text-align: right;
+}

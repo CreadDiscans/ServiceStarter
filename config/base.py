@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'channels',
     'django_celery_beat',
     'django_celery_results',
+    'ckeditor',
+    'ckeditor_uploader',
     'api'
 ]
 
@@ -193,3 +195,5 @@ EMAIL_HOST_PASSWORD = '1q2w3e4r..'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CKEDITOR_UPLOAD_PATH = "upload/"
