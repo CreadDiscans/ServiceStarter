@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from config.utils import CustomSchema, send_fcm
-from api.models import Profile, Media, BoardItem
+from api.models import Profile, Media, BoardItem, ShopPayment, ShopCart, ShopProduct
 import requests
 import coreapi
 import json
@@ -207,6 +207,56 @@ class UploadViewset(viewsets.ViewSet):
             'uploaded':True,
             'url':'/media/'+str(m.file)
         }, status=status.HTTP_200_OK)
+
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class PaymentValidator(viewsets.ViewSet):
+
+    def create(self, request):
+        body = json.loads(request.body)
+        token = json.loads(requests.post('https://api.iamport.kr/users/getToken',
+            headers={'Content-Type':'application/json'}, 
+            params={},
+            data=json.dumps({
+                'imp_key':settings.IMP_REST_API_KEY,
+                'imp_secret':settings.IMP_REST_API_SECRET
+            })).text)
+        payment = json.loads(requests.get('https://api.iamport.kr/payments/'+body['imp_uid'],
+            headers={'Authorization':token['response']['access_token']}).text)
+        amount = 0
+        if body['type'] == 'cart':
+            cart = ShopCart.objects.get(pk=body['id'])
+            for product in cart.product.all():
+                amount += product.price
+        elif body['type'] == 'payment':
+            product = ShopProduct.objects.get(pk=body['id'])
+            amount = product.proice
+        if amount != payment['response']['amount']:
+            return Response({'message':'위조된 요청'}, status=status.HTTP_401_UNAUTHORIZED)
+        objs = ShopPayment.objects.filter(imp_uid=body['imp_uid'])
+        if objs.count() > 0:
+            shopapyment = objs[0]
+            return Response({'pk':shopapyment.pk, 'status':shopapyment.status}, status=status.HTTP_200_OK)
+        shopapyment = ShopPayment(
+            imp_uid=body['imp_uid'],
+            status=payment['response']['status'])
+        if payment['response']['status'] == 'ready':
+            res = payment['response']
+            vbank = '%s %s %s'%(res['vbank_num'], res['vbank_date'], res['vbank_name']) 
+            shopapyment.vbank = vbank
+        shopapyment.save()
+        return Response({'pk':shopapyment.pk, 'status':shopapyment.status}, status=status.HTTP_200_OK)
+
+@permission_classes((AllowAny,))
+class IamportWebhook(viewsets.ViewSet):
+
+    def create(self, request):
+        body = json.loads(request.body)
+        if body['status'] == 'paid' or body['status'] == 'cancelled':
+            payment = ShopPayment.objects.get(imp_uid=body['imp_uid'])
+            payment.status = body['status']
+            payment.save()
+        return Response({}, status=status.HTTP_200_OK)
 
 @csrf_exempt
 def fcm_test(request):

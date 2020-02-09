@@ -52,12 +52,7 @@ export type ShopProduct = {
 export type ShopPayment = {
     id:number
     imp_uid:string
-    name:string
-    paid_amount:number
-    buyer_name:string
-    buyer_email:string
-    buyer_tel:string
-    buyer_addr:string
-    buyer_postcode:string
+    status:string
+    vbank:string
     cart:number|ShopCart
 }

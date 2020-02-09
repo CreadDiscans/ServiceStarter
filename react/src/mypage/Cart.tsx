@@ -39,13 +39,26 @@ class Cart extends React.Component<Props> {
         .then(()=> auth.userProfile && MypageAction.loadCart(1, auth.userProfile))
     }
 
+    getCartState(item:ApiType.ShopCart) {
+        const {mypage} = this.props;
+        const payments = mypage.payments.filter(pay=>pay.cart === item.id)
+        if (payments.length > 0) {
+            if (payments[0].status === 'cancelled') return '[환불]'
+            else if (payments[0].status === 'paid') return '[구매완료]'
+            else if (payments[0].status === 'ready') return '[입금대기 가상계좌:'+payments[0].vbank+']'
+            else return '['+payments[0].status+']'
+        } else {
+            return '[]'
+        }
+    }
+
     render() {
         const { MypageAction, mypage, history, auth } = this.props;
         return <div>
             <h3>Cart</h3>
             <ListGroup>
                 {mypage.carts.filter(item=>item.product.length > 0).map(item=> <ListGroupItem key={item.id}>
-                        <h5>{!item.isOpen && '[구매완료] '} 
+                        <h5>{!item.isOpen && this.getCartState(item)} 
                         {(item.product[0] as ApiType.ShopProduct).name}
                         {item.product.length > 1 && ' 외 '+ (item.product.length-1) +'개'}</h5>
                         <div className="p-3">

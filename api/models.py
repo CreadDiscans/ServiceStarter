@@ -71,13 +71,8 @@ class ShopPayment(models.Model):
         verbose_name_plural='결재내역'
 
     imp_uid = models.CharField(max_length=100)
-    name = models.CharField(max_length=100)
-    paid_amount = models.IntegerField(default=0)
-    buyer_name = models.CharField(max_length=100, null=True, blank=True)
-    buyer_email = models.CharField(max_length=100, null=True, blank=True)
-    buyer_tel = models.CharField(max_length=100, null=True, blank=True)
-    buyer_addr = models.CharField(max_length=200, null=True, blank=True)
-    buyer_postcode = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=100)
+    vbank = models.CharField(max_length=100, null=True, blank=True)
 
     cart = models.OneToOneField('ShopCart', on_delete=models.SET_NULL, null=True, blank=True)
 

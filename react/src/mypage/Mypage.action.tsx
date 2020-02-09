@@ -8,13 +8,15 @@ export type MypageState = {
     cartCurrentPage:number
     cartTotalPage:number
     products:ApiType.ShopProduct[]
+    payments:ApiType.ShopPayment[]
 }
 
 const initState:MypageState = {
     carts:[],
     cartCurrentPage:1,
     cartTotalPage:1,
-    products:[]
+    products:[],
+    payments:[]
 }
 
 export const MypageAction = {
@@ -31,10 +33,14 @@ export const MypageAction = {
         res.items.forEach(item=>{
             item.product = U.union((item.product as number[]).map(id=> products.filter(p=>p.id === id)))
         })
+        const payments = await Api.list<ApiType.ShopPayment[]>('/api-shop/payment/', {
+            'cart__in[]':res.items.map(item=>item.id)
+        })
         return Promise.resolve({
             cartCurrentPage:page,
             cartTotalPage:res.total_page,
-            carts:res.items
+            carts:res.items,
+            payments:payments
         })
     },
     addShopCart:async(profile:ApiType.Profile, product:ApiType.ShopProduct)=> {
@@ -74,6 +80,29 @@ export const MypageAction = {
             const product = await Api.retrieve<ApiType.ShopProduct>('/api-shop/product/', id,{})
             return Promise.resolve({products:[product]})
         }
+    },
+    postPayment:async(type:string, id:string, imp_uid:string, profile:ApiType.Profile)=> {
+        const res = await Api.create<{pk:number, status:string}>('/payment/', {
+            imp_uid:imp_uid,
+            type:type,
+            id:id
+        })
+        let cart!:ApiType.ShopCart
+        if (type === 'cart') {
+            cart = await Api.patch<ApiType.ShopCart>('/api-shop/cart/', id, {
+                isOpen:0,
+            })
+        } else if (type === 'payment') {
+            cart = await Api.create<ApiType.ShopCart>('/api-shop/cart/', {
+                isOpen:0,
+                product:[id],
+                profile:profile.id
+            })
+        }
+        await Api.patch<ApiType.ShopPayment>('/api-shop/payment/', res.pk, {
+            cart:cart.id
+        })
+        return Promise.resolve({})
     }
 }
 
