@@ -2,6 +2,7 @@ import { getHandleActions } from "app/core/connection"
 import * as ApiType from 'types/api.types';
 import { Api } from "app/core/Api";
 import { U } from "app/core/U";
+import moment from 'moment';
 
 export type MypageState = {
     carts:ApiType.ShopCart[]
@@ -114,7 +115,13 @@ export const MypageAction = {
         })
         return Promise.resolve({})
     },
-    loadSubscription:async(id:string)=> {
+    loadSubscription:async(profile:ApiType.Profile, id:string)=> {
+        const billing = await Api.list<ApiType.ShopBilling[]>('/api-shop/billing/',{
+            profile:profile.id,
+            expired__gte:moment().format('YYYY-MM-DD'),
+            subscription:id
+        })
+        if (billing.length > 0) return Promise.reject()
         const sub = await Api.retrieve<ApiType.ShopSubscription>('/api-shop/subscription/', id, {})
         return Promise.resolve({subscription:sub})
     },

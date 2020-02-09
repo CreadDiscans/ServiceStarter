@@ -52,10 +52,20 @@ class Billing extends React.Component<Props> {
             this.setState({isRequest:false})
         } else {
             this.setState({isRequest:true})
-            MypageAction.loadSubscription(id).then(({subscription})=> {
+            auth.userProfile && MypageAction.loadSubscription(auth.userProfile, id).then(({subscription})=> {
                 if (!subscription.valid) {
                     history.push('/dashboard/shop')
                 }
+            }).catch(()=> {
+                AlertSubject.next({
+                    title:'알림',
+                    content:'이미 구독중입니다.',
+                    onConfirm:()=>{
+                        history.push('/mypage/billing')
+                        AlertSubject.next(undefined)
+                    },
+                    onCancel:undefined
+                })
             })
         }
     }
