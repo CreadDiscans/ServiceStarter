@@ -54,7 +54,7 @@ class Payment extends React.Component<Props> {
 
     payImp() {
         const {mypage, history, location} = this.props;
-        const productName = mypage.products[0].name + (mypage.products.length > 1 && ' 외' + (mypage.products.length-1)+'개')
+        const productName = mypage.products[0].name + (mypage.products.length > 1 ? ' 외' + (mypage.products.length-1)+'개' : '')
         const path = '/mypage/'+this.state.type+'/'+U.getId(location)
         IMP.request_pay({
             pg: 'html5_inicis',
@@ -69,7 +69,6 @@ class Payment extends React.Component<Props> {
         }, (rsp:any)=> {
             if(rsp.success) {
                 history.push(path+'?imp_uid='+rsp.imp_uid)
-                // this.postImpPayment('imp_593255943253')
             } else {
                 alert('결제가 실패하였습니다.\n 내용 : '+rsp.error_msg);
             }
@@ -114,7 +113,6 @@ class Payment extends React.Component<Props> {
                         <option value={'card'}>카드</option>
                         <option value={'trans'}>실시간계좌이체</option>
                         <option value={'vbank'}>가상계좌</option>
-                        <option value={'phone'}>핸드폰소액결제</option>
                     </Input>
                 </FormGroup>
                 <div className="text-right">
