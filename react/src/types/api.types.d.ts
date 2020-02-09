@@ -36,11 +36,37 @@ export type BoardGroup = {
     name:string
     readonly:boolean
 }
+export type ShopSubscription = {
+    id:number
+    name:string
+    price:number
+    valid:boolean
+}
+export type ShopBilling = {
+    id:number
+    profile:number|Profile
+    created:string
+    expired:string
+    scheduled:boolean
+    imp_uid:string
+    merchant_uid:string
+    subscription:number|ShopSubscription
+    card:number|ShopCard
+}
 export type ShopCart = {
     id:number
     isOpen:boolean
     profile:number|Profile
     product:number[]|ShopProduct[]
+}
+export type ShopCard = {
+    id:number
+    name:string
+    customer_uid:string
+    profile:number|Profile
+    buyer_name:string
+    buyer_email:string
+    buyer_tel:string
 }
 export type ShopProduct = {
     id:number

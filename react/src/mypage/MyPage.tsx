@@ -10,6 +10,7 @@ import { Switch, Route } from 'react-router-dom';
 import MyProfile from './MyProfile';
 import Payment from './Payment';
 import Cart from './Cart';
+import Billing from './Billing';
 interface Props {
     auth:AuthState
     history:History
@@ -30,6 +31,9 @@ class MyPage extends React.Component<Props> {
                         <ListGroupItem>
                             <a onClick={()=> history.push('/mypage/cart')}>Cart</a>
                         </ListGroupItem>
+                        <ListGroupItem>
+                            <a onClick={()=> history.push('/mypage/billing')}>Subscription</a>
+                        </ListGroupItem>
                     </ListGroup>
                 </Col>
                 <Col xs={12} md={9}>
@@ -39,6 +43,8 @@ class MyPage extends React.Component<Props> {
                         <Route exact path="/mypage/cart/:id" component={Payment} />
                         <Route exact path="/mypage/payment" component={Payment} />
                         <Route exact path="/mypage/payment/:id" component={Payment} />
+                        <Route exact path="/mypage/billing/" component={Billing} />
+                        <Route exact path="/mypage/billing/:id" component={Billing} />
                     </Switch>
                 </Col>
             </Row>

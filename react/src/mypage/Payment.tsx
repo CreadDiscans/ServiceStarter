@@ -23,9 +23,9 @@ interface Props {
 class Payment extends React.Component<Props> {
 
     state = {
-        name:'김동삼',
-        email:'creaddiscans@gmail.com',
-        tel:'010-4045-0565',
+        name:'',
+        email:'',
+        tel:'',
         method:'card',
         type:'',
         pending: false
@@ -72,7 +72,6 @@ class Payment extends React.Component<Props> {
             } else {
                 alert('결제가 실패하였습니다.\n 내용 : '+rsp.error_msg);
             }
-            console.log(rsp);
         })
     }
 

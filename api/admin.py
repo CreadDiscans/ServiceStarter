@@ -41,12 +41,16 @@ class ShopProductAdmin(admin.ModelAdmin):
         save_media('shopproduct', obj, 'content')
         return result
 
+class ShopSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'valid')
+
 admin.site.register(BoardGroup, BoardGroupAdmin)
 admin.site.register(BoardItem, BoardItemAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(ShopProduct, ShopProductAdmin)
+admin.site.register(ShopSubscription, ShopSubscriptionAdmin)
 @receiver(pre_delete, sender=Media)
-def on_delete(sender, **kwargs):
+def on_media_delete(sender, **kwargs):
     instance = kwargs['instance']
     instance.file.delete(False)
 

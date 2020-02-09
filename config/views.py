@@ -19,8 +19,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from config.utils import CustomSchema, send_fcm
-from api.models import Profile, Media, BoardItem, ShopPayment, ShopCart, ShopProduct
+from api.models import Profile, Media, BoardItem, ShopPayment, ShopCart, ShopProduct, ShopSubscription, ShopCard, ShopBilling
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import requests
 import coreapi
 import json
@@ -190,7 +191,8 @@ def assets(request):
         status=response.status_code,
         content_type=response.headers['Content-Type']
     )
-    
+
+# For CKEditor uploader  
 @permission_classes((AllowAny,))
 @authentication_classes((JSONWebTokenAuthentication,))
 class UploadViewset(viewsets.ViewSet):
@@ -209,19 +211,15 @@ class UploadViewset(viewsets.ViewSet):
             'url':'/media/'+str(m.file)
         }, status=status.HTTP_200_OK)
 
+
+# For Iamport
 @permission_classes((IsAuthenticated,))
 @authentication_classes((JSONWebTokenAuthentication,))
 class PaymentValidator(viewsets.ViewSet):
 
     def create(self, request):
         body = json.loads(request.body)
-        token = json.loads(requests.post('https://api.iamport.kr/users/getToken',
-            headers={'Content-Type':'application/json'}, 
-            params={},
-            data=json.dumps({
-                'imp_key':settings.IMP_REST_API_KEY,
-                'imp_secret':settings.IMP_REST_API_SECRET
-            })).text)
+        token = get_imp_token()
         payment = json.loads(requests.get('https://api.iamport.kr/payments/'+body['imp_uid'],
             headers={'Authorization':token['response']['access_token']}).text)
         amount = 0
@@ -249,17 +247,157 @@ class PaymentValidator(viewsets.ViewSet):
         shopapyment.save()
         return Response({'pk':shopapyment.pk, 'status':shopapyment.status}, status=status.HTTP_200_OK)
 
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class Billings(viewsets.ViewSet):
+
+    def create(self, request):
+        body = json.loads(request.body)
+        token = get_imp_token()
+        if body['type'] == 'subscribe':
+            card = ShopCard.objects.get(pk=body['card_id'])
+            subscription = ShopSubscription.objects.get(pk=body['subscription_id'])
+            merchant_uid = 'order_'+str(int(datetime.now().timestamp()))
+            payment = json.loads(requests.post('https://api.iamport.kr/subscribe/payments/again',
+                headers={
+                    'Authorization':token['response']['access_token'],
+                    'Content-Type':'application/json'
+                },
+                data=json.dumps({
+                    'customer_uid':card.customer_uid,
+                    'merchant_uid':merchant_uid,
+                    'amount':subscription.price,
+                    'name':subscription.name,
+                    'buyer_name':card.buyer_name,
+                    'buyer_email':card.buyer_email,
+                    'buyer_tel':card.buyer_tel
+                })
+            ).text)
+            if payment['code'] == 0:
+                if payment['response']['status'] == 'paid':
+                    billing = ShopBilling(
+                        profile=card.profile,
+                        subscription=subscription,
+                        card=card,
+                        expired=datetime.now() + relativedelta(months=1),
+                        imp_uid=payment['response']['imp_uid'],
+                        merchant_uid=merchant_uid
+                    )
+                    billing.save()
+                    schedule_billing(token, payment['response']['imp_uid'])
+                else:
+                    return Response({'message':'결제실패'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'message':'결제실패'}, status=status.HTTP_400_BAD_REQUEST)
+        elif body['type'] == 'unsubscribe':
+            billing = ShopBilling.objects.get(pk=body['billing_id'])
+            res = json.loads(requests.post('https://api.iamport.kr/subscribe/payments/unschedule',
+                headers={
+                    'Authorization':token['response']['access_token'],
+                    'Content-Type':'application/json'
+                },
+                data=json.dumps({
+                    'customer_uid':billing.card.customer_uid,
+                    'merchant_uid':[billing.merchant_uid]
+                })
+            ).text)
+            billing.scheduled = False
+            billing.save()
+        elif body['type'] == 'expand':
+            schedule_billing(token, body['imp_uid'], for_expand=True)
+        elif body['type'] == 'deleteCard':
+            card = ShopCard.objects.get(pk=body['card_id'])
+            billings = card.shopbilling_set.filter(scheduled=True)
+            merchant_uids = []
+            for billing in billings:
+                billing.scheduled = False
+                merchant_uids.append(billing.merchant_uid)
+                billing.save()
+            res = json.loads(requests.post('https://api.iamport.kr/subscribe/payments/unschedule',
+                headers={
+                    'Authorization':token['response']['access_token'],
+                    'Content-Type':'application/json'
+                },
+                data=json.dumps({
+                    'customer_uid':card.customer_uid,
+                    'merchant_uid':merchant_uids
+                })
+            ).text)
+            print(res)
+        return Response({}, status=status.HTTP_200_OK)
+
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class BillingsWebhook(viewsets.ViewSet):
+    
+    def create(self, request):
+        body = json.loads(request.body)
+        token = get_imp_token()
+        payment = json.loads(requests.get('https://api.iamport.kr/payments/'+body['imp_uid'],
+            headers={'Authorization':token['response']['access_token']}).text)
+        if payment['response']['status'] == 'paid':
+            schedule_billing(token, body['imp_uid'])
+        else:
+            billing = ShopBilling.objects.get(imp_uid=imp_uid)
+            billing.scheduled = False
+            billing.save()
+        return Response({}, status=status.HTTP_200_OK)
+
+def schedule_billing(token, imp_uid, for_expand=False):
+    billing = ShopBilling.objects.get(imp_uid=imp_uid)
+    if for_expand:
+        schedule_at = billing.expired
+    else:
+        schedule_at = datetime.now() + relativedelta(months=1)
+    merchant_uid = 'schdule_'+str(int(datetime.now().timestamp()))
+    next_pay = json.loads(requests.post('https://api.iamport.kr/subscribe/payments/schedule',
+        headers={
+            'Authorization':token['response']['access_token'],
+            'Content-Type':'application/json'
+        },
+        data=json.dumps({
+            'customer_uid':billing.card.customer_uid,
+            'schedules':[{
+                'merchant_uid':merchant_uid,
+                'schedule_at':int(schedule_at.timestamp()),
+                'amount':billing.subscription.price,
+                'name':billing.subscription.name,
+                'buyer_name':billing.card.buyer_name,
+                'buyer_email':billing.card.buyer_email,
+                'buyer_tel':billing.card.buyer_tel
+            }]
+        })
+    ).text)
+    if next_pay['code'] == 0:
+        billing.merchant_uid = merchant_uid
+        billing.expired = schedule_at
+        billing.scheduled = True
+        billing.save()
+
+def get_imp_token():
+    return json.loads(requests.post('https://api.iamport.kr/users/getToken',
+        headers={'Content-Type':'application/json'}, 
+        data=json.dumps({
+            'imp_key':settings.IMP_REST_API_KEY,
+            'imp_secret':settings.IMP_REST_API_SECRET
+        })).text)
+
 @permission_classes((AllowAny,))
 class IamportWebhook(viewsets.ViewSet):
 
     def create(self, request):
         body = json.loads(request.body)
+        out = {}
         if body['status'] == 'paid' or body['status'] == 'cancelled':
-            payment = ShopPayment.objects.get(imp_uid=body['imp_uid'])
-            payment.status = body['status']
-            payment.save()
-        return Response({}, status=status.HTTP_200_OK)
+            payments = ShopPayment.objects.filter(imp_uid=body['imp_uid'])
+            if payments.count() > 0:
+                payment = payments[0]
+                payment.status = body['status']
+                payment.save()
+                out['message'] = 'payment update'
+        return Response(out, status=status.HTTP_200_OK)
 
+# For FCM
 @csrf_exempt
 def fcm_test(request):
     if request.method == 'POST':

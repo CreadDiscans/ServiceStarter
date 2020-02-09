@@ -33,7 +33,7 @@ class BoardGroup(models.Model):
 
 class BoardItem(models.Model):
     class Meta:
-        verbose_name_plural='게시글'
+        verbose_name_plural='게시판 글'
 
     title = models.CharField(max_length=100, blank=True)
     content = models.TextField(null=True, blank=True)
@@ -47,7 +47,7 @@ class BoardItem(models.Model):
 
 class BoardComment(models.Model):
     class Meta:
-        verbose_name_plural='댓글'
+        verbose_name_plural='게시판 댓글'
 
     content = models.TextField(null=True)
     created = models.DateTimeField(auto_now=True)
@@ -59,16 +59,30 @@ class BoardComment(models.Model):
 
 class ShopCart(models.Model):
     class Meta:
-        verbose_name_plural='장바구니'
+        verbose_name_plural='상점 장바구니'
 
     isOpen = models.BooleanField(default=True)
     profile = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
 
     product = models.ManyToManyField('ShopProduct', blank=True)
 
+class ShopBilling(models.Model):
+    class Meta:
+        verbose_name_plural='상점 구독내역'
+
+    profile = models.ForeignKey(to='Profile', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    expired = models.DateTimeField()
+    scheduled = models.BooleanField(default=False)
+    imp_uid = models.CharField(max_length=100)
+    merchant_uid = models.CharField(max_length=100)
+
+    subscription = models.ForeignKey('ShopSubscription', on_delete=models.SET_NULL, null=True, blank=True)
+    card = models.ForeignKey('ShopCard', on_delete=models.SET_NULL, null=True, blank=True)
+
 class ShopPayment(models.Model):
     class Meta:
-        verbose_name_plural='결재내역'
+        verbose_name_plural='상점 결재내역'
 
     imp_uid = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
@@ -76,13 +90,34 @@ class ShopPayment(models.Model):
 
     cart = models.OneToOneField('ShopCart', on_delete=models.SET_NULL, null=True, blank=True)
 
+class ShopSubscription(models.Model):
+    class Meta:
+        verbose_name_plural='상점 구독'
+
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=0)
+    valid = models.BooleanField(default=False)
+
+
 class ShopProduct(models.Model):
     class Meta:
-        verbose_name_plural='상품'
+        verbose_name_plural='상점 상품'
 
     name = models.CharField(max_length=100)
     price = models.IntegerField(default=0)
     valid = models.BooleanField(default=False)
     content = models.TextField(null=True, blank=True)
+
+
+class ShopCard(models.Model):
+    class Meta:
+        verbose_name_plural='상점 구독카드'
+
+    name = models.CharField(max_length=100)
+    customer_uid = models.CharField(max_length=100)
+    profile = models.ForeignKey(to='Profile', on_delete=models.CASCADE)
+    buyer_name = models.CharField(max_length=100)
+    buyer_email = models.CharField(max_length=100)
+    buyer_tel = models.CharField(max_length=100)
 
 

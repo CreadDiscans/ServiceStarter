@@ -7,12 +7,14 @@ export type DashboardState = {
     shopProduct?:ApiType.ShopProduct
     shopCurrentPage:number
     shopTotalPage:number
+    shopSubscriptions:ApiType.ShopSubscription[]
 }
 
 const initState:DashboardState = {
     shopProducts:[],
     shopCurrentPage:1,
-    shopTotalPage:1
+    shopTotalPage:1,
+    shopSubscriptions:[]
 }
 
 export const DashboardAction = {
@@ -31,6 +33,14 @@ export const DashboardAction = {
     loadShopProduct:async(id:string)=> {
         const res = await Api.retrieve<ApiType.ShopProduct>('/api-shop/product/', id, {})
         return Promise.resolve({shopProduct:res})
+    },
+    loadShopSubscriptions:async()=> {
+        const subs = await Api.list<ApiType.ShopSubscription[]>('/api-shop/subscription/', {
+            valid:1
+        })
+        return Promise.resolve({
+            shopSubscriptions:subs
+        })
     }
 }
 
