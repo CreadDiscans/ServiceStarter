@@ -27,16 +27,18 @@ class Payment extends React.Component<Props> {
         email:'creaddiscans@gmail.com',
         tel:'010-4045-0565',
         method:'card',
-        type:''
+        type:'',
+        pending: false
     }
 
     static getDerivedStateFromProps(props:Props, state:any) {
         const {location, MypageAction, auth, history} = props;
         const query = U.parseQuery(location.search);
-        if (query.imp_uid && auth.userProfile) {
+        if (query.imp_uid && auth.userProfile && !state.pending) {
             const path = location.pathname.split('/')
             MypageAction.postPayment(path[2], U.getId(location), query.imp_uid, auth.userProfile)
-            history.push('/mypage/cart')
+            .then(()=> history.push('/mypage/cart'))
+            return {pending:true}
         }
         return null;
     }
