@@ -80,3 +80,14 @@ export type ShopPayment = {
     vbank:string
     cart:number|ShopCart
 }
+export type ChatRoom = {
+    id:number
+    user:number[]|Profile[]
+}
+export type ChatMessage = {
+    id:number
+    sender:number|Profile
+    content:string
+    created:string
+    room:number|ChatRoom
+}

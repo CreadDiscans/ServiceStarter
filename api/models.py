@@ -119,3 +119,20 @@ class ShopCard(models.Model):
     buyer_tel = models.CharField(max_length=100)
 
 
+class ChatRoom(models.Model):
+    class Meta:
+        pass
+
+    user = models.ManyToManyField(to='Profile')
+
+
+class ChatMessage(models.Model):
+    class Meta:
+        pass
+
+    sender = models.ForeignKey(to='Profile', on_delete=models.SET_NULL, null=True, blank=True)
+    content = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    room = models.ForeignKey('ChatRoom', on_delete=models.CASCADE)
+

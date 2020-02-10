@@ -9,6 +9,8 @@ import { History } from 'history';
 import { Switch, Route } from 'react-router-dom';
 import Shop from './Shop';
 import Payment from './ShopDetail';
+import Chat from './Chat';
+import ChatRoom from './ChatRoom';
 interface Props {
     auth:AuthState
     history:History
@@ -29,13 +31,18 @@ class Dashboard extends React.Component<Props> {
                         <ListGroupItem>
                             <a onClick={()=>history.push('/dashboard/shop')}>Shop</a>
                         </ListGroupItem>
+                        <ListGroupItem>
+                            <a onClick={()=>history.push('/dashboard/chat')}>Chat</a>
+                        </ListGroupItem>
                     </ListGroup>
                 </Col>
                 <Col xs={12} md={9}>
                     <Switch>
-                        <Route exact path="/dashboard" component={DashboardHome} />
-                        <Route exact path="/dashboard/shop" component={Shop} />
-                        <Route exact path="/dashboard/shop/:id" component={Payment} />
+                        <Route exact path="/dashboard" component={DashboardHome}/>
+                        <Route exact path="/dashboard/shop" component={Shop}/>
+                        <Route exact path="/dashboard/shop/:id" component={Payment}/>
+                        <Route exact path="/dashboard/chat" component={Chat}/>
+                        <Route exact path="/dashboard/chat/:id" component={ChatRoom}/>
                     </Switch>
                 </Col>
             </Row>
