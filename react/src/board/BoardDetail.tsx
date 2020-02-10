@@ -48,7 +48,6 @@ class BoardDetail extends React.Component<Props> {
         Api.retrieve<ApiType.BoardItem>('/api-board/item/',U.getId(location), {
         }).then(async(item)=> {
             item.author = typeof item.author === 'number' ? await Api.retrieve<ApiType.Profile>('/api-profile/',item.author,{}) : item.author
-            console.log(item)
             this.loadComment(item, 1).then(done, done)
         }).catch(err=> {
             history.push('/board')
