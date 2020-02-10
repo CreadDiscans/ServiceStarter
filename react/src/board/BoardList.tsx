@@ -42,7 +42,6 @@ class BoardList extends React.Component<Props> {
                 content:'',
                 group:board.activeGroup.id,
                 author:auth.userProfile.id,
-                author_name:auth.userProfile.name
             }).then(res=> history.push('/board/write/'+res.id))
         }
     }
@@ -64,7 +63,7 @@ class BoardList extends React.Component<Props> {
                     {board.list.map(item=> <tr key={item.id}>
                         <th scope="row"><a onClick={()=>history.push('/board/'+item.id)}>{item.id}</a></th>
                         <td><a onClick={()=>history.push('/board/'+item.id)}>{item.title}</a></td>
-                        <td><a onClick={()=>history.push('/board/'+item.id)}>{item.author_name}</a></td>
+                        <td><a onClick={()=>history.push('/board/'+item.id)}>{typeof item.author !=='number' && item.author.name}</a></td>
                         <td><a onClick={()=>history.push('/board/'+item.id)}>{moment(item.created).fromNow()}</a></td>
                     </tr>)}
                 </tbody>

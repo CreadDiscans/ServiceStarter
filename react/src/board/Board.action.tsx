@@ -33,6 +33,10 @@ export const BoardAction = {
             group:group.id,
             valid:1
         })
+        const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
+            'pk__in[]':res.items.map(item=>item.author)
+        })
+        res.items.forEach(item=>item.author = profiles.filter(profile=>profile.id === item.author)[0])
         return Promise.resolve({
             totalPage:res.total_page,
             currentPage:page,

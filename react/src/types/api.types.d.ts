@@ -18,7 +18,6 @@ export type BoardItem = {
     created:string
     modified:string
     author:number|Profile
-    author_name:string
     valid:boolean
     group:number|BoardGroup
 }
@@ -27,7 +26,6 @@ export type BoardComment = {
     content:string
     created:string
     author:number|Profile
-    author_name:string
     item:number|BoardItem
     parent:number|BoardComment
 }

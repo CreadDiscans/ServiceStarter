@@ -46,7 +46,9 @@ class BoardDetail extends React.Component<Props> {
     UNSAFE_componentWillMount() {
         const {location, done, history} = this.props;
         Api.retrieve<ApiType.BoardItem>('/api-board/item/',U.getId(location), {
-        }).then(item=> {
+        }).then(async(item)=> {
+            item.author = typeof item.author === 'number' ? await Api.retrieve<ApiType.Profile>('/api-profile/',item.author,{}) : item.author
+            console.log(item)
             this.loadComment(item, 1).then(done, done)
         }).catch(err=> {
             history.push('/board')
@@ -64,11 +66,11 @@ class BoardDetail extends React.Component<Props> {
         return new Promise(resolve=> {
             Api.list<ApiType.BoardComment[]>('/api-board/comment/', {
                 'parent__in[]':comments.map(com=> com.d.id),
-            }).then(items=> {
+            }).then(async(items)=> {
                 if (items.length === 0) {
                     resolve()
                 } else {
-                    const commentWraps:CommentWrap[] = items.map(item=>({d:item, children:[]}))
+                    const commentWraps = await this.mappingAuthor(items)
                     comments.forEach(item=> {
                         commentWraps.filter(child=> child.d.parent === item.d.id)
                         .forEach(child=>item.children.push(child))
@@ -79,23 +81,34 @@ class BoardDetail extends React.Component<Props> {
         })
     }
 
-    loadComment(item:ApiType.BoardItem, page:number) {
-        return Api.list<{total_page:number,items:ApiType.BoardComment[]}>('/api-board/comment/',{
+    async mappingAuthor(items:ApiType.BoardComment[]) {
+        const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
+            'pk__in[]':items.map(item=>item.author)
+        })
+        items.forEach(item=>item.author = profiles.filter(profile=>profile.id === item.author)[0])
+        const commentWraps:CommentWrap[] = items.map(item=>({d:item, children:[]}))
+        return Promise.resolve(commentWraps)
+    }
+
+    async loadComment(item:ApiType.BoardItem, page:number) {
+        const res = await Api.list<{total_page:number,items:ApiType.BoardComment[]}>('/api-board/comment/',{
             item:item.id,
             page:page,
             count_per_page:10,
             parent__isnull:true
-        }).then(res=> {
-            const commentWraps:CommentWrap[] = res.items.map(item=>({d:item, children:[]}))
-            this.loadNestComment(commentWraps).then(()=> {
-                this.setState({
-                    item:item,
-                    currentPage:page,
-                    totalPage:res.total_page,
-                    comments:commentWraps
-                })
-            })
         })
+        let comments:CommentWrap[] = []
+        if (res.items.length > 0) {
+            comments = await this.mappingAuthor(res.items)
+            await this.loadNestComment(comments)
+        }
+        this.setState({
+            item:item,
+            currentPage:page,
+            totalPage:res.total_page,
+            comments:comments
+        })
+        return Promise.resolve()
     }
 
     comment(parent:ApiType.BoardComment|null=null) {
@@ -105,8 +118,7 @@ class BoardDetail extends React.Component<Props> {
                 content:this.state.commentInput,
                 item:this.state.item.id,
                 parent:parent ? parent.id : null,
-                author:auth.userProfile.id,
-                author_name:auth.userProfile.name
+                author:auth.userProfile.id
             }).then(res=> {
                 this.state.item && this.loadComment(this.state.item, 1)
                 this.setState({commentInput:'', nestTarget: -1})
@@ -163,7 +175,7 @@ class BoardDetail extends React.Component<Props> {
         const {auth} = this.props;
         return <Card key={item.d.id} className="border-0">
             <CardHeader className="py-1" style={{color:'gray'}}>
-                {item.d.author_name}
+                {typeof item.d.author !== 'number' && item.d.author.name}
                 <span className="float-right">{moment(item.d.created).fromNow()}</span>
             </CardHeader>
             <CardBody className="pt-1" style={{whiteSpace:'pre'}}>
@@ -191,7 +203,7 @@ class BoardDetail extends React.Component<Props> {
             <h4>{this.state.item.title}</h4>
             <hr />
             <div className="text-right" style={{color:'gray'}}>{new Date(this.state.item.created).toLocaleString()}</div>
-            <div className="text-right" style={{color:'gray'}}>{this.state.item.author_name}</div>
+            <div className="text-right" style={{color:'gray'}}>{typeof this.state.item.author !== 'number' && this.state.item.author.name}</div>
             <div dangerouslySetInnerHTML={{__html:this.state.item.content}}></div>
             {auth.userProfile && auth.userProfile.id === this.state.item.author && <div className="text-right">
                 <Button className="mx-1" color="info" onClick={()=>this.state.item && history.push('/board/write/'+this.state.item.id)}>

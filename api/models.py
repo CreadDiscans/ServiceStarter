@@ -40,7 +40,6 @@ class BoardItem(models.Model):
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
-    author_name = models.CharField(max_length=100)
     valid = models.BooleanField(default=False)
 
     group = models.ForeignKey('BoardGroup', on_delete=models.CASCADE)
@@ -52,7 +51,6 @@ class BoardComment(models.Model):
     content = models.TextField(null=True)
     created = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
-    author_name = models.CharField(max_length=100)
 
     item = models.ForeignKey('BoardItem', on_delete=models.CASCADE)
     parent = models.ForeignKey('BoardComment', null=True, on_delete=models.CASCADE)

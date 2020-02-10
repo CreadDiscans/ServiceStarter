@@ -51,7 +51,6 @@ class BoardWrite extends React.Component<Props> {
                 content:this.state.item.content,
                 group:this.state.group.id,
                 author:auth.userProfile.id,
-                author_name:auth.userProfile.name,
                 valid:1
             }).then(res=> history.push('/board'))
         }
