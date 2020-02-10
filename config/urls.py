@@ -8,7 +8,7 @@ from rest_framework_swagger.views import get_swagger_view
 from rest_framework import routers
 from rest_framework_jwt.views import ObtainJSONWebToken, obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 from .views import index, UserViewSet, GroupViewSet, fcm_test, assets, activate, send_reset_mail, UploadViewset
-from .views import PaymentValidator, IamportWebhook, Billings, BillingsWebhook
+from .views import PaymentValidator, IamportWebhook, Billings
 router = routers.DefaultRouter()
 router.register(r'api-user', UserViewSet)
 router.register(r'api-group', GroupViewSet)
@@ -16,7 +16,6 @@ router.register(r'upload', UploadViewset, basename='uploader')
 router.register(r'payment', PaymentValidator, basename='payment')
 router.register(r'webhook', IamportWebhook, basename='webhook')
 router.register(r'billings', Billings, basename='billings')
-router.register(r'billings/schedule',BillingsWebhook, basename='billingsSchedule')
 class ObtainAuthTokenWithLogin(ObtainJSONWebToken):
     def post(self, request):
         result = super().post(request)

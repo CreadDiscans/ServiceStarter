@@ -326,23 +326,6 @@ class Billings(viewsets.ViewSet):
             print(res)
         return Response({}, status=status.HTTP_200_OK)
 
-@permission_classes((IsAuthenticated,))
-@authentication_classes((JSONWebTokenAuthentication,))
-class BillingsWebhook(viewsets.ViewSet):
-    
-    def create(self, request):
-        body = json.loads(request.body)
-        token = get_imp_token()
-        payment = json.loads(requests.get('https://api.iamport.kr/payments/'+body['imp_uid'],
-            headers={'Authorization':token['response']['access_token']}).text)
-        if payment['response']['status'] == 'paid':
-            schedule_billing(token, body['imp_uid'])
-        else:
-            billing = ShopBilling.objects.get(imp_uid=imp_uid)
-            billing.scheduled = False
-            billing.save()
-        return Response({}, status=status.HTTP_200_OK)
-
 def schedule_billing(token, imp_uid, for_expand=False):
     billing = ShopBilling.objects.get(imp_uid=imp_uid)
     if for_expand:
@@ -388,7 +371,20 @@ class IamportWebhook(viewsets.ViewSet):
     def create(self, request):
         body = json.loads(request.body)
         out = {}
-        if body['status'] == 'paid' or body['status'] == 'cancelled':
+        billings = ShopBilling.objects.filter(merchant_uid=body['merchant_uid'])
+        if billings.count() > 0:
+            billing = billings[0]
+            token = get_imp_token()
+            payment = json.loads(requests.get('https://api.iamport.kr/payments/'+body['imp_uid'],
+                headers={'Authorization':token['response']['access_token']}).text)
+            if payment['response']['status'] == 'paid':
+                schedule_billing(token, billing.imp_uid)
+                out['message'] = 'rescheduled'
+            else:
+                billing.scheduled = False
+                billing.save()
+                out['message'] = 'fail rescheduled'
+        elif body['status'] == 'paid' or body['status'] == 'cancelled':
             payments = ShopPayment.objects.filter(imp_uid=body['imp_uid'])
             if payments.count() > 0:
                 payment = payments[0]
