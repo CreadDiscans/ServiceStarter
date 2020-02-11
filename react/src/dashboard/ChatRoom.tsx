@@ -8,11 +8,19 @@ import { Col, Row, ListGroup, ListGroupItem, Button, InputGroup, Input, InputGro
 import * as ApiType from 'types/api.types';
 import { Paginator } from 'component/Paginator';
 import { FaPaperPlane } from 'react-icons/fa';
+import moment from 'moment';
+import { AuthState } from 'auth/Auth.action';
 interface Props {
+    auth:AuthState
     location:Location
 }
 
 class ChatRoom extends React.Component<Props> {
+
+    socket!:WebSocket
+    chat:any
+    scrollUpdate = false
+    whenScrollUpHeight = 0
 
     state:{
         profiles:ApiType.Profile[]
@@ -20,16 +28,81 @@ class ChatRoom extends React.Component<Props> {
         profileTotalPage:number
         room?:ApiType.ChatRoom
         input:string
+        messages:ApiType.ChatMessage[]
+        messageCurrentPage:number
+        messageTotalPage:number
     } = {
         profiles:[],
         profileCurrentPage:1,
         profileTotalPage:1,
-        input:''
+        input:'',
+        messages:[],
+        messageCurrentPage:1,
+        messageTotalPage:1
     }
 
     componentDidMount() {
         this.loadProfile(1)
         this.loadRoom()
+        this.loadMessage(1)
+        this.connectWebSocket()
+    }
+
+    componentWillUnmount() {
+        this.socket.close()
+    }
+
+    getSnapshotBeforeUpdate(prevProps:Props,prevState:any){
+        if (this.state.messages.length !== prevState.messages.length) {
+            this.scrollUpdate = true
+        }
+        return null
+    }
+
+    componentDidUpdate() {
+        if (this.scrollUpdate) {
+            if (this.whenScrollUpHeight !== 0) {
+                this.chat.scrollTop = this.chat.scrollHeight - this.whenScrollUpHeight
+                this.whenScrollUpHeight = 0
+            } else {
+                this.chat.scrollTop = this.chat.scrollHeight
+            }
+            this.scrollUpdate = false
+        }
+    }
+
+    connectWebSocket() {
+        const {location} = this.props;
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        this.socket = new WebSocket(protocol + '//' + window.location.host + '/ws/message/'+U.getId(location)+'/');
+        this.socket.onopen = (ev) => {
+            console.log(ev)
+        }
+        this.socket.onclose = (ev) => {
+            console.log(ev)
+        }
+        this.socket.onmessage = (ev) => {
+            const data = JSON.parse(ev.data);
+            this.setState({messages:[...this.state.messages, data]})
+        }
+        this.socket.onerror = (err) => {
+            console.log(err)
+        }
+    }
+
+    async loadMessage(page:number) {
+        const {location} = this.props;
+        const res = await Api.list<{total_page:number,items:ApiType.ChatMessage[]}>('/api-chat/message/',{
+            page:page,
+            count_per_page:10,
+            room:U.getId(location)
+        })
+        const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
+            'pk__in[]':U.union(res.items.map(item=>[item.sender]))
+        })
+        res.items.forEach(item=> item.sender = profiles.filter(p=>p.id === item.sender)[0])
+        res.items.reverse()
+        this.setState({messages:[...res.items, ...this.state.messages], messageCurrentPage:page, messageTotalPage:res.total_page})
     }
 
     async loadRoom() {
@@ -64,9 +137,29 @@ class ChatRoom extends React.Component<Props> {
     submit(e:React.FormEvent<HTMLFormElement>) {
         e.stopPropagation()
         e.preventDefault()
+        if(this.state.input) {
+            const {location, auth} = this.props;
+            if (auth.userProfile) {
+                this.socket.send(JSON.stringify({
+                    content:this.state.input,
+                    room: U.getId(location),
+                    created: moment().format('YYYY-MM-DD[T]HH:mm:ss'),
+                    sender:auth.userProfile.id
+                }))
+                this.setState({input:''})
+            }
+        }
+    }
+
+    onScroll(e:any) {
+        if (e.target.scrollTop === 0 && this.state.messageCurrentPage < this.state.messageTotalPage) {
+            this.whenScrollUpHeight = this.chat.scrollHeight
+            this.loadMessage(this.state.messageCurrentPage+1)
+        }
     }
 
     render() {
+        const {auth} = this.props;
         return <div>
             <h3>ChatRoom</h3>
             <Row>
@@ -90,9 +183,25 @@ class ChatRoom extends React.Component<Props> {
                 </Col>
                 <Col md={6}>
                     <h4>메시지</h4>
-                    <div className="border border-bottom-0 rounded-top p-3" 
-                        style={{minHeight:300, overflow:'auto'}}>
-
+                    <div ref={ref=>this.chat=ref}className="border border-bottom-0 rounded-top p-3" 
+                        style={{height:300, overflow:'auto', scrollBehavior:this.whenScrollUpHeight === 0 ? 'smooth':'unset'}}
+                        onScroll={(e)=>this.onScroll(e)}>
+                        {this.state.messages.map((item, i)=> <div className="mb-2" key={i}>
+                            {auth.userProfile && typeof item.sender !== 'number' && auth.userProfile.id !== item.sender.id && 
+                            <div style={{fontSize:12, fontWeight:'bold'}}>{item.sender.name}</div>}
+                            <div className="border rounded-lg p-1 w-75" style={Object.assign({fontSize:12},auth.userProfile && typeof item.sender !== 'number' &&
+                                auth.userProfile.id === item.sender.id ? {
+                                    marginLeft:'25%',
+                                    background:'#fbffbd',
+                                    textAlign:'right'
+                                }:{})}>
+                                {item.content}
+                            </div>
+                            <div style={Object.assign({fontSize:10},auth.userProfile && typeof item.sender !== 'number' &&
+                                auth.userProfile.id === item.sender.id ? {
+                                    textAlign:'right'
+                                }:{})}>{moment(item.created).fromNow()}</div>
+                        </div>)}
                     </div>
                     <Form onSubmit={(e)=>this.submit(e)}>
                         <InputGroup>
@@ -111,7 +220,9 @@ class ChatRoom extends React.Component<Props> {
 }
 
 export default connectWithoutDone(
-    (state:RootState)=>({}),
+    (state:RootState)=>({
+        auth:state.auth
+    }),
     (dispatch:Dispatch)=>({}),
     ChatRoom
 )
