@@ -1,5 +1,10 @@
 import * as custom from './custom.types'
 
+export type TaskClient = {
+    id:number
+    channel_name:string
+    work:number|TaskWork
+}
 export type Media = {
     id:number
     file:string
@@ -33,6 +38,13 @@ export type BoardGroup = {
     id:number
     name:string
     readonly:boolean
+}
+export type TaskWork = {
+    id:number
+    owner:number|profile
+    progress:number
+    status:string
+    body:string
 }
 export type ShopSubscription = {
     id:number

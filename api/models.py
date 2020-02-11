@@ -1,5 +1,13 @@
 from django.db import models
 
+class TaskClient(models.Model):
+    class Meta:
+        pass
+
+    channel_name = models.CharField(max_length=100)
+
+    work = models.ForeignKey('TaskWork', on_delete=models.CASCADE)
+
 class Profile(models.Model):
     class Meta:
         verbose_name_plural='사용자'
@@ -54,6 +62,16 @@ class BoardComment(models.Model):
 
     item = models.ForeignKey('BoardItem', on_delete=models.CASCADE)
     parent = models.ForeignKey('BoardComment', null=True, on_delete=models.CASCADE)
+
+class TaskWork(models.Model):
+    class Meta:
+        pass
+
+    owner = models.ForeignKey(to='profile', on_delete=models.CASCADE)
+    progress = models.IntegerField(default=0)
+    status = models.CharField(max_length=100)
+    body = models.TextField(null=True, blank=True)
+
 
 class ShopCart(models.Model):
     class Meta:

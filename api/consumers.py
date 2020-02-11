@@ -1,7 +1,9 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
-from api.models import ChatRoom, ChatMessage, Profile
+from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from api.models import ChatRoom, ChatMessage, Profile, TaskWork, TaskClient
 from api.views import getSerializer
+from api.tasks import one_minute_task
 import json
+
 
 class MessageConsumer(AsyncWebsocketConsumer):
 
@@ -45,3 +47,26 @@ class MessageConsumer(AsyncWebsocketConsumer):
 
     async def room_message(self, event):
         await self.send(text_data=json.dumps(event['message']))
+
+class TaskConsumer(WebsocketConsumer):
+    def connect(self):
+        TaskClient.objects.filter(work=int(self.scope['url_route']['kwargs']['task_id'])).delete()
+        work = TaskWork.objects.get(pk=self.scope['url_route']['kwargs']['task_id'])
+        TaskClient.objects.create(
+            channel_name=self.channel_name,
+            work=work
+        )
+        self.accept()
+
+    def disconnect(self, code):
+        TaskClient.objects.filter(channel_name=self.channel_name).delete()
+
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        if data['type'] == 'start': 
+            one_minute_task.delay(data['work_id'])
+
+    def from_celery(self, data):
+        works = TaskWork.objects.filter(taskclient__channel_name=self.channel_name)
+        if works.count() > 0:
+            self.send(text_data=json.dumps(getSerializer(TaskWork)(works[0]).data))

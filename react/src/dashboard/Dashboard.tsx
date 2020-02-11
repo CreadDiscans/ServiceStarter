@@ -11,6 +11,7 @@ import Shop from './Shop';
 import Payment from './ShopDetail';
 import Chat from './Chat';
 import ChatRoom from './ChatRoom';
+import Task from './Task';
 interface Props {
     auth:AuthState
     history:History
@@ -34,6 +35,9 @@ class Dashboard extends React.Component<Props> {
                         <ListGroupItem>
                             <a onClick={()=>history.push('/dashboard/chat')}>Chat</a>
                         </ListGroupItem>
+                        <ListGroupItem>
+                            <a onClick={()=>history.push('/dashboard/task')}>Task</a>
+                        </ListGroupItem>
                     </ListGroup>
                 </Col>
                 <Col xs={12} md={9}>
@@ -43,6 +47,7 @@ class Dashboard extends React.Component<Props> {
                         <Route exact path="/dashboard/shop/:id" component={Payment}/>
                         <Route exact path="/dashboard/chat" component={Chat}/>
                         <Route exact path="/dashboard/chat/:id" component={ChatRoom}/>
+                        <Route exact path="/dashboard/task" component={Task}/>
                     </Switch>
                 </Col>
             </Row>
