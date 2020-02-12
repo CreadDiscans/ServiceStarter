@@ -20,6 +20,9 @@ import {
     Dashboard
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
+import 'firebase/analytics';
 
 interface Props {
     AuthAction: typeof AuthAction
@@ -27,8 +30,26 @@ interface Props {
 
 class App extends Component<Props> {
 
-
     componentDidMount() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
+            authDomain: "servicestarter-770d0.firebaseapp.com",
+            databaseURL: "https://servicestarter-770d0.firebaseio.com",
+            projectId: "servicestarter-770d0",
+            storageBucket: "servicestarter-770d0.appspot.com",
+            messagingSenderId: "460789091763",
+            appId: "1:460789091763:web:358e2a97967b45caff0fc6",
+            measurementId: "G-4QT1LCRVJ0"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics()
+        const messaging = firebase.messaging();
+        messaging.requestPermission().then(()=> {
+            console.log('권한 ok')
+            return messaging.getToken()
+        }).then(token=> console.log(token))
+        .catch(err=> console.log('권한 에러',err))
         tokenExpiredSubject.subscribe(val=> {
             if(val) {
                 const { AuthAction } = this.props;

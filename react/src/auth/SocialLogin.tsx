@@ -12,11 +12,12 @@ declare var window:any;
 declare var naver:any;
 declare var Kakao:any;
 
-const fbConfig = {
-    apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
-    authDomain: "servicestarter-770d0.firebaseapp.com",
-    projectId: "servicestarter-770d0",
-}
+// const fbConfig = {
+//     apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
+//     authDomain: "servicestarter-770d0.firebaseapp.com",
+//     projectId: "servicestarter-770d0",
+//     messagingSenderId: '460789091763'
+// }
 const naverConfig = {
     clientId: "GfwH3vvqAGsA6nx8zX_X",
     callbackUrl: "http://servicestarter.kro.kr/naver",
@@ -27,7 +28,7 @@ const kakaoConfig = 'fc813981157c71f45cc878d9b26fd4d4'
 let googleProvider:any = null
 let facebookProvider:any = null
 if (process.env.APP_ENV === 'browser') {
-    firebase.initializeApp(fbConfig)
+    // firebase.initializeApp(fbConfig)
     Kakao.init(kakaoConfig)
     googleProvider = new firebase.auth.GoogleAuthProvider()
     facebookProvider = new firebase.auth.FacebookAuthProvider()
