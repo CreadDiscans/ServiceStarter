@@ -6,7 +6,6 @@ import { Button, ListGroup, ListGroupItem, Progress } from 'reactstrap';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { AuthState } from 'auth/Auth.action';
-import { FaTrash } from 'react-icons/fa';
 interface Props {
     auth:AuthState
 }
@@ -35,6 +34,7 @@ class Task extends React.Component<Props>{
             const tasks = await Api.list<ApiType.TaskWork[]>('/api-task/work/',{
                 owner:auth.userProfile.id
             })
+            tasks.reverse()
             tasks.forEach(t=>this.connectTask(t))
             this.setState({tasks})
         }
@@ -45,15 +45,27 @@ class Task extends React.Component<Props>{
         if (auth.userProfile) {
             const task = await Api.create<ApiType.TaskWork>('/api-task/work/',{
                 owner:auth.userProfile.id,
-                status:'warning'
+                status:'ready',
+                body:JSON.stringify({
+                    task:'one_minute_task'
+                })
             })
+            this.connectTask(task)
             this.setState({tasks:[...this.state.tasks, task]})
         }
     }
 
     async deleteTask(item:ApiType.TaskWork) {
+        this.disconnectTask(item)
         this.setState({tasks:[...this.state.tasks.filter(t=>t.id !== item.id)]})
         Api.delete('/api-task/work/', item.id)
+    }
+
+    disconnectTask(item:ApiType.TaskWork) {
+        this.sockets.filter(sock=>sock.d.id === item.id).forEach(sock=>{
+            sock.s.close()
+        })
+        this.sockets = this.sockets.filter(sock=>sock.d.id !== item.id)
     }
 
     connectTask(item:ApiType.TaskWork) {
@@ -84,7 +96,7 @@ class Task extends React.Component<Props>{
             <ListGroup className="mb-3">
                 {this.state.tasks.map(item=> <ListGroupItem key={item.id}>
                     <Progress animated color={item.status} value={item.progress} />
-                    <Button className="m-2" color="success" onClick={()=>this.startTask(item)}>Start</Button>
+                    <Button className="m-2" color="success" onClick={()=>this.startTask(item)} disabled={item.status==='running'}>Start</Button>
                     <Button className="m-2" color="danger" onClick={()=>this.deleteTask(item)}>Delete</Button>
                 </ListGroupItem>)}
             </ListGroup>

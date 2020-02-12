@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from api.models import ChatRoom, ChatMessage, Profile, TaskWork, TaskClient
 from api.views import getSerializer
-from api.tasks import one_minute_task
+from api.tasks import background_task
 import json
 
 
@@ -64,7 +64,7 @@ class TaskConsumer(WebsocketConsumer):
     def receive(self, text_data):
         data = json.loads(text_data)
         if data['type'] == 'start': 
-            one_minute_task.delay(data['work_id'])
+            background_task.delay(data['work_id'])
 
     def from_celery(self, data):
         works = TaskWork.objects.filter(taskclient__channel_name=self.channel_name)
