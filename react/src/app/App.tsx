@@ -20,10 +20,8 @@ import {
     Dashboard
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
-import firebase from 'firebase/app';
-import 'firebase/messaging';
-import 'firebase/analytics';
 
+declare var firebase:any;
 interface Props {
     AuthAction: typeof AuthAction
 }
@@ -48,8 +46,8 @@ class App extends Component<Props> {
         messaging.requestPermission().then(()=> {
             console.log('권한 ok')
             return messaging.getToken()
-        }).then(token=> console.log(token))
-        .catch(err=> console.log('권한 에러',err))
+        }).then((token:any)=> console.log(token))
+        .catch((err:any)=> console.log('권한 에러',err))
         tokenExpiredSubject.subscribe(val=> {
             if(val) {
                 const { AuthAction } = this.props;
