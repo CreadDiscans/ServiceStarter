@@ -29,34 +29,40 @@ interface Props {
 class App extends Component<Props> {
 
     componentDidMount() {
-        const firebaseConfig = {
-            apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
-            authDomain: "servicestarter-770d0.firebaseapp.com",
-            databaseURL: "https://servicestarter-770d0.firebaseio.com",
-            projectId: "servicestarter-770d0",
-            storageBucket: "servicestarter-770d0.appspot.com",
-            messagingSenderId: "460789091763",
-            appId: "1:460789091763:web:358e2a97967b45caff0fc6",
-            measurementId: "G-4QT1LCRVJ0"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics()
-        document.addEventListener('DOMContentLoaded', function(){
-            if(navigator.serviceWorker){ 
-            navigator.serviceWorker.register('/assets/sw.js') 
-            .then(function(reg){
-                console.log('서비스워커 등록성공 :', reg)
-                const messaging = firebase.messaging();
-                messaging.requestPermission().then(()=> {
-                    console.log('권한 ok')
-                    return messaging.getToken()
-                }).then((token:any)=> console.log(token))
-                .catch((err:any)=> console.log('권한 에러',err))
-            }) 
-            .catch(function(error){console.log('서비스워커 등록실패 :', error)}); 
-            }
-        })
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then(res=> {
+            const messaging = firebase.messaging()
+            console.log(res)
+            messaging.getToken().then((token:any)=>console.log(token))
+        }).catch(err=> console.log('err'))
+        // const firebaseConfig = {
+        //     apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
+        //     authDomain: "servicestarter-770d0.firebaseapp.com",
+        //     databaseURL: "https://servicestarter-770d0.firebaseio.com",
+        //     projectId: "servicestarter-770d0",
+        //     storageBucket: "servicestarter-770d0.appspot.com",
+        //     messagingSenderId: "460789091763",
+        //     appId: "1:460789091763:web:358e2a97967b45caff0fc6",
+        //     measurementId: "G-4QT1LCRVJ0"
+        // };
+        // // Initialize Firebase
+        // firebase.initializeApp(firebaseConfig);
+        // firebase.analytics()
+        // document.addEventListener('DOMContentLoaded', function(){
+        //     if(navigator.serviceWorker){ 
+        //     navigator.serviceWorker.register('/assets/firebase-messaging-sw.js') 
+        //     .then(function(reg){
+        //         console.log('서비스워커 등록성공 :', reg)
+        //         const messaging = firebase.messaging();
+        //         messaging.requestPermission().then(()=> {
+        //             console.log('권한 ok')
+        //             return messaging.getToken()
+        //         }).then((token:any)=> console.log(token))
+        //         .catch((err:any)=> console.log('권한 에러',err))
+        //     }) 
+        //     .catch(function(error){console.log('서비스워커 등록실패 :', error)}); 
+        //     }
+        // })
         tokenExpiredSubject.subscribe(val=> {
             if(val) {
                 const { AuthAction } = this.props;
@@ -83,6 +89,7 @@ class App extends Component<Props> {
                         <Route path="/reset" component={Reset}/>
                         <Route path="/mypage" component={MyPage}/>
                         <Route path="/board" component={Board}/>
+                        <Route path="/firebase-cloud-messaging-push-scope" component={Home} />
                         <Route path="*" component={()=><Redirect to="/" />} />
                     </Switch>
                 </div>

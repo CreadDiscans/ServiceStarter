@@ -33,6 +33,7 @@ urlpatterns = [
     path('api-', include('api.urls')),
     path('activate/<str:uid64>/<str:token>/', activate),
     path('send_reset_mail', send_reset_mail),
+    path('firebase-messaging-sw.js', assets),
     path('fcm_test', fcm_test),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     path('', index)
