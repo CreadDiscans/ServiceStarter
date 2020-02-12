@@ -34,14 +34,5 @@
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-messaging.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function(){
-        if(navigator.serviceWorker){ 
-          navigator.serviceWorker.register('/assets/sw.js') 
-          .then(function(reg){console.log('서비스워커 등록성공 :', reg)}) 
-          .catch(function(error){console.log('서비스워커 등록실패 :', error)}); 
-        }
-      })
-    </script>
   </body>
 </html>

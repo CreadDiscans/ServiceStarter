@@ -42,12 +42,21 @@ class App extends Component<Props> {
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         firebase.analytics()
-        const messaging = firebase.messaging();
-        messaging.requestPermission().then(()=> {
-            console.log('권한 ok')
-            return messaging.getToken()
-        }).then((token:any)=> console.log(token))
-        .catch((err:any)=> console.log('권한 에러',err))
+        document.addEventListener('DOMContentLoaded', function(){
+            if(navigator.serviceWorker){ 
+            navigator.serviceWorker.register('/assets/sw.js') 
+            .then(function(reg){
+                console.log('서비스워커 등록성공 :', reg)
+                const messaging = firebase.messaging();
+                messaging.requestPermission().then(()=> {
+                    console.log('권한 ok')
+                    return messaging.getToken()
+                }).then((token:any)=> console.log(token))
+                .catch((err:any)=> console.log('권한 에러',err))
+            }) 
+            .catch(function(error){console.log('서비스워커 등록실패 :', error)}); 
+            }
+        })
         tokenExpiredSubject.subscribe(val=> {
             if(val) {
                 const { AuthAction } = this.props;
