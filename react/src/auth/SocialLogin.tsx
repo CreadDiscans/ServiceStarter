@@ -3,12 +3,11 @@ import { Button } from 'reactstrap';
 import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
-import firebase from 'firebase/app';
-import "firebase/auth";
 import { AuthAction } from './Auth.action';
 import { History } from 'history';
 
 declare var window:any;
+declare var firebase:any;
 declare var naver:any;
 declare var Kakao:any;
 
