@@ -5,6 +5,7 @@ import * as CustomType from 'types/custom.types';
 
 export type AuthState = {
   userProfile?:ApiType.Profile
+  fcmToken?:string
 }
 
 const initState:AuthState = {
@@ -12,7 +13,15 @@ const initState:AuthState = {
 };
 
 export const AuthAction = {
-  signIn: async(username:string, password:string) => {
+  setFcm:async(profile:ApiType.Profile|undefined, fcmToken:string)=> {
+    if (profile) {
+      profile = await Api.patch<ApiType.Profile>('/api-profile/',profile.id, {
+        fcm_token:fcmToken
+      })
+    }
+    return Promise.resolve({fcmToken, userProfile:profile})
+  },
+  signIn: async(username:string, password:string, fcmToken:string|undefined=undefined) => {
     const res = await Api.list<{username:boolean, email:boolean}>('/api-user/',{
       username:username
     })
@@ -27,6 +36,9 @@ export const AuthAction = {
     }).catch(err=>  ({token:null}))
     if (jwt.token === null) return Promise.reject('password wrong')
     Api.signIn(jwt.token, profile[0])
+    if (fcmToken) {
+      await AuthAction.setFcm(profile[0], fcmToken)
+    }
     return Promise.resolve({userProfile: profile[0]})
   },
   signOut: async ()=>{
@@ -40,14 +52,14 @@ export const AuthAction = {
       password:password
     }).then(res=> ({}))
   },
-  socialSign: async (sns:string, uid:string, name:string, token:string)=> {
+  socialSign: async (sns:string, uid:string, name:string, token:string, fcmToken:string|undefined)=> {
     await Api.update('/api-user/', 0, {
       uid:uid,
       sns:sns,
       name:name,
       token:token
     })
-    return AuthAction.signIn(sns+'@'+uid, token)
+    return AuthAction.signIn(sns+'@'+uid, token, fcmToken)
   }
 }
 

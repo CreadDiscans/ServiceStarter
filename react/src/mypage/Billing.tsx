@@ -7,9 +7,9 @@ import { MypageAction, MypageState } from './Mypage.action';
 import { AuthState } from 'auth/Auth.action';
 import { Button, Card, CardTitle, CardBody, FormGroup, Label, Input, Col, Row, ListGroup, ListGroupItem } from 'reactstrap';
 import { History } from 'history'
-import { AlertSubject } from 'component/Alert';
 import * as ApiType from 'types/api.types';
 import moment from 'moment';
+import { SharedAction } from 'component/Shared.action';
 declare var IMP:any;
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
     auth:AuthState
     mypage:MypageState
     MypageAction: typeof MypageAction
+    SharedAct: typeof SharedAction
     history:History
 }
 
@@ -42,7 +43,7 @@ class Billing extends React.Component<Props> {
     }
 
     componentDidMount() {
-        const {MypageAction, location, auth, history} = this.props;
+        const {MypageAction, location, auth, history, SharedAct} = this.props;
         const id = U.getId(location);
         if (auth.userProfile) {
             MypageAction.loadMyCards(auth.userProfile)
@@ -57,12 +58,12 @@ class Billing extends React.Component<Props> {
                     history.push('/dashboard/shop')
                 }
             }).catch(()=> {
-                AlertSubject.next({
+                SharedAct.alert({
                     title:'알림',
                     content:'이미 구독중입니다.',
                     onConfirm:()=>{
                         history.push('/mypage/billing')
-                        AlertSubject.next(undefined)
+                        SharedAct.alert(undefined)
                     },
                     onCancel:undefined
                 })
@@ -101,15 +102,16 @@ class Billing extends React.Component<Props> {
     }
 
     deleteCard(item:ApiType.ShopCard) {
-        AlertSubject.next({
+        const {SharedAct} = this.props
+        SharedAct.alert({
             title:'카드 삭제',
             content:'해당 카드로 구독중인 상품이 자동으로 해지됩니다.\n 계속하시겠습니까?',
             onConfirm:()=>{
                 const {MypageAction, auth} = this.props;
                 auth.userProfile && MypageAction.deleteCard(auth.userProfile, item)
-                AlertSubject.next(undefined)
+                SharedAct.alert(undefined)
             },
-            onCancel:()=>AlertSubject.next(undefined)
+            onCancel:()=>SharedAct.alert(undefined)
         })
     }
 
@@ -123,13 +125,14 @@ class Billing extends React.Component<Props> {
                 .then(()=>history.push('/mypage/billing'))
             }
         } else {
-            AlertSubject.next({
+            const {SharedAct} = this.props
+            SharedAct.alert({
                 title:'알림',
                 content:'구독에 사용할 카드를 선택해주세요.\n등록된 카드가 없으면 카드 등록 후 구독해주세요.',
                 onConfirm:()=>{
-                    AlertSubject.next(undefined)
+                    SharedAct.alert(undefined)
                 },
-                onCancel:()=>AlertSubject.next(undefined)
+                onCancel:()=>SharedAct.alert(undefined)
             })
         }
     }
@@ -206,7 +209,8 @@ export default connectWithoutDone(
         mypage:state.mypage
     }),
     (dispatch:Dispatch)=>({
-        MypageAction:binding(MypageAction, dispatch)
+        MypageAction:binding(MypageAction, dispatch),
+        SharedAct:binding(SharedAction, dispatch)
     }),
     Billing
 )

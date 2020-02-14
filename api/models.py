@@ -17,6 +17,8 @@ class Profile(models.Model):
 
     user = models.OneToOneField(to='auth.User', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    fcm_token = models.CharField(max_length=200, null=True, blank=True)
+    profile_img = models.CharField(max_length=200, null=True, blank=True)
 
 
 class Media(models.Model):
@@ -27,6 +29,7 @@ class Media(models.Model):
     boarditem = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='BoardItem')
     shopproduct = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='ShopProduct')
 
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
 
 class BoardGroup(models.Model):
     class Meta:

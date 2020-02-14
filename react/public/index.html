@@ -21,6 +21,7 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div id="naverIdLogin" style="display:none"></div>
     <script>
       var csrf_token = '{% csrf_token %}';
     </script>
@@ -35,6 +36,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-analytics.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-messaging.js"></script>
     <script>
+      // firebase
       firebase.initializeApp({ 
           apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
           authDomain: "servicestarter-770d0.firebaseapp.com",
@@ -45,6 +47,15 @@
           appId: "1:460789091763:web:358e2a97967b45caff0fc6",
           measurementId: "G-4QT1LCRVJ0"
       }); 
+      // naver
+      var NaverProvider = new naver.LoginWithNaverId({
+          clientId: "GfwH3vvqAGsA6nx8zX_X",
+          callbackUrl: "http://servicestarter.kro.kr/naver",
+          isPopup: true,
+          loginButton: {color: "green", type: 3, height: 60}
+      })
+      // kakao 
+      Kakao.init('fc813981157c71f45cc878d9b26fd4d4')
     </script>
   </body>
 </html>

@@ -1,46 +1,29 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import { BehaviorSubject, Subscription } from 'rxjs';
-
-interface States {
-    title:string
-    content:string
-    onConfirm?:Function
-    onCancel?:Function
+import { connectWithoutDone } from 'app/core/connection';
+import { RootState } from 'app/Reducers';
+import { Dispatch } from 'redux';
+import {  SharedState } from './Shared.action';
+interface Props {
+    shared:SharedState
 }
-
-export const AlertSubject = new BehaviorSubject<States|undefined>(undefined) 
-
-export class Alert extends React.Component{
-
-    state:States = {
-        title:'',
-        content:'',
-    }
-    sub!:Subscription
-
-    componentDidMount() {
-        this.sub = AlertSubject.subscribe(val=> {
-            if (val) {
-                this.setState(val)
-            } else {
-                this.setState({})
-            }
-        })
-    }
-
-    componentWillUnmount() {
-        this.sub.unsubscribe()
-    }
+export class Alert extends React.Component<Props>{
 
     render() {
-        return <Modal isOpen={AlertSubject.value !== undefined}>
-            <ModalHeader>{this.state.title}</ModalHeader>
-            <ModalBody style={{whiteSpace:'pre'}}>{this.state.content}</ModalBody>
+        const {shared} = this.props
+        return <Modal isOpen={shared.alert !== undefined}>
+            <ModalHeader>{shared.alert && shared.alert.title}</ModalHeader>
+            <ModalBody style={{whiteSpace:'pre'}}>{shared.alert && shared.alert.content}</ModalBody>
             <ModalFooter>
-                {this.state.onConfirm && <Button color="primary" onClick={()=>this.state.onConfirm && this.state.onConfirm()}>Confirm</Button>}
-                {this.state.onCancel && <Button color="secondary" onClick={()=>this.state.onCancel && this.state.onCancel()}>Cancel</Button>}
+                {shared.alert && shared.alert.onConfirm && <Button color="primary" onClick={()=>shared.alert && shared.alert.onConfirm && shared.alert.onConfirm()}>Confirm</Button>}
+                {shared.alert && shared.alert.onCancel && <Button color="secondary" onClick={()=>shared.alert && shared.alert.onCancel && shared.alert.onCancel()}>Cancel</Button>}
             </ModalFooter>
         </Modal>
     }
 }
+
+export default connectWithoutDone(
+    (state:RootState)=>({shared:state.shared}),
+    (dispatch:Dispatch)=>({}),
+    Alert
+)

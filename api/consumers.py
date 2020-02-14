@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from api.models import ChatRoom, ChatMessage, Profile, TaskWork, TaskClient
 from api.views import getSerializer
 from api.tasks import background_task
+from config.utils import send_fcm
 import json
 
 
@@ -26,6 +27,16 @@ class MessageConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         profile = Profile.objects.get(pk=text_data_json['sender'])
         room = ChatRoom.objects.get(pk=text_data_json['room'])
+        for user in room.user.all():
+            if user.id != profile.id and user.fcm_token:
+                send_fcm(user.fcm_token, {
+                    'title':'메시지 알림',
+                    'body':'채팅에 새로운 메시지가 있습니다.',
+                    'icon':'/assets/logo.png',
+                    'click_action':'http://localhost:8000'
+                }, data={
+                    'type':'message'
+                })
         message = ChatMessage(
             room=room,
             created=text_data_json['created'],

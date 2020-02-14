@@ -7,8 +7,7 @@ import { connectWithoutDone, binding } from './core/connection';
 import { RootState } from './Reducers';
 import { Dispatch } from 'redux';
 import { AuthAction } from 'auth/Auth.action';
-import { tokenExpiredSubject } from './core/Api';
-import { Alert } from 'component/Alert';
+import Alert from 'component/Alert';
 import { 
     Home, 
     SingIn, 
@@ -20,56 +19,12 @@ import {
     Dashboard
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
-
-declare var firebase:any;
+import Fcm from '../component/Fcm';
 interface Props {
-    AuthAction: typeof AuthAction
+    AuthAct: typeof AuthAction
 }
 
 class App extends Component<Props> {
-
-    componentDidMount() {
-        navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then(res=> {
-            const messaging = firebase.messaging()
-            console.log(res)
-            messaging.getToken().then((token:any)=>console.log(token))
-        }).catch(err=> console.log('err'))
-        // const firebaseConfig = {
-        //     apiKey: "AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE",
-        //     authDomain: "servicestarter-770d0.firebaseapp.com",
-        //     databaseURL: "https://servicestarter-770d0.firebaseio.com",
-        //     projectId: "servicestarter-770d0",
-        //     storageBucket: "servicestarter-770d0.appspot.com",
-        //     messagingSenderId: "460789091763",
-        //     appId: "1:460789091763:web:358e2a97967b45caff0fc6",
-        //     measurementId: "G-4QT1LCRVJ0"
-        // };
-        // // Initialize Firebase
-        // firebase.initializeApp(firebaseConfig);
-        // firebase.analytics()
-        // document.addEventListener('DOMContentLoaded', function(){
-        //     if(navigator.serviceWorker){ 
-        //     navigator.serviceWorker.register('/assets/firebase-messaging-sw.js') 
-        //     .then(function(reg){
-        //         console.log('서비스워커 등록성공 :', reg)
-        //         const messaging = firebase.messaging();
-        //         messaging.requestPermission().then(()=> {
-        //             console.log('권한 ok')
-        //             return messaging.getToken()
-        //         }).then((token:any)=> console.log(token))
-        //         .catch((err:any)=> console.log('권한 에러',err))
-        //     }) 
-        //     .catch(function(error){console.log('서비스워커 등록실패 :', error)}); 
-        //     }
-        // })
-        tokenExpiredSubject.subscribe(val=> {
-            if(val) {
-                const { AuthAction } = this.props;
-                AuthAction.signOut();
-            }
-        })
-    }
     
     render() {
         return (
@@ -95,6 +50,7 @@ class App extends Component<Props> {
                 </div>
                 <Footer />
                 <Alert />
+                <Fcm />
             </HelmetProvider>
         );
     }
@@ -103,7 +59,7 @@ class App extends Component<Props> {
 export default connectWithoutDone(
     (state:RootState)=> ({}),
     (dispatch:Dispatch)=> ({
-        AuthAction: binding(AuthAction, dispatch)
+        AuthAct: binding(AuthAction, dispatch)
     }),
     App
 )

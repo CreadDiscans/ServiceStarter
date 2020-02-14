@@ -9,7 +9,6 @@ const jwtRefreshExp = 3 * 60 * 60 * 1000; // 만료 3시간 전
 
 const KEY_JWT_TOKEN = 'jwt_token';
 const KEY_USER_PROFILE = 'user_profile';
-export const tokenExpiredSubject = new BehaviorSubject<boolean>(false);
 
 const setHeader = async() => {
     return new Promise(resolve=> {
@@ -34,7 +33,8 @@ const setHeader = async() => {
                         resolve();
                     })
                 } else if (state === 'invalid') {
-                    tokenExpiredSubject.next(true);
+                    localStorage.clear()
+                    location.href = '/signin'
                     delete axios.defaults.headers.common['Authorization'];
                     resolve();
                 }
@@ -89,6 +89,7 @@ const parseJwt = (token:string) => {
 };
 
 export class Api{
+
     static async list<T>(url:string, query:object):Promise<T>{
         await setHeader();
         return axios.get(domain+url+'?'+queryString.stringify(query)).then(res=>res.data)

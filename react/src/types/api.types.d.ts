@@ -10,11 +10,14 @@ export type Media = {
     file:string
     boarditem:number|BoardItem
     shopproduct:number|ShopProduct
+    profile:number|Profile
 }
 export type Profile = {
     id:number
     user:number|custom.auth.User
     name:string
+    fcm_token:string
+    profile_img:string
 }
 export type BoardItem = {
     id:number

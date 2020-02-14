@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dispatch } from 'redux';
-import { AuthAction } from './Auth.action';
+import { AuthAction, AuthState } from './Auth.action';
 import { RootState } from 'app/Reducers';
 import { connectWithoutDone, binding } from 'app/core/connection';
 import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
@@ -10,6 +10,7 @@ import { History } from 'history';
 import SocialLogin from 'auth/SocialLogin';
 
 interface Props {
+  auth:AuthState
   AuthAction: typeof AuthAction
   history: History
 }
@@ -29,8 +30,8 @@ class SignIn extends React.Component<Props> {
   async submit(e:React.FormEvent<HTMLFormElement>) {
     e.stopPropagation()
     e.preventDefault()
-    const { AuthAction } = this.props;
-    AuthAction.signIn(this.state.username, this.state.password)
+    const { AuthAction, auth } = this.props;
+    AuthAction.signIn(this.state.username, this.state.password, auth.fcmToken)
     .then(res=> this.props.history.push('/'))
     .catch(err=> {
       if (err === 'no user') {
@@ -102,7 +103,9 @@ class SignIn extends React.Component<Props> {
 }
 
 export default connectWithoutDone(
-    (state:RootState)=> ({}),
+    (state:RootState)=> ({
+      auth:state.auth
+    }),
     (dispatch:Dispatch)=> ({
         AuthAction: binding(AuthAction, dispatch)
     }),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connectWithDone } from 'app/core/connection';
+import { connectWithDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import { Api } from 'app/core/Api';
@@ -10,12 +10,13 @@ import { FaPaperPlane, FaPen, FaTrash } from 'react-icons/fa';
 import moment from 'moment';
 import { Paginator } from 'component/Paginator';
 import autoresize from 'autoresize';
-import { AlertSubject } from 'component/Alert';
 import { History } from 'history';
 import { U } from 'app/core/U';
+import { SharedAction } from 'component/Shared.action';
 
 interface Props {
     auth:AuthState
+    SharedAct:typeof SharedAction
     location:Location
     history:History
     done:any
@@ -126,30 +127,32 @@ class BoardDetail extends React.Component<Props> {
     }
 
     deleteComment(item:CommentWrap) {
-        AlertSubject.next({
+        const {SharedAct} = this.props
+        SharedAct.alert({
             title:'Alert',
             content:'The comment will be deleted',
             onConfirm:()=>{
                 Api.delete('/api-board/comment/', item.d.id).then(()=>{
                     this.state.item && this.loadComment(this.state.item, 1)
                 })
-                AlertSubject.next(undefined)
+                SharedAct.alert(undefined)
             },
-            onCancel:()=>AlertSubject.next(undefined)
+            onCancel:()=>SharedAct.alert(undefined)
         })
     }
 
     deleteItem() {
-        AlertSubject.next({
+        const {SharedAct} = this.props
+        SharedAct.alert({
             title:'Alert',
             content:'The board item will be deleted',
             onConfirm:()=>{
                 this.state.item && Api.delete('/api-board/item/', this.state.item.id).then(()=> {
                     this.props.history.push('/board')
                 })
-                AlertSubject.next(undefined)
+                SharedAct.alert(undefined)
             },
-            onCancel:()=>AlertSubject.next(undefined)
+            onCancel:()=>SharedAct.alert(undefined)
         })
     }
 
@@ -229,6 +232,8 @@ export default connectWithDone(
     (state:RootState)=>({
         auth:state.auth
     }),
-    (dispatch:Dispatch)=>({}),
+    (dispatch:Dispatch)=>({
+        SharedAct:binding(SharedAction, dispatch)
+    }),
     BoardDetail
 )

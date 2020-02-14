@@ -4,13 +4,13 @@ import { RootState } from 'app/Reducers';
 import { connectWithoutDone, binding } from 'app/core/connection';
 import { Container, Row, Col, Input, FormGroup, Label, Form, Button, FormFeedback } from 'reactstrap';
 import { Api } from 'app/core/Api';
-import * as CustomType from 'types/custom.types';
 import { History } from 'history';
-import { AlertSubject } from 'component/Alert';
 import SocialLogin from './SocialLogin';
 import { AuthAction } from './Auth.action';
+import { SharedAction } from 'component/Shared.action';
 interface Props {
   AuthAction: typeof AuthAction
+  SharedAct: typeof SharedAction
   history:History
 }
 
@@ -36,23 +36,23 @@ class SignUp extends React.Component<Props> {
   }
 
   async signUp() {
-    const { AuthAction } = this.props;
+    const { AuthAction, SharedAct } = this.props;
     AuthAction.signUp(
       this.state.username.trim(),
       this.state.email.trim(),
       this.state.password
-    ).then(()=> AlertSubject.next({
+    ).then(()=> SharedAct.alert({
       title:'Successful Sing Up.',
       content:'Please login after checking Activation email.',
       onConfirm:()=> {
         this.props.history.push('/signin')
-        AlertSubject.next(undefined)
+        SharedAct.alert(undefined)
       },
       onCancel:undefined
-    })).catch(()=> AlertSubject.next({
+    })).catch(()=> SharedAct.alert({
       title:'Fail in Sign Up.',
       content:'Please check the invalid value.',
-      onConfirm:()=> AlertSubject.next(undefined),
+      onConfirm:()=> SharedAct.alert(undefined),
       onCancel:undefined
     }))
   }
@@ -139,7 +139,8 @@ class SignUp extends React.Component<Props> {
 export default connectWithoutDone(
   (state:RootState)=> ({}),
   (dispatch:Dispatch)=> ({
-    AuthAction:binding(AuthAction, dispatch)
+    AuthAction:binding(AuthAction, dispatch),
+    SharedAct:binding(SharedAction, dispatch)
   }),
   SignUp
 )

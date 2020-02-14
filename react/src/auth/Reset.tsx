@@ -1,12 +1,13 @@
 import React from 'react';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
 import { Api } from 'app/core/Api';
-import { AlertSubject } from 'component/Alert';
 import { History } from 'history';
+import { SharedAction } from 'component/Shared.action';
 interface Props {
+    SharedAct:typeof SharedAction
     location:Location
     history:History
 }
@@ -49,10 +50,11 @@ class Reset extends React.Component<Props> {
             email:this.state.email
         }).then(res=> {
             this.setState({invalid:false})
-            AlertSubject.next({
+            const { SharedAct } = this.props
+            SharedAct.alert({
                 title:'Password Reset',
                 content:'Password Reset Mail sent. Check the email.',
-                onConfirm:()=>AlertSubject.next(undefined),
+                onConfirm:()=>SharedAct.alert(undefined),
                 onCancel:undefined
             })
         })
@@ -66,27 +68,28 @@ class Reset extends React.Component<Props> {
         state.password2_invalid = this.state.password !== this.state.password2
         this.setState(state)
         if (!state.password_invalid && !state.password2_invalid) {
+            const { SharedAct } = this.props
             Api.create('/send_reset_mail',{
                 password:this.state.password,
                 uid:this.state.uid,
                 token:this.state.token
             }).then(res=> {
-                AlertSubject.next({
+                SharedAct.alert({
                     title:'Password Reset',
                     content:'Successfully reset.',
                     onConfirm:()=> {
                         this.props.history.push('/signin')
-                        AlertSubject.next(undefined)
+                        SharedAct.alert(undefined)
                     },
                     onCancel:undefined
                 })
             })
             .catch(err=> {
-                AlertSubject.next({
+                SharedAct.alert({
                     title:'Password Reset',
                     content:'This link was expired. please try from sending reset email.',
                     onConfirm:()=> {
-                        AlertSubject.next(undefined)
+                        SharedAct.alert(undefined)
                     },
                     onCancel:undefined
                 })
@@ -141,6 +144,8 @@ class Reset extends React.Component<Props> {
 
 export default connectWithoutDone(
     (state:RootState)=>({}),
-    (dispatch:Dispatch)=>({}),
+    (dispatch:Dispatch)=>({
+        SharedAct:binding(SharedAction, dispatch)
+    }),
     Reset
 )

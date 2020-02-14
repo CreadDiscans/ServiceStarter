@@ -7,14 +7,15 @@ import { DashboardAction, DashboardState } from './Dashboard.action';
 import { U } from 'app/core/U';
 import { History } from 'history';
 import { AuthState } from 'auth/Auth.action';
-import { AlertSubject } from 'component/Alert';
 import { MypageAction } from 'mypage/Mypage.action';
+import { SharedAction } from 'component/Shared.action';
 
 interface Props {
     auth:AuthState
     dashboard:DashboardState
     DashboardAction: typeof DashboardAction
     MypageAction: typeof MypageAction
+    SharedAct: typeof SharedAction
     location: Location
     history: History
 }
@@ -27,18 +28,18 @@ class Payment extends React.Component<Props> {
     }
 
     addToCart() {
-        const { auth, dashboard, history, MypageAction } = this.props;
+        const { auth, dashboard, history, MypageAction, SharedAct } = this.props;
         if (auth.userProfile && dashboard.shopProduct) {
             MypageAction.addShopCart(auth.userProfile, dashboard.shopProduct)
             .then(()=> {
-                AlertSubject.next({
+                SharedAct.alert({
                     title:'Add to cart',
                     content:'장바구니에 상품을 담았습니다.\n 장바구니를 확인하시겠습니까?',
                     onConfirm:()=> {
                         history.push('/mypage/cart')
-                        AlertSubject.next(undefined)
+                        SharedAct.alert(undefined)
                     },
-                    onCancel:()=> AlertSubject.next(undefined)
+                    onCancel:()=> SharedAct.alert(undefined)
                 })
             })
         }
@@ -69,7 +70,8 @@ export default connectWithoutDone(
     }),
     (dispatch:Dispatch)=>({
         DashboardAction:binding(DashboardAction, dispatch),
-        MypageAction:binding(MypageAction, dispatch)
+        MypageAction:binding(MypageAction, dispatch),
+        SharedAct:binding(SharedAction, dispatch)
     }),
     Payment
 )
