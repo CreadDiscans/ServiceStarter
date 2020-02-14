@@ -33,9 +33,10 @@ class MessageConsumer(AsyncWebsocketConsumer):
                     'title':'메시지 알림',
                     'body':'채팅에 새로운 메시지가 있습니다.',
                     'icon':'/assets/logo.png',
-                    'click_action':'http://localhost:8000'
+                    'click_action':'/dashboard/chat/'+str(room.id)
                 }, data={
-                    'type':'message'
+                    'type':'message',
+                    'room':room.id
                 })
         message = ChatMessage(
             room=room,

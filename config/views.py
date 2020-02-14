@@ -393,6 +393,17 @@ class IamportWebhook(viewsets.ViewSet):
                 out['message'] = 'payment update'
         return Response(out, status=status.HTTP_200_OK)
 
+
+@permission_classes((IsAuthenticated,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class FcmSender(viewsets.ViewSet):
+    
+    def create(self, request):
+        body = json.loads(request.body)
+        send_fcm(body['token'], body['notification'], body['data'])
+        return Response({}, status=status.HTTP_200_OK)
+
+
 # For FCM
 @csrf_exempt
 def fcm_test(request):

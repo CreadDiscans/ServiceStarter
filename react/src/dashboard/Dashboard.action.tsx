@@ -1,6 +1,7 @@
 import { getHandleActions } from "app/core/connection"
 import * as ApiType from 'types/api.types';
 import { Api } from "app/core/Api";
+import { U } from "app/core/U";
 
 export type DashboardState = {
     shopProducts:ApiType.ShopProduct[],
@@ -8,13 +9,15 @@ export type DashboardState = {
     shopCurrentPage:number
     shopTotalPage:number
     shopSubscriptions:ApiType.ShopSubscription[]
+    chatRooms:ApiType.ChatRoom[]
 }
 
 const initState:DashboardState = {
     shopProducts:[],
     shopCurrentPage:1,
     shopTotalPage:1,
-    shopSubscriptions:[]
+    shopSubscriptions:[],
+    chatRooms:[]
 }
 
 export const DashboardAction = {
@@ -41,6 +44,18 @@ export const DashboardAction = {
         return Promise.resolve({
             shopSubscriptions:subs
         })
+    },
+    loadChatRoom:async(profile:ApiType.Profile)=>{
+        const rooms = await Api.list<ApiType.ChatRoom[]>('/api-chat/room/',{
+            'user':profile.id,
+        })
+        const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
+            'pk__in[]':U.union(rooms.map(room=>room.user))
+        })
+        rooms.forEach(room=>{
+            room.user = (room.user as number[]).map(user=> profiles.filter(p=>p.id === user)[0])
+        })
+        return Promise.resolve({chatRooms:rooms})
     }
 }
 

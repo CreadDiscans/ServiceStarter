@@ -3,12 +3,18 @@ import { connectWithoutDone, binding } from '../app/core/connection';
 import { RootState } from '../app/Reducers';
 import { Dispatch } from 'redux';
 import { AuthState, AuthAction } from 'auth/Auth.action';
-
+import { SharedAction } from './Shared.action';
+import { History } from 'history';
+import { DashboardAction } from 'dashboard/Dashboard.action';
 declare var firebase:any;
 
 interface Props {
     auth:AuthState
     AuthAct:typeof AuthAction
+    SharedAct:typeof SharedAction
+    DashboarcAct:typeof DashboardAction
+    history:History
+    location:Location
 }
 
 class Fcm extends React.Component<Props> {
@@ -21,7 +27,21 @@ class Fcm extends React.Component<Props> {
             messaging.onTokenRefresh(()=> this.updateFcmToken(messaging))
             messaging.onMessage((payload:any)=> {
                 const data = payload.data
-                console.log(data)
+                const { SharedAct, history, DashboarcAct, location, auth } = this.props
+                if(data.type === 'message') {
+                    SharedAct.notify({
+                        content:'메시지가 도착했습니다.',
+                        onClick:()=>history.push('/dashboard/chat/'+data.room)
+                    })
+                } else if (data.type === 'room') {
+                    if (location.pathname === '/dashboard/chat') {
+                        auth.userProfile && DashboarcAct.loadChatRoom(auth.userProfile)
+                    }
+                    SharedAct.notify({
+                        content:'새로운 채팅방에 초대되었습니다.',
+                        onClick:()=>history.push('/dashboard/chat') 
+                    })
+                }
             })
         }).catch(err=> console.log('err'))
         firebase.analytics()
@@ -44,7 +64,9 @@ export default connectWithoutDone(
         auth:state.auth
     }),
     (dispatch:Dispatch)=>({
-        AuthAct:binding(AuthAction, dispatch)
+        AuthAct:binding(AuthAction, dispatch),
+        SharedAct:binding(SharedAction, dispatch),
+        DashboarcAct:binding(DashboardAction, dispatch)
     }),
     Fcm
 )

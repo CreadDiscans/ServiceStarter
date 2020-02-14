@@ -8,6 +8,7 @@ import { RootState } from './Reducers';
 import { Dispatch } from 'redux';
 import { AuthAction } from 'auth/Auth.action';
 import Alert from 'component/Alert';
+import Notification from 'component/Notification';
 import { 
     Home, 
     SingIn, 
@@ -20,6 +21,7 @@ import {
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
 import Fcm from '../component/Fcm';
+import { SharedAction } from 'component/Shared.action';
 interface Props {
     AuthAct: typeof AuthAction
 }
@@ -51,6 +53,7 @@ class App extends Component<Props> {
                 <Footer />
                 <Alert />
                 <Fcm />
+                <Notification />
             </HelmetProvider>
         );
     }

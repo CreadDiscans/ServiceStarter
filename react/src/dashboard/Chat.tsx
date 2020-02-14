@@ -1,43 +1,30 @@
 import React from 'react';
-import { connectWithoutDone } from 'app/core/connection';
+import { connectWithoutDone, binding } from 'app/core/connection';
 import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import { Button, ListGroup, ListGroupItem } from 'reactstrap';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { AuthState } from 'auth/Auth.action';
-import { U } from 'app/core/U';
 import { History } from 'history';
+import { DashboardAction, DashboardState } from './Dashboard.action';
 interface Props {
     auth:AuthState
+    dashboard:DashboardState
+    DashboardAct:typeof DashboardAction
     history:History
 }
 
 class Chat extends React.Component<Props> {
-
-    state:{
-        rooms:ApiType.ChatRoom[]
-    } = {
-        rooms:[]
-    }
 
     componentDidMount() {
         this.loadChatRoom()
     }
 
     async loadChatRoom() {
-        const {auth} = this.props;
+        const {auth, DashboardAct} = this.props;
         if (auth.userProfile) {
-            const rooms = await Api.list<ApiType.ChatRoom[]>('/api-chat/room/',{
-                'user':auth.userProfile.id,
-            })
-            const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
-                'pk__in[]':U.union(rooms.map(room=>room.user))
-            })
-            rooms.forEach(room=>{
-                room.user = (room.user as number[]).map(user=> profiles.filter(p=>p.id === user)[0])
-            })
-            this.setState({rooms:rooms})
+            DashboardAct.loadChatRoom(auth.userProfile)
         }
     }
 
@@ -57,11 +44,11 @@ class Chat extends React.Component<Props> {
     }
 
     render() {
-        const { history } = this.props
+        const { history, dashboard } = this.props
         return <div>
             <h3>Chat</h3>
             <ListGroup className="mb-3">
-                {this.state.rooms.map(room=><ListGroupItem key={room.id} 
+                {dashboard.chatRooms.map(room=><ListGroupItem key={room.id} 
                     style={{cursor:'pointer'}}
                     onClick={()=>history.push('/dashboard/chat/'+room.id)}>
                     {this.getRoomName(room)}
@@ -74,8 +61,11 @@ class Chat extends React.Component<Props> {
 
 export default connectWithoutDone(
     (state:RootState)=>({
-        auth:state.auth
+        auth:state.auth,
+        dashboard:state.dashboard
     }),
-    (dispatch:Dispatch)=>({}),
+    (dispatch:Dispatch)=>({
+        DashboardAct:binding(DashboardAction, dispatch)
+    }),
     Chat
 )
