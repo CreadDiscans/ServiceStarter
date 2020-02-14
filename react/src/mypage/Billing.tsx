@@ -187,7 +187,7 @@ class Billing extends React.Component<Props> {
                 <h4>구독 내역</h4>
                 <ListGroup>
                     {mypage.billings.map(item=><ListGroupItem key={item.id}>
-                        {typeof item.subscription !== 'number' && item.subscription.name}
+                        {item.subscription && typeof item.subscription !== 'number' && item.subscription.name}
                         {' - '}
                         {moment(item.expired).format('YYYY.MM.DD')} 까지
                         {item.scheduled && <Button className="btn-sm float-right" color="danger" onClick={()=>this.unsubscribe(item)}>자동연장 취소</Button>}
