@@ -8107,7 +8107,7 @@
 											"top": 414,
 											"width": 371.48388671875,
 											"height": 13,
-											"text": "+owner: foreign {to=\"profile\", on_delete=\"models.CASCADE\"}",
+											"text": "+owner: foreign {to=\"Profile\", on_delete=\"models.CASCADE\"}",
 											"horizontalAlignment": 0
 										},
 										{
@@ -8760,7 +8760,7 @@
 											"font": "Arial;13;0",
 											"left": -208,
 											"top": 64,
-											"width": 80.17724609375,
+											"width": 83.2685546875,
 											"height": 13,
 											"text": "(from models)"
 										},
@@ -8920,9 +8920,9 @@
 										"$ref": "AAAAAAFwRhJX4r+2JEg="
 									},
 									"font": "Arial;13;0",
-									"left": 158,
+									"left": 156,
 									"top": 152,
-									"width": 42.9990234375,
+									"width": 46.76953125,
 									"height": 13,
 									"alpha": -5.2951961368576,
 									"distance": 28.0178514522438,
@@ -9050,9 +9050,9 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 167,
+									"left": 165,
 									"top": 153,
-									"width": 42.9990234375,
+									"width": 46.76953125,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -11231,7 +11231,7 @@
 											},
 											"name": "to",
 											"kind": "string",
-											"value": "profile"
+											"value": "Profile"
 										},
 										{
 											"_type": "Tag",

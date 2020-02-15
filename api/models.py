@@ -77,7 +77,7 @@ class TaskWork(models.Model):
     class Meta:
         pass
 
-    owner = models.ForeignKey(to='profile', on_delete=models.CASCADE)
+    owner = models.ForeignKey(to='Profile', on_delete=models.CASCADE)
     progress = models.IntegerField(default=0)
     status = models.CharField(max_length=100)
     body = models.TextField(null=True, blank=True)
