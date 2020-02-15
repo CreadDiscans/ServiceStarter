@@ -70,6 +70,21 @@ class DashboardHome extends React.Component {
     render() {
         return <div>
             <h3>{this.t.dashboard}</h3>
+            <hr/>
+            <h5>Auth</h5>
+            <div>로그인, 회원가입, 메일인증, 비밀번호 초기화, SNS로그인(Google, Facebook, Naver, Kakao)</div>
+            <hr/>
+            <h5>Board</h5>
+            <div>게시판 그룹 관리, 댓글, 대댓글, 이미지 업로더</div>
+            <hr/>
+            <h5>Shop</h5>
+            <div>상품 등록/관리, 일반결제, 정기결제(이니시스 기준)</div>
+            <hr/>
+            <h5>Chat</h5>
+            <div>채팅방 생성, 초대, 실시간 채팅, FCM 알림</div>
+            <hr/>
+            <h5>Task</h5>
+            <div>Background 작업 등록, 실시간 작업 현황 확인</div>
         </div>
     }
 }

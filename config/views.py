@@ -200,11 +200,15 @@ class UploadViewset(viewsets.ViewSet):
     def create(self, request):
         filename = ''.join([random.choice(string.ascii_letters) for i in range(20)])
         ext = os.path.splitext(request.data['upload'].name)[-1]
-        path = os.path.split(urllib.parse.urlparse(request.META['HTTP_REFERER']).path)
+        path = str(urllib.parse.urlparse(request.META['HTTP_REFERER']).path)
         request.data['upload'].name = filename+ext
         m = Media(file=request.data['upload'])
-        if path[0] == '/board/write':
-            m.boarditem = BoardItem.objects.get(pk=int(path[1]))
+        if path.find('/board/write') == 0:
+            m.boarditem = BoardItem.objects.get(pk=int(path.split('/')[-1]))
+        elif path.find('/mypage') == 0:
+            profile = Profile.objects.get(user=request.user)
+            profile.media_set.all().delete()
+            m.profile = profile
         m.save()
         return Response({
             'uploaded':True,

@@ -114,6 +114,16 @@ export class Api{
         await setHeader();
         return axios.delete(domain+queryUrl(url, {}, id)).then(res=>res.data);
     }
+    static async upload(file:File):Promise<{uploaded:boolean,url:string}> {
+        await setHeader()
+        const formData = new FormData()
+        formData.append('upload', file)
+        return axios.post(domain+'/upload/',formData,{
+            headers:{
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res=>res.data)
+    }
     static signIn(jwt_token:string, user_profile:ApiType.Profile|undefined) {
         if (typeof localStorage !== 'undefined') {
             localStorage.setItem(KEY_JWT_TOKEN, jwt_token);
