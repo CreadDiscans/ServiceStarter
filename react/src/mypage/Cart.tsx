@@ -9,6 +9,7 @@ import * as ApiType from 'types/api.types';
 import { U } from 'app/core/U';
 import { History } from 'history';
 import { Paginator } from 'component/Paginator';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     mypage:MypageState
@@ -17,6 +18,20 @@ interface Props {
 }
 
 class Cart extends React.Component<Props> {
+
+    t = translation('cart',[
+        "cart",
+        "refund",
+        "complete",
+        "virtualaccount",
+        "ea",
+        "except",
+        "delete",
+        "addcart",
+        "won",
+        "buy",
+        "total"
+    ])
 
     componentDidMount() {
         const {MypageAction, auth} = this.props;
@@ -43,9 +58,9 @@ class Cart extends React.Component<Props> {
         const {mypage} = this.props;
         const payments = mypage.payments.filter(pay=>pay.cart === item.id)
         if (payments.length > 0) {
-            if (payments[0].status === 'cancelled') return '[환불]'
-            else if (payments[0].status === 'paid') return '[구매완료]'
-            else if (payments[0].status === 'ready') return '[입금대기 가상계좌:'+payments[0].vbank+']'
+            if (payments[0].status === 'cancelled') return this.t.refund
+            else if (payments[0].status === 'paid') return this.t.complete
+            else if (payments[0].status === 'ready') return this.t.virtualaccount+payments[0].vbank+']'
             else return '['+payments[0].status+']'
         } else {
             return '[]'
@@ -60,17 +75,17 @@ class Cart extends React.Component<Props> {
                 {mypage.carts.filter(item=>item.product.length > 0).map(item=> <ListGroupItem key={item.id}>
                         <h5>{!item.isOpen && this.getCartState(item)} 
                         {(item.product[0] as ApiType.ShopProduct).name}
-                        {item.product.length > 1 && ' 외 '+ (item.product.length-1) +'개'}</h5>
+                        {item.product.length > 1 && this.t.except+ (item.product.length-1) +this.t.ea}</h5>
                         <div className="p-3">
                             {(item.product as ApiType.ShopProduct[]).map(product=><div key={product.id}>
-                                <a onClick={()=>product.valid && history.push('/dashboard/shop/'+product.id)}>{product.name} - {U.comma(product.price)}원</a>
+                                <a onClick={()=>product.valid && history.push('/dashboard/shop/'+product.id)}>{product.name} - {U.comma(product.price)}{this.t.won}</a>
                                 {item.isOpen ? 
-                                <Button className="btn-sm float-right" onClick={()=>this.remove(product, item)}>삭제</Button>:
-                                <Button className="btn-sm float-right" onClick={()=>this.addToCart(product)}>장바구니 담기</Button>}
+                                <Button className="btn-sm float-right" onClick={()=>this.remove(product, item)}>{this.t.delete}</Button>:
+                                <Button className="btn-sm float-right" onClick={()=>this.addToCart(product)}>{this.t.addcart}</Button>}
                             </div>)}
                         </div>
-                        합계 : {U.comma((item.product as ApiType.ShopProduct[]).map(p=>p.price).reduce((a,b)=>a+b))}원
-                        {item.isOpen && <Button className="float-right" color="primary" onClick={()=>history.push('/mypage/cart/'+item.id)}>구매하기</Button>}
+                        {this.t.total} : {U.comma((item.product as ApiType.ShopProduct[]).map(p=>p.price).reduce((a,b)=>a+b))}{this.t.won}
+                        {item.isOpen && <Button className="float-right" color="primary" onClick={()=>history.push('/mypage/cart/'+item.id)}>{this.t.buy}</Button>}
                 </ListGroupItem>)}
             </ListGroup>
             <div className="my-3 d-flex flex-row justify-content-center">

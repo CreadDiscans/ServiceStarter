@@ -24,6 +24,8 @@ i18n.use(initReactI18next)
     }
 })
 
+export const getLang = () => lang
+
 export const translation = (prefix:string, keys:Array<string>) => {
     const out:any = {}
     keys.map(key=> out[key] = i18n.t(prefix+'.'+key))
@@ -36,9 +38,6 @@ interface Props {
 
 export class I18next extends React.Component<Props> {
     state:any = {
-        str:translation('i18n', [
-            'item'
-        ]),
         hover:undefined
     }
 
@@ -50,7 +49,7 @@ export class I18next extends React.Component<Props> {
     render() {
         return <div style={{position:'fixed', width:'100%', color:'#999', fontSize:10, zIndex:2000}}>
             <Container>
-                <div className="d-flex flex-row float-right" style={{marginRight:60}}>
+                <div className="d-flex flex-row">
                     {[
                         ['en-US', 'English'], 
                         ['ko-KR', 'Korean']

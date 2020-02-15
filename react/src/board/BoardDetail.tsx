@@ -13,6 +13,7 @@ import autoresize from 'autoresize';
 import { History } from 'history';
 import { U } from 'app/core/U';
 import { SharedAction } from 'component/Shared.action';
+import { translation } from 'component/I18next';
 
 interface Props {
     auth:AuthState
@@ -28,6 +29,7 @@ type CommentWrap = {
 }
 
 class BoardDetail extends React.Component<Props> {
+    t = translation('boarddetail',[])
     textarea:any;
     state:{
         item?:ApiType.BoardItem

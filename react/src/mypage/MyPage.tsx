@@ -11,12 +11,19 @@ import MyProfile from './MyProfile';
 import Payment from './Payment';
 import Cart from './Cart';
 import Billing from './Billing';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     history:History
 }
 
 class MyPage extends React.Component<Props> {
+
+    t = translation('mypage',[
+        "mypage",
+        "cart",
+        "subscription"
+    ])
 
     render() {
         const {auth, history} = this.props;
@@ -26,13 +33,13 @@ class MyPage extends React.Component<Props> {
                 <Col xs={12} md={3}>
                     <ListGroup>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage')}>MyPage</a>
+                            <a onClick={()=> history.push('/mypage')}>{this.t.mypage}</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage/cart')}>Cart</a>
+                            <a onClick={()=> history.push('/mypage/cart')}>{this.t.cart}</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=> history.push('/mypage/billing')}>Subscription</a>
+                            <a onClick={()=> history.push('/mypage/billing')}>{this.t.subscription}</a>
                         </ListGroupItem>
                     </ListGroup>
                 </Col>

@@ -10,6 +10,7 @@ import { History } from 'history';
 import moment from 'moment';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     board:BoardState
@@ -19,6 +20,13 @@ interface Props {
 }
 
 class BoardList extends React.Component<Props> {
+
+    t = translation('boardlist',[
+        'title',
+        'author',
+        'created',
+        'write'
+    ])
 
     componentDidMount() {
         const {board, BoardAction} = this.props;
@@ -54,9 +62,9 @@ class BoardList extends React.Component<Props> {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Created</th>
+                        <th>{this.t.title}</th>
+                        <th>{this.t.author}</th>
+                        <th>{this.t.created}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,7 +76,7 @@ class BoardList extends React.Component<Props> {
                     </tr>)}
                 </tbody>
             </Table>
-            {auth.userProfile && <Button color="primary" className="float-right" onClick={()=>this.write()}>Write</Button>}
+            {auth.userProfile && <Button color="primary" className="float-right" onClick={()=>this.write()}>{this.t.write}</Button>}
             <Paginator 
                 currentPage={board.currentPage}
                 totalPage={board.totalPage}

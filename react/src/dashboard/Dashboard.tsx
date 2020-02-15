@@ -12,12 +12,20 @@ import Payment from './ShopDetail';
 import Chat from './Chat';
 import ChatRoom from './ChatRoom';
 import Task from './Task';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     history:History
 }
 
 class Dashboard extends React.Component<Props> {
+
+    t = translation('dashboard',[
+        'dashboard',
+        'shop',
+        'chat',
+        'task'
+    ])
 
     render() {
         const {auth, history} = this.props;
@@ -27,16 +35,16 @@ class Dashboard extends React.Component<Props> {
                 <Col xs={12} md={3}>
                     <ListGroup>
                         <ListGroupItem>
-                            <a onClick={()=>history.push('/dashboard')}>Dashboard</a>
+                            <a onClick={()=>history.push('/dashboard')}>{this.t.dashboard}</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=>history.push('/dashboard/shop')}>Shop</a>
+                            <a onClick={()=>history.push('/dashboard/shop')}>{this.t.shop}</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=>history.push('/dashboard/chat')}>Chat</a>
+                            <a onClick={()=>history.push('/dashboard/chat')}>{this.t.chat}</a>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <a onClick={()=>history.push('/dashboard/task')}>Task</a>
+                            <a onClick={()=>history.push('/dashboard/task')}>{this.t.task}</a>
                         </ListGroupItem>
                     </ListGroup>
                 </Col>
@@ -56,9 +64,12 @@ class Dashboard extends React.Component<Props> {
 }
 
 class DashboardHome extends React.Component {
+    t = translation('dashboardhome',[
+        'dashboard'
+    ])
     render() {
         return <div>
-            <h3>Dashboard</h3>
+            <h3>{this.t.dashboard}</h3>
         </div>
     }
 }

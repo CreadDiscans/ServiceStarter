@@ -1,10 +1,6 @@
 import React from 'react';
 
-class Home extends React.Component<any> {
-
-    move(link:string) {
-        this.props.history.push(link)
-    }
+class Home extends React.Component {
 
     render() {
         return (

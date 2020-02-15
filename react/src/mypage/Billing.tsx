@@ -10,6 +10,7 @@ import { History } from 'history'
 import * as ApiType from 'types/api.types';
 import moment from 'moment';
 import { SharedAction } from 'component/Shared.action';
+import { translation } from 'component/I18next';
 declare var IMP:any;
 
 interface Props {
@@ -22,6 +23,30 @@ interface Props {
 }
 
 class Billing extends React.Component<Props> {
+
+    t = translation('billing',[
+        "alert",
+        "alreadysub",
+        "failregister",
+        "deletecard",
+        "deletecardbody",
+        "selectcard",
+        "subscription",
+        "creditcard",
+        "delete",
+        "name",
+        "email",
+        "tel",
+        "register",
+        "newsub",
+        "month",
+        "won",
+        "subscribe",
+        "history",
+        "until",
+        "cancel",
+        "extention"
+    ])
 
     state:any = {
         name:'',
@@ -59,8 +84,8 @@ class Billing extends React.Component<Props> {
                 }
             }).catch(()=> {
                 SharedAct.alert({
-                    title:'알림',
-                    content:'이미 구독중입니다.',
+                    title:this.t.alert,
+                    content:this.t.alreadysub,
                     onConfirm:()=>{
                         history.push('/mypage/billing')
                         SharedAct.alert(undefined)
@@ -95,7 +120,7 @@ class Billing extends React.Component<Props> {
                         rsp.buyer_email,
                         rsp.buyer_tel)
                 } else {
-                    alert('카드 등록 실패')
+                    alert(this.t.failregister)
                 }
             })
         }
@@ -104,8 +129,8 @@ class Billing extends React.Component<Props> {
     deleteCard(item:ApiType.ShopCard) {
         const {SharedAct} = this.props
         SharedAct.alert({
-            title:'카드 삭제',
-            content:'해당 카드로 구독중인 상품이 자동으로 해지됩니다.\n 계속하시겠습니까?',
+            title:this.t.deletecard,
+            content:this.t.deletecardbody,
             onConfirm:()=>{
                 const {MypageAction, auth} = this.props;
                 auth.userProfile && MypageAction.deleteCard(auth.userProfile, item)
@@ -127,8 +152,8 @@ class Billing extends React.Component<Props> {
         } else {
             const {SharedAct} = this.props
             SharedAct.alert({
-                title:'알림',
-                content:'구독에 사용할 카드를 선택해주세요.\n등록된 카드가 없으면 카드 등록 후 구독해주세요.',
+                title:this.t.alert,
+                content: this.t.selectcard,
                 onConfirm:()=>{
                     SharedAct.alert(undefined)
                 },
@@ -145,8 +170,8 @@ class Billing extends React.Component<Props> {
     render() {
         const { mypage } = this.props;
         return <div>
-            <h3>Subscription</h3>
-            <h4>Credit Card</h4>
+            <h3>{this.t.subscription}</h3>
+            <h4>{this.t.creditcard}</h4>
             <Row>
                 <Col md={6}>
                     {mypage.cards.map(item=><Card 
@@ -156,46 +181,46 @@ class Billing extends React.Component<Props> {
                         style={{transition:'0.5s', cursor:'pointer'}}>
                         <CardBody>
                             <CardTitle>{item.name}</CardTitle>
-                            <Button className="float-right" color="danger" onClick={()=>this.deleteCard(item)}>삭제</Button>
+                            <Button className="float-right" color="danger" onClick={()=>this.deleteCard(item)}>{this.t.delete}</Button>
                         </CardBody>
                     </Card>)}
                 </Col>
                 <Col md={6}>
                     <div className="p-3 border border-rounded">
                         <FormGroup>
-                            <Label>Name</Label>
+                            <Label>{this.t.name}</Label>
                             <Input value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})}/> 
                         </FormGroup>
                         <FormGroup>
-                            <Label>Email</Label>
+                            <Label>{this.t.email}</Label>
                             <Input value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})}/> 
                         </FormGroup>
                         <FormGroup>
-                            <Label>Tel</Label>
+                            <Label>{this.t.tel}</Label>
                             <Input value={this.state.tel} onChange={(e)=>this.setState({tel:e.target.value})}/> 
                         </FormGroup>
-                        <Button color="primary" onClick={()=>this.registerCard()}>카드 등록</Button>
+                        <Button color="primary" onClick={()=>this.registerCard()}>{this.t.register}</Button>
                     </div>
                 </Col>
             </Row>
             {this.state.isRequest ? <div className="my-3"> 
-                <h4>신규 구독</h4>
+                <h4>{this.t.newsub}</h4>
                 {mypage.subscription && <ListGroup>
                     <ListGroupItem>
-                        {mypage.subscription.name} - 월 {U.comma(mypage.subscription.price)}원
-                        <Button className="btn-sm float-right" color={"success"} onClick={()=>this.subscribe()}>구독하기</Button>
+                        {mypage.subscription.name} - {this.t.month} {U.comma(mypage.subscription.price)}{this.t.won}
+                        <Button className="btn-sm float-right" color={"success"} onClick={()=>this.subscribe()}>{this.t.subscribe}</Button>
                     </ListGroupItem>
                 </ListGroup>}
             </div>:<div className="my-3">
-                <h4>구독 내역</h4>
+                <h4>{this.t.history}</h4>
                 <ListGroup>
                     {mypage.billings.map(item=><ListGroupItem key={item.id}>
                         {item.subscription && typeof item.subscription !== 'number' && item.subscription.name}
                         {' - '}
-                        {moment(item.expired).format('YYYY.MM.DD')} 까지
-                        {item.scheduled && <Button className="btn-sm float-right" color="danger" onClick={()=>this.unsubscribe(item)}>자동연장 취소</Button>}
+                        {moment(item.expired).format('YYYY.MM.DD')} {this.t.until}
+                        {item.scheduled && <Button className="btn-sm float-right" color="danger" onClick={()=>this.unsubscribe(item)}>{this.t.cancel}</Button>}
                         {!item.scheduled && moment() < moment(item.expired) && item.card && item.subscription
-                            && <Button className="btn-sm float-right" color="success" onClick={()=>this.subscribe(item)}>연장</Button>}
+                            && <Button className="btn-sm float-right" color="success" onClick={()=>this.subscribe(item)}>{this.t.extention}</Button>}
                     </ListGroupItem>)}
                 </ListGroup>
             </div>}

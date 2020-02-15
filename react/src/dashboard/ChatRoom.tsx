@@ -10,6 +10,7 @@ import { Paginator } from 'component/Paginator';
 import { FaPaperPlane } from 'react-icons/fa';
 import moment from 'moment';
 import { AuthState } from 'auth/Auth.action';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     location:Location
@@ -17,6 +18,14 @@ interface Props {
 
 class ChatRoom extends React.Component<Props> {
 
+    t = translation('chatroom',[
+        "chatroom",
+        "user",
+        "invite",
+        "message",
+        "chatroominvitaion",
+        "invitechatroom"
+    ])
     socket!:WebSocket
     chat:any
     scrollUpdate = false
@@ -134,8 +143,8 @@ class ChatRoom extends React.Component<Props> {
                 Api.create('/sendfcm/',{
                     token:profile.id,
                     notification: {
-                        title:'채팅방 초대',
-                        body:'채팅방에 초대되었습니다.',
+                        title:this.t.chatroominvitaion,
+                        body:this.t.invitechatroom,
                         icon:'/assets/logo.png',
                         click_action:'/dashboard/chat'
                     },
@@ -175,16 +184,16 @@ class ChatRoom extends React.Component<Props> {
     render() {
         const {auth} = this.props;
         return <div>
-            <h3>ChatRoom</h3>
+            <h3>{this.t.chatroom}</h3>
             <Row>
                 <Col md={6}>
-                    <h4>사용자</h4>
+                    <h4>{this.t.user}</h4>
                     <ListGroup>
                         {this.state.profiles.map(profile=><ListGroupItem key={profile.id}>
                             {profile.name}
                             {this.state.room && (this.state.room.user as ApiType.Profile[])
                                 .filter(u=>u.id === profile.id).length === 0 && 
-                                <Button className="btn-sm float-right" onClick={()=>this.invite(profile)}>초대</Button>}
+                                <Button className="btn-sm float-right" onClick={()=>this.invite(profile)}>{this.t.invite}</Button>}
                         </ListGroupItem>)}
                     </ListGroup>
                     <div className="my-3 d-flex justify-content-center">
@@ -196,7 +205,7 @@ class ChatRoom extends React.Component<Props> {
                     </div>
                 </Col>
                 <Col md={6}>
-                    <h4>메시지</h4>
+                    <h4>{this.t.message}</h4>
                     <div ref={ref=>this.chat=ref}className="border border-bottom-0 rounded-top p-3" 
                         style={{height:300, overflow:'auto', scrollBehavior:this.whenScrollUpHeight === 0 ? 'smooth':'unset'}}
                         onScroll={(e)=>this.onScroll(e)}>

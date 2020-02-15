@@ -6,6 +6,7 @@ import { History } from 'history';
 import { AuthState } from 'auth/Auth.action';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
+import { translation } from 'component/I18next';
 
 interface Props {
     auth:AuthState
@@ -13,6 +14,13 @@ interface Props {
 }
 
 class MyProfile extends React.Component<Props> {
+
+    t = translation('myprofile',[
+        "mypage",
+        "name",
+        "lastlogin",
+        "joined"
+    ])
 
     state = {
         last_login:'',
@@ -39,12 +47,12 @@ class MyProfile extends React.Component<Props> {
 
     render() {
         return <div>
-            <h3>My Page</h3>
+            <h3>{this.t.mypage}</h3>
             <div className="py-2">
                 {[
-                    {key:'Name', val:this.state.name},
-                    {key:'Last Login', val:this.state.last_login},
-                    {key:'Joined', val:this.state.date_joined}
+                    {key:this.t.name, val:this.state.name},
+                    {key:this.t.lastlogin, val:this.state.last_login},
+                    {key:this.t.joined, val:this.state.date_joined}
                 ].map((item, i)=> <div className="d-flex flex-row m-2" key={i}>
                     <div className="w-25 font-weight-bold">{item.key}</div>
                     <div>{item.val}</div>

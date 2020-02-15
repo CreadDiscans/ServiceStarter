@@ -8,6 +8,7 @@ import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { History } from 'history';
 import SocialLogin from 'auth/SocialLogin';
+import { translation } from 'component/I18next';
 
 interface Props {
   auth:AuthState
@@ -16,6 +17,17 @@ interface Props {
 }
 
 class SignIn extends React.Component<Props> {
+
+  t = translation('signin', [
+    'signin', 
+    'username', 
+    'password',
+    'signup', 
+    'forgotpassword',
+    'notactivate',
+    'notexist',
+    'wrongpassword'
+  ])
 
   state = {
     username:'',
@@ -67,30 +79,30 @@ class SignIn extends React.Component<Props> {
         <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
           <Row form>
             <Col>
-              <h2>Sign In</h2>
+              <h2>{this.t.singin}</h2>
               <FormGroup>
-                <Label>Username</Label>
+                <Label>{this.t.username}</Label>
                 <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
                   invalid={this.state.invalid.username} />
                 {this.state.invalid.activate ? 
-                  <FormFeedback>The username is not activated. Check the email.</FormFeedback> :
-                  <FormFeedback>The username not existed.</FormFeedback>}
+                  <FormFeedback>{this.t.notactivate}</FormFeedback> :
+                  <FormFeedback>{this.t.notexist}</FormFeedback>}
               </FormGroup>
               <FormGroup>
-                <Label>Password</Label>
+                <Label>{this.t.password}</Label>
                 <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
                   invalid={this.state.invalid.password} />
-                <FormFeedback>The password was not wrong</FormFeedback>
+                <FormFeedback>{this.t.wrongpassword}</FormFeedback>
               </FormGroup>
               <div className="text-center">
-                <Button className="mx-2" color="secondary" onClick={()=>this.props.history.push('/signup')} >Sign Up</Button>
-                <Button className="mx-2" color="primary" >Sign In</Button>
+                <Button className="mx-2" color="secondary" onClick={()=>this.props.history.push('/signup')} >{this.t.signup}</Button>
+                <Button className="mx-2" color="primary" >{this.t.signin}</Button>
               </div>
             </Col>
           </Row>
           <Row>
             <Col className="text-center">
-              <Button className="btn-sm my-2" color="light" onClick={()=>this.props.history.push('/reset')}>forgot password</Button>
+              <Button className="btn-sm my-2" color="light" onClick={()=>this.props.history.push('/reset')}>{this.t.forgotpassword}</Button>
             </Col>
           </Row>
         </Form>

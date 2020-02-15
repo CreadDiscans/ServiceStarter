@@ -9,6 +9,7 @@ import { History } from 'history';
 import { AuthState } from 'auth/Auth.action';
 import { MypageAction } from 'mypage/Mypage.action';
 import { SharedAction } from 'component/Shared.action';
+import { translation } from 'component/I18next';
 
 interface Props {
     auth:AuthState
@@ -20,7 +21,14 @@ interface Props {
     history: History
 }
 
-class Payment extends React.Component<Props> {
+class ShopDetail extends React.Component<Props> {
+
+    t = translation('shopdetail', [
+        "shopdetail",
+        "buy",
+        "addcart",
+        "cartdesc"
+    ])
 
     componentDidMount() {
         const { DashboardAction, location } = this.props;
@@ -33,8 +41,8 @@ class Payment extends React.Component<Props> {
             MypageAction.addShopCart(auth.userProfile, dashboard.shopProduct)
             .then(()=> {
                 SharedAct.alert({
-                    title:'Add to cart',
-                    content:'장바구니에 상품을 담았습니다.\n 장바구니를 확인하시겠습니까?',
+                    title:this.t.addcart,
+                    content:this.t.cartdesc,
                     onConfirm:()=> {
                         history.push('/mypage/cart')
                         SharedAct.alert(undefined)
@@ -49,15 +57,15 @@ class Payment extends React.Component<Props> {
         const { dashboard, history } = this.props;
         if (!dashboard.shopProduct) return <div></div>
         return <div>
-            <h3>Shop Detail</h3>
+            <h3>{this.t.shopdetail}</h3>
             <Jumbotron>
                 <h1 className="display-3">{dashboard.shopProduct.name}</h1>
                 <div dangerouslySetInnerHTML={{__html:dashboard.shopProduct.content}}></div>
             </Jumbotron>
             <div className="text-right">
                 <Button className="m-1" color="info" 
-                onClick={()=>dashboard.shopProduct && history.push('/mypage/payment/'+dashboard.shopProduct.id)}>Buy</Button>
-                <Button className="m-1" color="info" onClick={()=>this.addToCart()}>Add to cart</Button>
+                onClick={()=>dashboard.shopProduct && history.push('/mypage/payment/'+dashboard.shopProduct.id)}>{this.t.buy}</Button>
+                <Button className="m-1" color="info" onClick={()=>this.addToCart()}>{this.t.addcart}</Button>
             </div>
         </div>
     }
@@ -73,5 +81,5 @@ export default connectWithoutDone(
         MypageAction:binding(MypageAction, dispatch),
         SharedAct:binding(SharedAction, dispatch)
     }),
-    Payment
+    ShopDetail
 )

@@ -10,6 +10,7 @@ import { BoardState } from './Board.action';
 import * as ApiType from 'types/api.types';
 import { Api } from 'app/core/Api';
 import { U } from 'app/core/U';
+import { translation } from 'component/I18next';
 
 interface Props {
     auth:AuthState
@@ -21,6 +22,11 @@ interface Props {
 let CKEditor: any;
 let ClassicEditor: any;
 class BoardWrite extends React.Component<Props> {
+
+    t = translation('boardwrite', [
+        'write',
+        'group'
+    ])
 
     state:{
         item?:ApiType.BoardItem
@@ -60,14 +66,14 @@ class BoardWrite extends React.Component<Props> {
         const {auth, history, board} = this.props;
         return <div>
             <SessionChecker auth={auth} history={history} />
-            <h3>Write</h3>
+            <h3>{this.t.write}</h3>
             <InputGroup>
                 <InputGroupButtonDropdown addonType="prepend" isOpen={this.state.toggle} toggle={()=>this.setState({toggle:!this.state.toggle})}>
                     <DropdownToggle color="secondary" caret outline>
                         {this.state.group && this.state.group.name}
                     </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem header>Groups</DropdownItem>
+                        <DropdownItem header>{this.t.group}</DropdownItem>
                         {board.groups.map(item=> <DropdownItem onClick={()=>this.setState({group:item})} key={item.id}>{item.name}</DropdownItem>)}
                     </DropdownMenu>
                 </InputGroupButtonDropdown>

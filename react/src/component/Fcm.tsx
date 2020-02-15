@@ -6,6 +6,7 @@ import { AuthState, AuthAction } from 'auth/Auth.action';
 import { SharedAction } from './Shared.action';
 import { History } from 'history';
 import { DashboardAction } from 'dashboard/Dashboard.action';
+import { translation } from './I18next';
 declare var firebase:any;
 
 interface Props {
@@ -19,6 +20,11 @@ interface Props {
 
 class Fcm extends React.Component<Props> {
 
+    t = translation('fcm',[
+        "messagereceived",
+        "newchatroom"
+    ])
+
     componentDidMount() {
         navigator.serviceWorker.register('/firebase-messaging-sw.js')
         .then(res=> {
@@ -30,7 +36,7 @@ class Fcm extends React.Component<Props> {
                 const { SharedAct, history, DashboarcAct, location, auth } = this.props
                 if(data.type === 'message') {
                     SharedAct.notify({
-                        content:'메시지가 도착했습니다.',
+                        content:this.t.messagereceived,
                         onClick:()=>history.push('/dashboard/chat/'+data.room)
                     })
                 } else if (data.type === 'room') {
@@ -38,7 +44,7 @@ class Fcm extends React.Component<Props> {
                         auth.userProfile && DashboarcAct.loadChatRoom(auth.userProfile)
                     }
                     SharedAct.notify({
-                        content:'새로운 채팅방에 초대되었습니다.',
+                        content: this.t.newchatroom,
                         onClick:()=>history.push('/dashboard/chat') 
                     })
                 }

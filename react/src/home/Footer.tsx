@@ -1,7 +1,13 @@
 import React from 'react';
-import { FaTwitter, FaFacebookF, FaLinkedinIn, FaGoogle } from 'react-icons/fa';
+import { FaFacebookF, FaGoogle } from 'react-icons/fa';
+import { translation } from 'component/I18next';
 
 export class Footer extends React.Component {
+
+  t = translation('footer',[
+    "privacy",
+    "terms"
+  ])
 
   render() {
     return <footer className="footer">
@@ -37,10 +43,10 @@ export class Footer extends React.Component {
             <div className="col-md-4">
             <ul className="list-inline quicklinks">
                 <li className="list-inline-item">
-                <a href="#">Privacy Policy</a>
+                <a href="#">{this.t.privacy}</a>
                 </li>
                 <li className="list-inline-item">
-                <a href="#">Terms of Use</a>
+                <a href="#">{this.t.terms}</a>
                 </li>
             </ul>
             </div>

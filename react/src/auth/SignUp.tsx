@@ -8,6 +8,7 @@ import { History } from 'history';
 import SocialLogin from './SocialLogin';
 import { AuthAction } from './Auth.action';
 import { SharedAction } from 'component/Shared.action';
+import { translation } from 'component/I18next';
 interface Props {
   AuthAction: typeof AuthAction
   SharedAct: typeof SharedAction
@@ -15,6 +16,18 @@ interface Props {
 }
 
 class SignUp extends React.Component<Props> {
+
+  t = translation('signup',[
+    "signup",
+    "username",
+    "email",
+    "password",
+    "passwordconfirm",
+    "usernameinvalid",
+    "emailinvalid",
+    "passwordinvalid",
+    "passwordconfirminvalid"
+  ])
 
   state = {
     username: '',
@@ -97,33 +110,33 @@ class SignUp extends React.Component<Props> {
         <Form className="w-100" style={{maxWidth:400}} onSubmit={(e)=>this.submit(e)}>
           <Row form>
             <Col>
-              <h2>Sign Up</h2>
+              <h2>{this.t.signup}</h2>
               <FormGroup>
-                <Label>Username</Label>
+                <Label>{this.t.username}</Label>
                 <Input type="text" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} 
                   invalid={this.state.invalid.username} valid={this.state.valid.username}/>
-                <FormFeedback>The username has already registered or invalid.</FormFeedback>
+                <FormFeedback>{this.t.usernameinvalid}</FormFeedback>
               </FormGroup>
               <FormGroup>
-                <Label>Email</Label>
+                <Label>{this.t.email}</Label>
                 <Input type="email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} 
                   invalid={this.state.invalid.email} valid={this.state.valid.email}/>
-                <FormFeedback>The email has already registered.</FormFeedback>
+                <FormFeedback>{this.t.emailinvalid}</FormFeedback>
               </FormGroup>
               <FormGroup>
-                <Label>Password</Label>
+                <Label>{this.t.password}</Label>
                 <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
                   invalid={this.state.invalid.password} valid={this.state.valid.password}/>
-                <FormFeedback>The password should be longer than 7 character.</FormFeedback>
+                <FormFeedback>{this.t.passwordinvalid}</FormFeedback>
               </FormGroup>
               <FormGroup>
-                <Label>Password Confirm</Label>
+                <Label>{this.t.passwordconfirm}</Label>
                 <Input type="password" value={this.state.password2} onChange={(e)=>this.setState({password2:e.target.value})} 
                   invalid={this.state.invalid.password2} valid={this.state.valid.password2}/>
-                <FormFeedback>Two passwords are not matched.</FormFeedback>
+                <FormFeedback>{this.t.passwordconfirminvalid}</FormFeedback>
               </FormGroup>
               <div className="text-center">
-                <Button color="primary">Sign Up</Button>
+                <Button color="primary">{this.t.signup}</Button>
               </div>
             </Col>
           </Row>

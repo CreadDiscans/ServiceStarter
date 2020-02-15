@@ -7,6 +7,7 @@ import { MypageState, MypageAction } from './Mypage.action';
 import { U } from 'app/core/U';
 import { History } from 'history';
 import { AuthState } from 'auth/Auth.action';
+import { translation } from 'component/I18next';
 declare var IMP:any;
 const impId = 'imp54267999'
 if (process.env.APP_ENV === 'browser') {
@@ -21,6 +22,20 @@ interface Props {
     history:History
 }
 class Payment extends React.Component<Props> {
+
+    t = translation('payment',[
+        "payment",
+        "except",
+        "ea",
+        "name",
+        "email",
+        "tel",
+        "amount",
+        "method",
+        "pay",
+        "won",
+        "failtopay"
+    ])
 
     state = {
         name:'',
@@ -54,7 +69,7 @@ class Payment extends React.Component<Props> {
 
     payImp() {
         const {mypage, history, location} = this.props;
-        const productName = mypage.products[0].name + (mypage.products.length > 1 ? ' 외' + (mypage.products.length-1)+'개' : '')
+        const productName = mypage.products[0].name + (mypage.products.length > 1 ? this.t.except + (mypage.products.length-1)+this.t.ea : '')
         const path = '/mypage/'+this.state.type+'/'+U.getId(location)
         IMP.request_pay({
             pg: 'html5_inicis',
@@ -70,7 +85,7 @@ class Payment extends React.Component<Props> {
             if(rsp.success) {
                 history.push(path+'?imp_uid='+rsp.imp_uid)
             } else {
-                alert('결제가 실패하였습니다.\n 내용 : '+rsp.error_msg);
+                alert(this.t.failtopay+rsp.error_msg);
             }
         })
     }
@@ -82,32 +97,32 @@ class Payment extends React.Component<Props> {
             <h3>Payment</h3>
             
             <div className="border border-rounded p-3">
-                <h4>{mypage.products[0].name}{mypage.products.length > 1 && ' 외' + (mypage.products.length-1)+'개'}</h4>
+                <h4>{mypage.products[0].name}{mypage.products.length > 1 && this.t.except + (mypage.products.length-1)+this.t.ea}</h4>
                 <ListGroup className="my-3">
                     {mypage.products.map(item=><ListGroupItem className="d-flex flex-row justify-content-between" key={item.id}>
                         <div>{item.name}</div>
-                        <div>{U.comma(item.price)}원</div>
+                        <div>{U.comma(item.price)}{this.t.won}</div>
                     </ListGroupItem>)}
                 </ListGroup>
                 
                 <FormGroup>
-                    <Label>Name</Label>
+                    <Label>{this.t.name}</Label>
                     <Input value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})}/> 
                 </FormGroup>
                 <FormGroup>
-                    <Label>Email</Label>
+                    <Label>{this.t.email}</Label>
                     <Input value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})}/> 
                 </FormGroup>
                 <FormGroup>
-                    <Label>Tel</Label>
+                    <Label>{this.t.tel}</Label>
                     <Input value={this.state.tel} onChange={(e)=>this.setState({tel:e.target.value})}/> 
                 </FormGroup>
                 <FormGroup>
-                    <Label>Amount</Label>
-                    <Input value={U.comma(mypage.products.map(product=>product.price).reduce((a,b)=>a+b))+'원'} readOnly />
+                    <Label>{this.t.amount}</Label>
+                    <Input value={U.comma(mypage.products.map(product=>product.price).reduce((a,b)=>a+b))+this.t.won} readOnly />
                 </FormGroup>
                 <FormGroup>
-                    <Label>Method</Label>
+                    <Label>{this.t.method}</Label>
                     <Input value={this.state.method} type="select" onChange={(e)=>this.setState({method:e.target.value})}>
                         <option value={'card'}>카드</option>
                         <option value={'trans'}>실시간계좌이체</option>
@@ -116,7 +131,7 @@ class Payment extends React.Component<Props> {
                 </FormGroup>
                 <div className="text-right">
                     <Button color="primary"
-                        onClick={()=>this.payImp()}>Pay</Button>
+                        onClick={()=>this.payImp()}>{this.t.pay}</Button>
                 </div>
             </div>
         </div>

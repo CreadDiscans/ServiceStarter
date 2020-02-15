@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import Header from 'layout/header';
-import { Footer } from 'layout/footer';
+import Header from 'home/Header';
+import { Footer } from 'home/Footer';
 import { connectWithoutDone, binding } from './core/connection';
 import { RootState } from './Reducers';
 import { Dispatch } from 'redux';

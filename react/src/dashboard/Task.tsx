@@ -6,12 +6,19 @@ import { Button, ListGroup, ListGroupItem, Progress } from 'reactstrap';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { AuthState } from 'auth/Auth.action';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
 }
 
 class Task extends React.Component<Props>{
 
+    t = translation('task',[
+        "task",
+        "newtask",
+        "start",
+        "delete"
+    ])
     sockets:{d:ApiType.TaskWork, s:WebSocket}[] = []
 
     state:{
@@ -92,15 +99,15 @@ class Task extends React.Component<Props>{
 
     render(){
         return <div>
-            <h3>Task</h3>
+            <h3>{this.t.task}</h3>
             <ListGroup className="mb-3">
                 {this.state.tasks.map(item=> <ListGroupItem key={item.id}>
                     <Progress animated color={item.status} value={item.progress} />
-                    <Button className="m-2" color="success" onClick={()=>this.startTask(item)} disabled={item.status==='running'}>Start</Button>
-                    <Button className="m-2" color="danger" onClick={()=>this.deleteTask(item)}>Delete</Button>
+                    <Button className="m-2" color="success" onClick={()=>this.startTask(item)} disabled={item.status==='running'}>{this.t.start}</Button>
+                    <Button className="m-2" color="danger" onClick={()=>this.deleteTask(item)}>{this.t.delete}</Button>
                 </ListGroupItem>)}
             </ListGroup>
-            <Button color="primary" onClick={()=>this.createTask()}>new Task</Button>
+            <Button color="primary" onClick={()=>this.createTask()}>{this.t.newtask}</Button>
         </div>
     }
 }

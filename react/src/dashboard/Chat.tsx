@@ -8,6 +8,7 @@ import * as ApiType from 'types/api.types';
 import { AuthState } from 'auth/Auth.action';
 import { History } from 'history';
 import { DashboardAction, DashboardState } from './Dashboard.action';
+import { translation } from 'component/I18next';
 interface Props {
     auth:AuthState
     dashboard:DashboardState
@@ -16,6 +17,12 @@ interface Props {
 }
 
 class Chat extends React.Component<Props> {
+
+    t = translation('chat', [
+        "chat",
+        "leave",
+        "createroom"
+    ])
 
     componentDidMount() {
         this.loadChatRoom()
@@ -53,17 +60,17 @@ class Chat extends React.Component<Props> {
     render() {
         const { history, dashboard } = this.props
         return <div>
-            <h3>Chat</h3>
+            <h3>{this.t.chat}</h3>
             <ListGroup className="mb-3">
                 {dashboard.chatRooms.map(room=><ListGroupItem key={room.id} 
                     style={{cursor:'pointer'}}
                     onClick={()=>history.push('/dashboard/chat/'+room.id)}>
                     {this.getRoomName(room)}
                     <Button className="btn-sm float-right" color="danger" 
-                    onClick={(e)=>{e.stopPropagation(); this.exitRoom(room)}}>나가기</Button>
+                    onClick={(e)=>{e.stopPropagation(); this.exitRoom(room)}}>{this.t.leave}</Button>
                 </ListGroupItem>)}
             </ListGroup>
-            <Button color="primary" onClick={()=>this.createRoom()}>방 만들기</Button>
+            <Button color="primary" onClick={()=>this.createRoom()}>{this.t.createroom}</Button>
         </div>
     }
 }

@@ -7,6 +7,7 @@ import { History } from 'history';
 import { DashboardAction, DashboardState } from './Dashboard.action';
 import { Paginator } from 'component/Paginator';
 import { U } from 'app/core/U';
+import { translation } from 'component/I18next';
 
 interface Props {
     dashboard:DashboardState
@@ -15,6 +16,16 @@ interface Props {
 }
 
 class Shop extends React.Component<Props> {
+
+    t = translation('shop',[
+        "shop",
+        "subscription",
+        "subscribe",
+        "product",
+        "show",
+        "month",
+        "won"
+    ])
 
     componentDidMount() {
         const { DashboardAction } = this.props;
@@ -25,32 +36,32 @@ class Shop extends React.Component<Props> {
     render() {
         const { dashboard, history } = this.props;
         return <div>
-            <h3>Shop</h3>
+            <h3>{this.t.shop}</h3>
             <div>
-                <h4>Subscription</h4>
+                <h4>{this.t.subscription}</h4>
                 <Row>
                     {dashboard.shopSubscriptions.map(item=> <Col sm={12} md={6} lg={4} key={item.id}>
                         <Card className="mb-3">
                             <CardBody>
                                 <CardTitle>{item.name}</CardTitle>
-                                <CardSubtitle>월 {U.comma(item.price)}원</CardSubtitle>
+                                <CardSubtitle>{this.t.month} {U.comma(item.price)}{this.t.won}</CardSubtitle>
                                 <CardBody></CardBody>
-                                <Button onClick={()=>history.push('/mypage/billing/'+item.id)}>구독</Button>
+                                <Button onClick={()=>history.push('/mypage/billing/'+item.id)}>{this.t.subscribe}</Button>
                             </CardBody>
                         </Card>
                     </Col>)}
                 </Row>
             </div>
             <div>
-                <h4>Product</h4>
+                <h4>{this.t.product}</h4>
                 <Row>
                     {dashboard.shopProducts.map(item=> <Col sm={12} md={6} lg={4} key={item.id}>
                         <Card className="mb-3">
                             <CardBody>
                                 <CardTitle>{item.name}</CardTitle>
-                                <CardSubtitle>{U.comma(item.price)}원</CardSubtitle>
+                                <CardSubtitle>{U.comma(item.price)}{this.t.won}</CardSubtitle>
                                 <CardBody></CardBody>
-                                <Button onClick={()=>history.push('/dashboard/shop/'+item.id)}>Show</Button>
+                                <Button onClick={()=>history.push('/dashboard/shop/'+item.id)}>{this.t.show}</Button>
                             </CardBody>
                         </Card>
                     </Col>)}

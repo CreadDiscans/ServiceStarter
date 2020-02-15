@@ -6,6 +6,7 @@ import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Butto
 import { Api } from 'app/core/Api';
 import { History } from 'history';
 import { SharedAction } from 'component/Shared.action';
+import { translation } from 'component/I18next';
 interface Props {
     SharedAct:typeof SharedAction
     location:Location
@@ -13,6 +14,19 @@ interface Props {
 }
 
 class Reset extends React.Component<Props> {
+
+    t = translation('reset',[
+        "passwordreset",
+        "newpassword",
+        "invalidpassword",
+        "passwordconfirm",
+        "passwordconfirminvalid",
+        "reset",
+        "sendpasswordresetmail",
+        "email",
+        "invalidemail",
+        "sendmail"
+    ])
 
     state = {
         email:'',
@@ -103,21 +117,21 @@ class Reset extends React.Component<Props> {
             <Form className="w-100" style={{maxWidth:500}} onSubmit={(e)=>this.reset(e)}>
                 <Row form>
                     <Col>
-                    <h2>Password Reset</h2>
+                    <h2>{this.t.passwordreset}</h2>
                     <FormGroup>
-                        <Label>New Password</Label>
+                        <Label>{this.t.newpassword}</Label>
                         <Input type="password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} 
                         invalid={this.state.password_invalid} />
-                        <FormFeedback>The password should be longer than 7 character.</FormFeedback>
+                        <FormFeedback>{this.t.invalidpassword}</FormFeedback>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Password Confirm</Label>
+                        <Label>{this.t.passwordconfirm}</Label>
                         <Input type="password" value={this.state.password2} onChange={(e)=>this.setState({password2:e.target.value})} 
                         invalid={this.state.password2_invalid} />
-                        <FormFeedback>Two passwords are not matched.</FormFeedback>
+                        <FormFeedback>{this.t.passwordconfirminvalid}</FormFeedback>
                     </FormGroup>
                     <div className="text-center">
-                        <Button className="mx-2" color="primary" >Reset</Button>
+                        <Button className="mx-2" color="primary" >{this.t.reset}</Button>
                     </div>
                     </Col>
                 </Row>
@@ -125,15 +139,15 @@ class Reset extends React.Component<Props> {
             <Form className="w-100" style={{maxWidth:500}} onSubmit={(e)=>this.submit(e)}>
                 <Row form>
                     <Col>
-                    <h2>Send Password Reset Mail</h2>
+                    <h2>{this.t.sendpasswordresetmail}</h2>
                     <FormGroup>
-                        <Label>Email</Label>
+                        <Label>{this.t.email}</Label>
                         <Input type="email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} 
                         invalid={this.state.invalid} />
-                        <FormFeedback>The email not exists.</FormFeedback>
+                        <FormFeedback>{this.t.invalidemail}</FormFeedback>
                     </FormGroup>
                     <div className="text-center">
-                        <Button className="mx-2" color="primary" >Send Mail</Button>
+                        <Button className="mx-2" color="primary" >{this.t.sendmail}</Button>
                     </div>
                     </Col>
                 </Row>
