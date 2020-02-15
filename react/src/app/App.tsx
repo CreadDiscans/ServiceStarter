@@ -21,7 +21,7 @@ import {
 } from 'app/Routes';
 import { NaverAuthCallbackComponent } from 'auth/SocialLogin';
 import Fcm from '../component/Fcm';
-import { SharedAction } from 'component/Shared.action';
+import { I18next } from 'component/I18next';
 interface Props {
     AuthAct: typeof AuthAction
 }
@@ -34,6 +34,7 @@ class App extends Component<Props> {
                 <Helmet>
                     <title>React Router & SSR</title>
                 </Helmet>
+                <I18next/>
                 <Header />
                 <div style={{flex:1}}>
                     <Switch>
