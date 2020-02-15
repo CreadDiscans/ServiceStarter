@@ -14,8 +14,8 @@ export default class Splash extends React.Component<Props> {
     }
 
     _bootstrapAsync = async() => {
-        const userToken = await AsyncStorage.getItem('userToken');
-        this.props.navigation.navigate(userToken ? 'Home' : 'SignIn');
+        // const userToken = await AsyncStorage.getItem('userToken');
+        // this.props.navigation.navigate(userToken ? 'Home' : 'SignIn');
     }
 
     render() {
