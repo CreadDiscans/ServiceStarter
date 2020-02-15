@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { BehaviorSubject } from 'rxjs';
 import queryString from 'query-string';
 import * as ApiType from 'types/api.types';
 declare var csrf_token:string;

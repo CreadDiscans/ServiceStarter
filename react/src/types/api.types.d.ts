@@ -48,7 +48,7 @@ export type TaskClient = {
 }
 export type TaskWork = {
     id:number
-    owner:number|profile
+    owner:number|Profile
     progress:number
     status:string
     body:string
