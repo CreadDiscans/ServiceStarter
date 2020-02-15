@@ -13,6 +13,8 @@ import Chat from './Chat';
 import ChatRoom from './ChatRoom';
 import Task from './Task';
 import { translation } from 'component/I18next';
+import { U } from 'app/core/U';
+import { MediaQuery } from 'component/MediaQuery';
 interface Props {
     auth:AuthState
     history:History
@@ -85,6 +87,14 @@ class DashboardHome extends React.Component {
             <hr/>
             <h5>Task</h5>
             <div>Background 작업 등록, 실시간 작업 현황 확인</div>
+            <hr />
+            <h5>Common</h5>
+            <div>반응형(Media Query), 국제화(i18n), Notification, Alert, Sesstion관리</div>
+            <MediaQuery xs>xs</MediaQuery>
+            <MediaQuery sm>sm</MediaQuery>
+            <MediaQuery md>md</MediaQuery>
+            <MediaQuery lg>lg</MediaQuery>
+            <MediaQuery xl>xl</MediaQuery>
         </div>
     }
 }
