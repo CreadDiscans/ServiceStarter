@@ -1,9 +1,9 @@
 import * as custom from './custom.types'
 
-export type TaskClient = {
+export type Device = {
     id:number
-    channel_name:string
-    work:number|TaskWork
+    fcm_token:string
+    profile:number|Profile
 }
 export type Media = {
     id:number
@@ -16,7 +16,6 @@ export type Profile = {
     id:number
     user:number|custom.auth.User
     name:string
-    fcm_token:string
     profile_img:string
 }
 export type BoardItem = {
@@ -41,6 +40,11 @@ export type BoardGroup = {
     id:number
     name:string
     readonly:boolean
+}
+export type TaskClient = {
+    id:number
+    channel_name:string
+    work:number|TaskWork
 }
 export type TaskWork = {
     id:number

@@ -1,12 +1,12 @@
 from django.db import models
 
-class TaskClient(models.Model):
+class Device(models.Model):
     class Meta:
         pass
 
-    channel_name = models.CharField(max_length=100)
+    fcm_token = models.CharField(max_length=200)
 
-    work = models.ForeignKey('TaskWork', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
 
 class Profile(models.Model):
     class Meta:
@@ -17,7 +17,6 @@ class Profile(models.Model):
 
     user = models.OneToOneField(to='auth.User', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    fcm_token = models.CharField(max_length=200, null=True, blank=True)
     profile_img = models.CharField(max_length=200, null=True, blank=True)
 
 
@@ -28,8 +27,8 @@ class Media(models.Model):
     file = models.FileField(upload_to='%Y/%m/%d')
     boarditem = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='BoardItem')
     shopproduct = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='ShopProduct')
+    profile = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='Profile')
 
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
 
 class BoardGroup(models.Model):
     class Meta:
@@ -65,6 +64,14 @@ class BoardComment(models.Model):
 
     item = models.ForeignKey('BoardItem', on_delete=models.CASCADE)
     parent = models.ForeignKey('BoardComment', null=True, on_delete=models.CASCADE)
+
+class TaskClient(models.Model):
+    class Meta:
+        pass
+
+    channel_name = models.CharField(max_length=100)
+
+    work = models.ForeignKey('TaskWork', on_delete=models.CASCADE)
 
 class TaskWork(models.Model):
     class Meta:

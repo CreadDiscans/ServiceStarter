@@ -28,16 +28,17 @@ class MessageConsumer(AsyncWebsocketConsumer):
         profile = Profile.objects.get(pk=text_data_json['sender'])
         room = ChatRoom.objects.get(pk=text_data_json['room'])
         for user in room.user.all():
-            if user.id != profile.id and user.fcm_token:
-                send_fcm(user.fcm_token, {
-                    'title':'메시지 알림',
-                    'body':'채팅에 새로운 메시지가 있습니다.',
-                    'icon':'/assets/logo.png',
-                    'click_action':'/dashboard/chat/'+str(room.id)
-                }, data={
-                    'type':'message',
-                    'room':room.id
-                })
+            if user.id != profile.id:
+                for device in user.device_set.all():
+                    send_fcm(device, {
+                        'title':'메시지 알림',
+                        'body':'채팅에 새로운 메시지가 있습니다.',
+                        'icon':'/assets/logo.png',
+                        'click_action':'/dashboard/chat/'+str(room.id)
+                    }, data={
+                        'type':'message',
+                        'room':room.id
+                    })
         message = ChatMessage(
             room=room,
             created=text_data_json['created'],

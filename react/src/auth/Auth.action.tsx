@@ -15,9 +15,15 @@ const initState:AuthState = {
 export const AuthAction = {
   setFcm:async(profile:ApiType.Profile|undefined, fcmToken:string)=> {
     if (profile) {
-      profile = await Api.patch<ApiType.Profile>('/api-profile/',profile.id, {
+      const devices = await Api.list<ApiType.Device[]>('/api-device/', {
         fcm_token:fcmToken
       })
+      if (devices.length === 0) {
+        await Api.create<ApiType.Device>('/api-device/',{
+          fcm_token:fcmToken,
+          profile:profile.id
+        })
+      }
     }
     return Promise.resolve({fcmToken, userProfile:profile})
   },

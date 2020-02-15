@@ -131,20 +131,18 @@ class ChatRoom extends React.Component<Props> {
             Api.patch('/api-chat/room/', this.state.room.id, {
                 user:(this.state.room.user as ApiType.Profile[]).map(u=>u.id).concat([profile.id])
             }).then(()=> {
-                if (profile.fcm_token) {
-                    Api.create('/sendfcm/',{
-                        token:profile.fcm_token,
-                        notification: {
-                            title:'채팅방 초대',
-                            body:'채팅방에 초대되었습니다.',
-                            icon:'/assets/logo.png',
-                            click_action:'/dashboard/chat'
-                        },
-                        data:{
-                            type:'room',
-                        }
-                    })
-                }
+                Api.create('/sendfcm/',{
+                    token:profile.id,
+                    notification: {
+                        title:'채팅방 초대',
+                        body:'채팅방에 초대되었습니다.',
+                        icon:'/assets/logo.png',
+                        click_action:'/dashboard/chat'
+                    },
+                    data:{
+                        type:'room',
+                    }
+                })
                 this.loadRoom()
             })
         }

@@ -400,7 +400,9 @@ class FcmSender(viewsets.ViewSet):
     
     def create(self, request):
         body = json.loads(request.body)
-        send_fcm(body['token'], body['notification'], body['data'])
+        profile = Profile.objects.get(pk=body['profile_id'])
+        for device in profile.device_set.all():
+            send_fcm(device, body['notification'], body['data'])
         return Response({}, status=status.HTTP_200_OK)
 
 

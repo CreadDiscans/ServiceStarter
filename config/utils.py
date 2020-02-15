@@ -61,17 +61,20 @@ class CustomSchema(AutoSchema):
         elif self.is_delete(path, method):
             return self.schema_delete
 
-def send_fcm(token, notification=None, data=None):
+def send_fcm(device, notification=None, data=None):
     url = 'https://fcm.googleapis.com/fcm/send'
     headers = {
         'Authorization': 'key=%s'%settings.FCM_SERVER_KEY,
         'Content-Type': 'application/json; UTF-8',
     }
     content = {
-        'to':token
+        'to':device.fcm_token
     }
     if notification: 
         content['notification'] = notification
     if data:
         content['data'] = data
     r = requests.post(url, data=json.dumps(content), headers=headers)
+    result = json.loads(r.text)
+    if result['success'] == 0:
+        device.delete()
