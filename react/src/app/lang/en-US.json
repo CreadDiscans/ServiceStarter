@@ -97,7 +97,8 @@
     "joined": "Joined",
     "lastlogin": "Last Login",
     "mypage": "My Page",
-    "name": "Name"
+    "name": "Name",
+    "change": "Change"
   },
   "payment": {
     "amount": "Amount",

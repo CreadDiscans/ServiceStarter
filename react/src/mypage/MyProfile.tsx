@@ -20,7 +20,8 @@ class MyProfile extends React.Component<Props> {
         "mypage",
         "name",
         "lastlogin",
-        "joined"
+        "joined",
+        "change"
     ])
 
     state = {
@@ -71,7 +72,7 @@ class MyProfile extends React.Component<Props> {
             <Row>
                 <Col xs={12} md={3} className="text-center">
                     <div className="mb-3" style={{maxWidth:100}}><img src={this.state.profile_img ? this.state.profile_img : '/assets/default_profile.png'} /></div>
-                    <Button color="primary" onClick={()=>this.changeImage()}>수정</Button>
+                    <Button color="primary" onClick={()=>this.changeImage()}>{this.t.change}</Button>
                 </Col>
                 <Col xs={12} md={9}>
                     <div className="py-2">

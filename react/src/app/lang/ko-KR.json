@@ -96,7 +96,8 @@
     "joined": "등록일",
     "lastlogin": "최근로그인",
     "mypage": "내 정보",
-    "name": "이름"
+    "name": "이름",
+    "change": "수정"
   },
   "payment": {
     "amount": "금액",
