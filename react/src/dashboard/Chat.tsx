@@ -43,6 +43,13 @@ class Chat extends React.Component<Props> {
         return (room.user as ApiType.Profile[]).map(user=>user.name).join(',')
     }
 
+    exitRoom(item:ApiType.ChatRoom) {
+        const { auth, DashboardAct } = this.props
+        if (auth.userProfile) {
+            DashboardAct.exitChatRoom(auth.userProfile, item)
+        }
+    }
+
     render() {
         const { history, dashboard } = this.props
         return <div>
@@ -52,6 +59,8 @@ class Chat extends React.Component<Props> {
                     style={{cursor:'pointer'}}
                     onClick={()=>history.push('/dashboard/chat/'+room.id)}>
                     {this.getRoomName(room)}
+                    <Button className="btn-sm float-right" color="danger" 
+                    onClick={(e)=>{e.stopPropagation(); this.exitRoom(room)}}>나가기</Button>
                 </ListGroupItem>)}
             </ListGroup>
             <Button color="primary" onClick={()=>this.createRoom()}>방 만들기</Button>

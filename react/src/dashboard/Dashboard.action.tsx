@@ -56,6 +56,17 @@ export const DashboardAction = {
             room.user = (room.user as number[]).map(user=> profiles.filter(p=>p.id === user)[0])
         })
         return Promise.resolve({chatRooms:rooms})
+    },
+    exitChatRoom:async(profile:ApiType.Profile, room:ApiType.ChatRoom)=> {
+        const chatRoom = await Api.retrieve<ApiType.ChatRoom>('/api-chat/room/', room.id,{})
+        if (chatRoom.user.length === 1) {
+            await Api.delete('/api-chat/room/',chatRoom.id)
+        } else {
+            await Api.update('/api-chat/room/',chatRoom.id,{
+                user:(chatRoom.user as number[]).filter(user=> user !== profile.id)
+            })
+        }
+        return DashboardAction.loadChatRoom(profile)
     }
 }
 
