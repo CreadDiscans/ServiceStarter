@@ -8,9 +8,11 @@ import { Button, Table } from 'reactstrap';
 import { AuthState } from 'auth/Auth.action';
 import { History } from 'history';
 import moment from 'moment';
+import 'moment/locale/ko';
 import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
-import { translation } from 'component/I18next';
+import { translation, getLang } from 'component/I18next';
+moment.locale(getLang())
 interface Props {
     auth:AuthState
     board:BoardState

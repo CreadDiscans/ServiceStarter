@@ -9,8 +9,10 @@ import * as ApiType from 'types/api.types';
 import { Paginator } from 'component/Paginator';
 import { FaPaperPlane } from 'react-icons/fa';
 import moment from 'moment';
+import 'moment/locale/ko'
 import { AuthState } from 'auth/Auth.action';
-import { translation } from 'component/I18next';
+import { translation, getLang } from 'component/I18next';
+moment.locale(getLang())
 interface Props {
     auth:AuthState
     location:Location
