@@ -35,7 +35,7 @@ export class MediaQuery extends React.Component<Props> {
     xs = ()=> window.matchMedia('(max-width: 575px)').matches
     sm = ()=> window.matchMedia('(min-width: 576px) and (max-width: 767px)').matches
     md = ()=> window.matchMedia('(min-width: 768px) and (max-width: 991px)').matches
-    lg = ()=> window.matchMedia('(min-width: 992px) and (max-width: 1199').matches
+    lg = ()=> window.matchMedia('(min-width: 992px) and (max-width: 1199px)').matches
     xl = ()=> window.matchMedia('(min-width: 1200px').matches
 
     render() {
