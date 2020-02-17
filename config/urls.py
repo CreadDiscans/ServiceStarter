@@ -33,7 +33,6 @@ urlpatterns = [
     path('api-', include('api.urls')),
     path('activate/<str:uid64>/<str:token>/', activate),
     path('send_reset_mail', send_reset_mail),
-    path('firebase-messaging-sw.js', assets),
     path('fcm_test', fcm_test),
     re_path(r'^ckeditor/', include('ckeditor_uploader.urls')),
     path('', index)
@@ -45,6 +44,7 @@ if settings.DEBUG:
         path('swagger/', get_swagger_view(title='Pastebin API')),
         path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
         url(r'assets/', assets),
+        path('firebase-messaging-sw.js', assets),
     ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
