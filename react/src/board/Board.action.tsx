@@ -1,6 +1,7 @@
 import * as ApiType from 'types/api.types';
 import { getHandleActions } from 'app/core/connection';
 import { Api } from 'app/core/Api';
+import { U } from 'app/core/U';
 
 export type BoardState = {
     groups: ApiType.BoardGroup[]
@@ -34,7 +35,7 @@ export const BoardAction = {
             valid:1
         })
         const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
-            'pk__in[]':res.items.map(item=>item.author)
+            'pk__in[]':U.union([res.items.map(item=>item.author)])
         })
         res.items.forEach(item=>item.author = profiles.filter(profile=>profile.id === item.author)[0])
         return Promise.resolve({

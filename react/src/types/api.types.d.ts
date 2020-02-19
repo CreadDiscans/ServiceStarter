@@ -20,6 +20,28 @@ export type Profile = {
     name:string
     profile_img:string
 }
+export type MonitorServer = {
+    id:number
+    mac_address:string
+    keep_day:number
+}
+export type MonitorUsage = {
+    id:number
+    percent:number
+    dt:string
+    cpu:number|MonitorCpu
+    memory:number|MonitorMemory
+}
+export type MonitorMemory = {
+    id:number
+    total:number
+    server:number|MonitorServer
+}
+export type MonitorCpu = {
+    id:number
+    name:string
+    server:number|MonitorServer
+}
 export type BoardItem = {
     id:number
     title:string

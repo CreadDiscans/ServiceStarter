@@ -32,6 +32,40 @@ class Media(models.Model):
     extra = models.CharField(max_length=100, null=True, blank=True)
 
 
+class MonitorUsage(models.Model):
+    class Meta:
+        pass
+
+    percent = models.DecimalField(max_digits=5, decimal_places=2)
+    dt = models.DateTimeField(auto_now_add=True)
+
+    cpu = models.ForeignKey('MonitorCpu', on_delete=models.CASCADE, null=True, blank=True)
+    memory = models.ForeignKey('MonitorMemory', on_delete=models.CASCADE, null=True, blank=True)
+
+class MonitorCpu(models.Model):
+    class Meta:
+        pass
+
+    name = models.CharField(max_length=100)
+
+    server = models.ForeignKey('MonitorServer', on_delete=models.CASCADE)
+
+class MonitorMemory(models.Model):
+    class Meta:
+        pass
+
+    total = models.IntegerField(default=0)
+
+    server = models.OneToOneField('MonitorServer', on_delete=models.CASCADE)
+
+class MonitorServer(models.Model):
+    class Meta:
+        pass
+
+    mac_address = models.CharField(max_length=100)
+    keep_day = models.IntegerField(default=7)
+
+
 class BoardGroup(models.Model):
     class Meta:
         verbose_name_plural='게시판 그룹'

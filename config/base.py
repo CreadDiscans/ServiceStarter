@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'ckeditor',
     'ckeditor_uploader',
-    'api'
+    'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [

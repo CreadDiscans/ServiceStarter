@@ -1,0 +1,85 @@
+{% extends "admin/index.html" %}
+
+{% block sidebar %}
+    {{block.super}}
+    {% if user.is_superuser %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+    <div>
+        <h1>Monitor</h1>
+        <div id="monitor-root"></div>
+        <script>
+
+            async function draw() {
+                const data = await loadData()
+                const root = document.getElementById('monitor-root')
+                data.forEach(server=> {
+                    server.mac_address
+                    const title = document.createElement('h3')
+                    title.innerHTML = server.mac_address
+                    root.appendChild(title)
+                    const body = document.createElement('div')
+                    root.appendChild(body)
+                    
+                    const canvas = document.createElement('canvas')
+                    const ctx = canvas.getContext('2d')
+                    const chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            datasets:server.cpus.concat(server.memory).reverse().map(item=> ({
+                                label:item.name ? item.name : 'Memory',
+                                data:item.usages.map(item=>({x:new Date(item.dt), y:item.percent})),
+                                fill:false,
+                                borderColor:getRandomColor()
+                            }))
+                        },
+                        options:{
+                            scales: {
+                                xAxes:[{
+                                    type:'time'
+                                }]
+                            }
+                        }
+                    });
+                    root.appendChild(canvas)
+                })
+            }
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+            async function loadData() {
+                const servers = await load('server')
+                const cpus = await load('cpu')
+                const memorys = await load('memory')
+                const usages = await load('usage')
+                cpus.forEach(cpu=>cpu.usages = usages.filter(usage=>usage.cpu === cpu.id))
+                memorys.forEach(memory=>memory.usages = usages.filter(usage=>usage.memory === memory.id))
+                servers.forEach(server=>{
+                    server.cpus = cpus.filter(cpu=>cpu.server === server.id)
+                    server.memory = memorys.filter(memory=>memory.server === server.id)[0]
+                })
+                return Promise.resolve(servers)
+            }
+
+            async function load(name) {
+                return new Promise(resolve=> {
+                    $.ajax({
+                        url:'/api-monitor/'+name+'/',
+                        success:(data)=>{
+                            resolve(data)
+                        }
+                    })
+                })
+            }
+            draw()
+        </script>
+    </div>
+    {% endif %}
+{% endblock %}

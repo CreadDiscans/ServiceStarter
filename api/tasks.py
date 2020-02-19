@@ -4,14 +4,22 @@ from celery import shared_task
 from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from api.models import TaskWork
-from datetime import datetime
+from api.models import TaskWork, MonitorServer, MonitorCpu, MonitorUsage
+from datetime import datetime, timedelta
+from uuid import getnode as get_mac
 import time
 import json
-# @shared_task
-# def debug():
-#     now = datetime.now()
-#     print(now, settings.SETTING_MODE)
+import psutil
+
+@shared_task
+def monitering():
+    mac_address = ':'.join(("%012X" % get_mac())[i:i+2] for i in range(0, 12, 2))
+    server = MonitorServer.objects.get(mac_address=mac_address)
+    cpu_usages = psutil.cpu_percent(percpu=True)
+    for i, cpu in enumerate(server.monitorcpu_set.all()):
+        MonitorUsage(cpu=cpu, percent=cpu_usages[i]).save()
+    MonitorUsage(memory=server.monitormemory, percent=psutil.virtual_memory().percent).save()
+    MonitorUsage.objects.filter(dt__lte=datetime.now() - timedelta(days=server.keep_day)).delete()
 
 def update_task(task, progress):
     if TaskWork.objects.filter(pk=task.id).count() > 0:
