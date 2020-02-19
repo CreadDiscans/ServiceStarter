@@ -73,5 +73,3 @@ def save_media(key, obj, field):
             src = fullname.replace(settings.MEDIA_ROOT, '')
             setattr(obj, field, getattr(obj, field).replace(attr%src, attr%('/'+m.file.name)))
     obj.save()
-
-admin.site.register(MonitorUsage)
