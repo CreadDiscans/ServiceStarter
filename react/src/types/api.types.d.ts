@@ -3,6 +3,7 @@ import * as custom from './custom.types'
 export type Device = {
     id:number
     fcm_token:string
+    type:string
     profile:number|Profile
 }
 export type Media = {
@@ -11,6 +12,7 @@ export type Media = {
     boarditem:number|BoardItem
     shopproduct:number|ShopProduct
     profile:number|Profile
+    extra:string
 }
 export type Profile = {
     id:number

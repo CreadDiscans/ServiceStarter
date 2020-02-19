@@ -16,12 +16,18 @@ export const AuthAction = {
   setFcm:async(profile:ApiType.Profile|undefined, fcmToken:string)=> {
     if (profile) {
       const devices = await Api.list<ApiType.Device[]>('/api-device/', {
-        fcm_token:fcmToken
+        profile:profile.id,
+        type:'web'
       })
       if (devices.length === 0) {
         await Api.create<ApiType.Device>('/api-device/',{
           fcm_token:fcmToken,
-          profile:profile.id
+          profile:profile.id,
+          type:'web'
+        })
+      } else {
+        await Api.patch<ApiType.Device>('/api-device/',devices[0].id, {
+          fcm_token:fcmToken
         })
       }
     }

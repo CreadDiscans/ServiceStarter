@@ -5,6 +5,7 @@ class Device(models.Model):
         pass
 
     fcm_token = models.CharField(max_length=200)
+    type = models.CharField(max_length=100)
 
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
 
@@ -28,6 +29,7 @@ class Media(models.Model):
     boarditem = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='BoardItem')
     shopproduct = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='ShopProduct')
     profile = models.ForeignKey(on_delete=models.CASCADE, null=True, blank=True, to='Profile')
+    extra = models.CharField(max_length=100, null=True, blank=True)
 
 
 class BoardGroup(models.Model):

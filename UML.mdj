@@ -4285,13 +4285,30 @@
 											"height": 13,
 											"text": "+profile: foreign {on_delete=\"models.CASCADE\", null=true, blank=true, to=\"Profile\"}",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFwW8h72K2Xtjo=",
+											"_parent": {
+												"$ref": "AAAAAAFwGKqgS1Cw0x4="
+											},
+											"model": {
+												"$ref": "AAAAAAFwW8h7nK2L2Jg="
+											},
+											"font": "Arial;13;0",
+											"left": 13,
+											"top": 402,
+											"width": 573.37109375,
+											"height": 13,
+											"text": "+extra: string {max_length=100, null=true, blank=true}",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 8,
 									"top": 337,
 									"width": 583.37109375,
-									"height": 68
+									"height": 83
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -4304,7 +4321,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 8,
-									"top": 405,
+									"top": 420,
 									"width": 583.37109375,
 									"height": 10
 								},
@@ -4346,7 +4363,7 @@
 							"left": 8,
 							"top": 312,
 							"width": 583.37109375,
-							"height": 103,
+							"height": 118,
 							"nameCompartment": {
 								"$ref": "AAAAAAFwGKqgS1Crk+Y="
 							},
@@ -8822,13 +8839,30 @@
 											"height": 13,
 											"text": "+fcm_token: string {max_length=200}",
 											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAFwW8lH8rVCnZg=",
+											"_parent": {
+												"$ref": "AAAAAAFwRhIc176hOYU="
+											},
+											"model": {
+												"$ref": "AAAAAAFwW8lHvrUkDj8="
+											},
+											"font": "Arial;13;0",
+											"left": 93,
+											"top": 261,
+											"width": 221.13330078125,
+											"height": 13,
+											"text": "+type: string {max_length=100}",
+											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 88,
 									"top": 241,
 									"width": 231.13330078125,
-									"height": 23
+									"height": 38
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -8841,7 +8875,7 @@
 									},
 									"font": "Arial;13;0",
 									"left": 88,
-									"top": 264,
+									"top": 279,
 									"width": 231.13330078125,
 									"height": 10
 								},
@@ -10018,6 +10052,49 @@
 							],
 							"type": {
 								"$ref": "AAAAAAFoVUMS/WaP+Bw="
+							}
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFwW8h7nK2L2Jg=",
+							"_parent": {
+								"$ref": "AAAAAAFwGKqgSlCoTbQ="
+							},
+							"name": "extra",
+							"tags": [
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAFwW8ikV6+Qn/U=",
+									"_parent": {
+										"$ref": "AAAAAAFwW8h7nK2L2Jg="
+									},
+									"name": "max_length",
+									"kind": "number",
+									"number": 100
+								},
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAFwW8j8WLGUiNo=",
+									"_parent": {
+										"$ref": "AAAAAAFwW8h7nK2L2Jg="
+									},
+									"name": "null",
+									"kind": "boolean",
+									"checked": true
+								},
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAFwW8kZqbM+4ho=",
+									"_parent": {
+										"$ref": "AAAAAAFwW8h7nK2L2Jg="
+									},
+									"name": "blank",
+									"kind": "boolean",
+									"checked": true
+								}
+							],
+							"type": {
+								"$ref": "AAAAAAFn8UBVqpf1raI="
 							}
 						}
 					]
@@ -11476,6 +11553,29 @@
 									"name": "max_length",
 									"kind": "number",
 									"number": 200
+								}
+							],
+							"type": {
+								"$ref": "AAAAAAFn8UBVqpf1raI="
+							}
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAFwW8lHvrUkDj8=",
+							"_parent": {
+								"$ref": "AAAAAAFwRhIc1r6Zm7I="
+							},
+							"name": "type",
+							"tags": [
+								{
+									"_type": "Tag",
+									"_id": "AAAAAAFwW8lqmLaxHpU=",
+									"_parent": {
+										"$ref": "AAAAAAFwW8lHvrUkDj8="
+									},
+									"name": "max_length",
+									"kind": "number",
+									"number": 100
 								}
 							],
 							"type": {
