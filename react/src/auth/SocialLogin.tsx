@@ -33,7 +33,7 @@ class SocialLogin extends React.Component<Props> {
     googleLogin() {
         firebase.auth().signInWithPopup(googleProvider).then((result:any)=> {
             const {AuthAction, history, auth} = this.props;
-            const token = result.credential.accessToken
+            const token = result.credential.idToken
             const user = result.user
             AuthAction.socialSign(
                 'google',

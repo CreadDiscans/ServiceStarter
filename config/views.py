@@ -18,8 +18,10 @@ from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.settings import api_settings
 from config.utils import CustomSchema, send_fcm
-from api.models import Profile, Media, BoardItem, ShopPayment, ShopCart, ShopProduct, ShopSubscription, ShopCard, ShopBilling
+from api.models import *
+from api.views import getSerializer
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import requests
@@ -110,28 +112,66 @@ class UserViewSet(viewsets.ModelViewSet):
         email.send()
         return response
 
-    def update(self, request, pk): 
-        if pk == '0':# for social
-            sns = request.data['sns']
-            uid = request.data['uid']
-            token = request.data['token']
-            name = request.data['name']
-            username = sns + '@' + uid
-            user = User.objects.filter(username=username)
-            if user.count() > 0:
-                user = user[0]
-                user.set_password(token)
-                user.save()
+@permission_classes((AllowAny,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class SocialSiginViewSet(viewsets.ViewSet):
+    def create(self, request, *args, **kwargs):
+        sns = request.data['sns']
+        uid = request.data['uid']
+        token = request.data['token']
+        name = request.data['name']
+        username = sns + '@' + uid
+        if sns == 'google':
+            r = requests.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key='+settings.FIREBASE_APP_KEY,headers={
+                'Content-Type': 'application/json'
+            }, data=json.dumps({
+                'postBody':'id_token=%s&providerId=google.com'%token,
+                'requestUri':settings.FIREBASE_REQUEST_URI,
+                'returnIdpCredential':True,
+                'returnSecureToken':True
+            }))
+        elif sns == 'facebook':
+            r = requests.get('https://graph.facebook.com/v6.0/me/?access_token='+token)
+        elif sns == 'naver':
+            r = requests.get('https://openapi.naver.com/v1/nid/me', headers={
+                'Authorization':'Bearer '+token})
+        elif sns == 'kakao':
+            r = requests.get('https://kapi.kakao.com/v2/user/me',headers={
+                'Authorization':'Bearer '+token})
+        if r.status_code != 200:
+            return Response({'message':'fail to authenticate'}, status=status.HTTP_401_UNAUTHORIZED)
+        user = User.objects.filter(username=username)
+        if user.count() == 0:
+            user = User(username=username)
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.is_active = True
+            user.save()
+            profile = Profile(user=user, name=name)
+            profile.save()
+        user = User.objects.get(username=username)
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+        serializer = getSerializer(Profile)
+        if 'fcm_token' in request.data:
+            type = request.data['type']
+            fcm_token = request.data['fcm_token']
+            devices = user.profile.device_set.filter(type=type)
+            if devices.count() > 0:
+                device = devices[0]
+                device.fcm_token = fcm_token
+                device.save()
             else:
-                user = User(username=username)
-                user.set_password(token)
-                user.is_active = True
-                user.save()
-                profile = Profile(user=user, name=name)
-                profile.save()
-            return Response({}, status=status.HTTP_200_OK)
-        else:
-            return super().update(request, pk)
+                device = Device(fcm_token=fcm_token,
+                    profile=user.profile,
+                    type=type)
+                device.save()
+        return Response({
+            'token':token, 
+            'profile':serializer(user.profile).data
+        }, status=status.HTTP_200_OK)
 
 def activate(request, uid64, token):
     uid = force_text(urlsafe_base64_decode(uid64))

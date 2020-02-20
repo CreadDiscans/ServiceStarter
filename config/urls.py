@@ -11,6 +11,7 @@ from .views import *
 router = routers.DefaultRouter()
 router.register(r'api-user', UserViewSet)
 router.register(r'api-group', GroupViewSet)
+router.register(r'social', SocialSiginViewSet, basename='social')
 router.register(r'upload', UploadViewset, basename='uploader')
 router.register(r'payment', PaymentValidator, basename='payment')
 router.register(r'webhook', IamportWebhook, basename='webhook')

@@ -65,13 +65,16 @@ export const AuthAction = {
     }).then(res=> ({}))
   },
   socialSign: async (sns:string, uid:string, name:string, token:string, fcmToken:string|undefined)=> {
-    await Api.update('/api-user/', 0, {
+    const res = await Api.create<{token:string, profile:ApiType.Profile}>('/social/', {
       uid:uid,
       sns:sns,
       name:name,
-      token:token
+      token:token,
+      fcm_token:fcmToken,
+      type:'web'
     })
-    return AuthAction.signIn(sns+'@'+uid, token, fcmToken)
+    Api.signIn(res.token, res.profile)
+    return Promise.resolve({userProfile:res.profile})
   }
 }
 

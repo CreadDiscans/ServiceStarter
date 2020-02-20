@@ -1,6 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import * as ApiType from 'types/api.types';
+import { U } from './U';
 declare var csrf_token:string;
 
 const domain = process.env.API_DOMAIN;
@@ -122,6 +123,15 @@ export class Api{
                 'Content-Type': 'multipart/form-data'
             }
         }).then(res=>res.data)
+    }
+    static async expand(arr:Array<any>, key:string, url:string) {
+        const ids = U.union([arr.filter(item=>item[key]).map((item:any)=>item[key])])
+        if (ids.length > 0) {
+            const res:Array<any> = await Api.list(url,{
+                'pk__in[]':ids
+            })
+            arr.forEach((item:any)=> item[key]= res.filter(r=> r.id === item[key])[0])
+        }
     }
     static signIn(jwt_token:string, user_profile:ApiType.Profile|undefined) {
         if (typeof localStorage !== 'undefined') {

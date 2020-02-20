@@ -186,6 +186,9 @@ CELERY_TIMEZONE = 'UTC'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 REACT_API_TYPE_PATH = 'react/src/types'
+
+FIREBASE_APP_KEY = 'AIzaSyCmfVBPAbeU76f-M1jpkMbOvuqJ1eF-dBE'
+FIREBASE_REQUEST_URI = 'http://localhost'
 FCM_SERVER_KEY = 'AAAAa0krjbM:APA91bExpvrVtcwggoMy-P50QymTgUXJZB-OLyNOQuUYAzP66Z94xFxT-FMlFhi2HTO9qSSlaDWd2q3yxTOltskPGEFBLcodDbX8g4ac-b2KQ-lWweIt0_Ntn4C466D-6anZE2p-_tPY'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
