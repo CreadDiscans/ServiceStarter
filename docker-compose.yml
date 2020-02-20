@@ -11,6 +11,7 @@ services:
       - ./config/production/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
       - ./config/production/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
       - ./config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+      - ./config/staging/celery.conf:/etc/supervisor/conf.d/celery.conf
       - ./log:/var/log/nginx
       - ./log:/var/log/uwsgi/app
       - /etc/letsencrypt:/etc/letsencrypt
