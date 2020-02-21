@@ -122,14 +122,8 @@ class SocialSiginViewSet(viewsets.ViewSet):
         name = request.data['name']
         username = sns + '@' + uid
         if sns == 'google':
-            r = requests.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key='+settings.FIREBASE_APP_KEY,headers={
-                'Content-Type': 'application/json'
-            }, data=json.dumps({
-                'postBody':'id_token=%s&providerId=google.com'%token,
-                'requestUri':settings.FIREBASE_REQUEST_URI,
-                'returnIdpCredential':True,
-                'returnSecureToken':True
-            }))
+            r = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json',headers={
+                'Authorization': 'Bearer '+token})
         elif sns == 'facebook':
             r = requests.get('https://graph.facebook.com/v6.0/me/?access_token='+token)
         elif sns == 'naver':

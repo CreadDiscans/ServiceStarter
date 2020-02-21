@@ -3,10 +3,29 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { auth } from '../types/custom.types';
 import * as ApiType from '../types/api.types';
 
-const apiUrl = __DEV__ ? 'http://localhost:8000' : 'https://servicestarter.kro.kr' // dev : prod
+const apiUrl = 'https://servicestarter.kro.kr'
 const headers = {
     'Content-Type': 'application/json',
     Authorization: ''
+}
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const atob = (input:string) => {
+    let str = input.replace(/=+$/, '');
+    let output = '';
+
+    if (str.length % 4 == 1) {
+      throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+    }
+    for (let bc = 0, bs = 0, buffer, i = 0;
+      buffer = str.charAt(i++);
+
+      ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
+        bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
+    ) {
+      buffer = chars.indexOf(buffer);
+    }
+
+    return output;
 }
 
 const parseJwt = (token:string) => {
@@ -53,7 +72,10 @@ const getHeader = async() => {
 const request = async(method:string, path:string, body:object={}) => {
     const data:RequestInit = {
         method: method,
-        headers: method === 'GET' || path === '/api/token-auth/' ? 
+        headers: method === 'GET' || 
+            path === '/api/token-auth/' || 
+            path === '/api-user/' || 
+            path === '/social/' ? 
             headers : await getHeader()
     }
     if (Object.keys(body).length >0) {
@@ -61,13 +83,12 @@ const request = async(method:string, path:string, body:object={}) => {
     }
     return fetch(apiUrl+path, data)
     .then(res=> res.json())
-    .catch(err=> console.log(err))
 }
 
 export class Api {
 
-    static signIn(profile:ApiType.Profile|undefined, 
-            auth:{username:string,password:string, token:string}|undefined) {
+    static signIn(profile:ApiType.Profile|undefined,
+        auth:{username:string,password:string, token:string}|undefined) {
         if (profile) AsyncStorage.setItem('profile', JSON.stringify(profile))
         if (auth) AsyncStorage.setItem('auth', JSON.stringify(auth))
     }

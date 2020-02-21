@@ -33,13 +33,11 @@ class SocialLogin extends React.Component<Props> {
     googleLogin() {
         firebase.auth().signInWithPopup(googleProvider).then((result:any)=> {
             const {AuthAction, history, auth} = this.props;
-            const token = result.credential.idToken
-            const user = result.user
             AuthAction.socialSign(
                 'google',
-                user.uid,
-                user.displayName,
-                token,
+                result.additionalUserInfo.profile.id,
+                result.additionalUserInfo.profile.name,
+                result.credential.accessToken,
                 auth.fcmToken
             ).then(()=>history.push('/'))
         })
@@ -48,13 +46,11 @@ class SocialLogin extends React.Component<Props> {
     facebookLogin() {
         firebase.auth().signInWithPopup(facebookProvider).then((result:any)=>{
             const {AuthAction, history, auth} = this.props;
-            const token = result.credential.accessToken
-            const user = result.user
             AuthAction.socialSign(
                 'facebook',
-                user.uid,
-                user.displayName,
-                token,
+                result.additionalUserInfo.profile.id,
+                result.additionalUserInfo.profile.name,
+                result.credential.accessToken,
                 auth.fcmToken
             ).then(()=>history.push('/'))
         })

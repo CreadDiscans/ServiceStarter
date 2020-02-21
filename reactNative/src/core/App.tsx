@@ -4,7 +4,8 @@ import { createStackNavigator  } from 'react-navigation-stack';
 import { ThemeProvider } from 'react-native-elements';
 import Splash from '../home/Splash';
 import Home from '../home/Home';
-import SiginIn from '../home/SignIn';
+import SignIn from '../auth/SignIn';
+import SignUp from '../auth/SignUp';
 import { Provider } from 'react-redux';
 import { store } from './Store';
 
@@ -15,7 +16,8 @@ const AppStack = createStackNavigator({
 })
 
 const AuthStack = createStackNavigator({
-  SignIn: SiginIn
+  SignIn: SignIn,
+  SignUp: SignUp
 })
 
 const AppContainer = createAppContainer(

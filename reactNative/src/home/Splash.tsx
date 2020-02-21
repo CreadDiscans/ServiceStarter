@@ -19,8 +19,8 @@ class Splash extends React.Component<Props> {
     componentDidMount() {
         const {HomeAct} = this.props
         HomeAct.initialize().then(res=>{
-            console.log(res.profile ? 'Home' : 'SignIn')
-            this.props.navigation.navigate(res.profile ? 'Home' : 'SignIn');
+            // this.props.navigation.navigate(res.profile ? 'Home' : 'SignIn');
+            this.props.navigation.navigate('SignIn');
         })
     }
 

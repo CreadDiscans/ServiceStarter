@@ -12,6 +12,7 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+      <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_id"/>
       <meta-data 
         android:name="com.google.firebase.messaging.default_notification_channel_id"
         android:value="@string/default_notification_channel_id"/>

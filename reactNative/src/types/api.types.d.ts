@@ -3,6 +3,7 @@ import * as custom from './custom.types'
 export type Device = {
     id:number
     fcm_token:string
+    type:string
     profile:number|Profile
 }
 export type Media = {
@@ -11,12 +12,35 @@ export type Media = {
     boarditem:number|BoardItem
     shopproduct:number|ShopProduct
     profile:number|Profile
+    extra:string
 }
 export type Profile = {
     id:number
     user:number|custom.auth.User
     name:string
     profile_img:string
+}
+export type MonitorServer = {
+    id:number
+    address:string
+    keep_day:number
+}
+export type MonitorUsage = {
+    id:number
+    percent:number
+    dt:string
+    cpu:number|MonitorCpu
+    memory:number|MonitorMemory
+}
+export type MonitorMemory = {
+    id:number
+    total:number
+    server:number|MonitorServer
+}
+export type MonitorCpu = {
+    id:number
+    name:string
+    server:number|MonitorServer
 }
 export type BoardItem = {
     id:number

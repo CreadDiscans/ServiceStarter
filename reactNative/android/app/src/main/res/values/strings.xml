@@ -2,4 +2,5 @@
     <string name="app_name">ServiceStarter</string>
     <string name="default_notification_channel_id">default</string>
     <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">YOUR_GOOGLE_PLAY_LICENSE_KEY_HERE</string>
+    <string name="facebook_id">179935856610183</string>
 </resources>
