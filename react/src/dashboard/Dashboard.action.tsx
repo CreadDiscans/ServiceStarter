@@ -49,12 +49,7 @@ export const DashboardAction = {
         const rooms = await Api.list<ApiType.ChatRoom[]>('/api-chat/room/',{
             'user':profile.id,
         })
-        const profiles = await Api.list<ApiType.Profile[]>('/api-profile/',{
-            'pk__in[]':U.union(rooms.map(room=>room.user))
-        })
-        rooms.forEach(room=>{
-            room.user = (room.user as number[]).map(user=> profiles.filter(p=>p.id === user)[0])
-        })
+        await Api.expand(rooms, 'user', '/api-profile/')
         return Promise.resolve({chatRooms:rooms})
     },
     exitChatRoom:async(profile:ApiType.Profile, room:ApiType.ChatRoom)=> {
