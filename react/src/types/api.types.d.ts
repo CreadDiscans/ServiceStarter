@@ -22,7 +22,7 @@ export type Profile = {
 }
 export type MonitorServer = {
     id:number
-    mac_address:string
+    address:string
     keep_day:number
 }
 export type MonitorUsage = {

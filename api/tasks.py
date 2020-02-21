@@ -6,15 +6,15 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from api.models import TaskWork, MonitorServer, MonitorCpu, MonitorUsage
 from datetime import datetime, timedelta
-from uuid import getnode as get_mac
 import time
 import json
 import psutil
+import requests
 
 @shared_task
 def monitering():
-    mac_address = ':'.join(("%012X" % get_mac())[i:i+2] for i in range(0, 12, 2))
-    server = MonitorServer.objects.get(mac_address=mac_address)
+    address = requests.get('https://api.ipify.org').text
+    server = MonitorServer.objects.get(address=address)
     cpu_usages = psutil.cpu_percent(percpu=True)
     for i, cpu in enumerate(server.monitorcpu_set.all()):
         MonitorUsage(cpu=cpu, percent=cpu_usages[i]).save()

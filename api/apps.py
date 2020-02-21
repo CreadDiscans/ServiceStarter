@@ -1,18 +1,17 @@
 from django.apps import AppConfig
+import requests
+import multiprocessing
+import psutil
 
 class ApiConfig(AppConfig):
     name = 'api'
     def ready(self):
         try:
             from api.models import MonitorServer, MonitorCpu, MonitorMemory
-            from uuid import getnode as get_mac
-            import multiprocessing
-            import psutil
-            mac = get_mac()
-            mac_address = ':'.join(("%012X" % mac)[i:i+2] for i in range(0, 12, 2))
-            servers = MonitorServer.objects.filter(mac_address=mac_address)
+            address = requests.get('https://api.ipify.org').text
+            servers = MonitorServer.objects.filter(address=address)
             if servers.count() == 0:
-                server = MonitorServer(mac_address=mac_address)
+                server = MonitorServer(address=address)
                 server.save()
 
                 MonitorMemory(total=psutil.virtual_memory().total, server=server).save()

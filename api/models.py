@@ -62,7 +62,7 @@ class MonitorServer(models.Model):
     class Meta:
         pass
 
-    mac_address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     keep_day = models.IntegerField(default=7)
 
 

@@ -16,9 +16,9 @@
                 const data = await loadData()
                 const root = document.getElementById('monitor-root')
                 data.forEach(server=> {
-                    server.mac_address
+                    server.address
                     const title = document.createElement('h3')
-                    title.innerHTML = server.mac_address
+                    title.innerHTML = server.address
                     root.appendChild(title)
                     const body = document.createElement('div')
                     root.appendChild(body)

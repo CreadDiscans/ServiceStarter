@@ -16,6 +16,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'monitoring': {
         'task': 'api.tasks.monitering',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/10'),
     }
 }
