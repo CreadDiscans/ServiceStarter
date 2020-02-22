@@ -73,8 +73,7 @@ export const AuthAction = {
           fcm_token:fcmToken,
           type:'android'
         })
-        console.log(res)
-        Api.signIn(res.profile, {username:sns+'@'+uid, password:uid, token:res.token})
+        Api.signIn(res.profile, {username:sns+'@'+uid, password:sns, token:res.token})
         return Promise.resolve({userProfile:res.profile})
       }
 }

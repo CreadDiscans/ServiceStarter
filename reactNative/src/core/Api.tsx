@@ -53,17 +53,27 @@ const getHeader = async() => {
     const auth = await AsyncStorage.getItem('auth')
     if (auth) {
         const authObj = JSON.parse(auth)
-        if (isTokenExpired(authObj.token)) {
-            const jwt = await Api.create<{token:string}>('/api/token-auth/', {
-                username:authObj.username,
-                password:authObj.password
-            }).catch(err=> undefined)
-            if (!jwt) Api.signOut()
-            else {
-                authObj.token = jwt.token
-                Api.signIn(undefined, authObj)
+        // if (isTokenExpired(authObj.token)) {
+            if (authObj.password === 'google') {
+                console.log('google auth')
+            } else if (authObj.password === 'facebook') {
+
+            } else if(authObj.password === 'naver') {
+
+            } else if(authObj.password === 'kakao') {
+
+            } else {
+                const jwt = await Api.create<{token:string}>('/api/token-auth/', {
+                    username:authObj.username,
+                    password:authObj.password
+                }).catch(err=> undefined)
+                if (!jwt) Api.signOut()
+                else {
+                    authObj.token = jwt.token
+                    Api.signIn(undefined, authObj)
+                }
             }
-        }
+        // }
         headers.Authorization = 'JWT '+authObj.token
     }
     return headers

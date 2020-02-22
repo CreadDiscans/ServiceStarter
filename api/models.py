@@ -6,6 +6,7 @@ class Device(models.Model):
 
     fcm_token = models.CharField(max_length=200)
     type = models.CharField(max_length=100)
+    refresh_token = models.CharField(max_length=100, null=True, blank=True)
 
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
 

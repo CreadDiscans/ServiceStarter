@@ -4,6 +4,7 @@ export type Device = {
     id:number
     fcm_token:string
     type:string
+    refresh_token:string
     profile:number|Profile
 }
 export type Media = {

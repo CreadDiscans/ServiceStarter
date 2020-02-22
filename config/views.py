@@ -204,6 +204,20 @@ def send_reset_mail(request):
             return HttpResponse('ok')
     return HttpResponse('Unauthorized', status=401)
 
+@permission_classes((AllowAny,))
+@authentication_classes((JSONWebTokenAuthentication,))
+class TokenRefreshViewSet(viewsets.ViewSet):
+    def create(self, request):
+        refresh_token = request.data['refresh_token']
+        devices = Device.objects.filter(refresh_token=refresh_token)
+        if devices.count() > 0:
+            device = devices[0]
+            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+            payload = jwt_payload_handler(device.profile.user)
+            token = jwt_encode_handler(payload)
+            return Response({'token':token}, status=status.HTTP_200_OK)
+        return Response({'message':'invalid refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
 @permission_classes((IsAuthenticatedOrReadOnly,))
 @authentication_classes((JSONWebTokenAuthentication,))
 class GroupViewSet(viewsets.ModelViewSet):
