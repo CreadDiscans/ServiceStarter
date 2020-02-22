@@ -4,6 +4,8 @@ import * as CustomType from '../types/custom.types';
 import { Api } from "../core/Api";
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+
 
 const deviceType = Platform.OS + ':' + DeviceInfo.getDeviceId()
 
@@ -17,6 +19,11 @@ const initState:AuthState = {
 }
 
 export const AuthAction = {
+    init:async()=>{
+      const profile = await AsyncStorage.getItem('profile')
+      if (profile) return Promise.resolve({profile:JSON.parse(profile)})
+      return Promise.resolve({profile:undefined})
+    },
     setFcm:async(profile:ApiType.Profile|undefined, fcmToken:string)=> {
         if (profile) {
           const devices = await Api.list<ApiType.Device[]>('/api-device/', {
