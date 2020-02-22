@@ -6,16 +6,18 @@ import { connect } from 'react-redux';
 import { RootState } from '../core/Reducer';
 import { Dispatch } from 'redux';
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
-import { LoginManager } from 'react-native-fbsdk';
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase';
 import { binding } from '../core/connection';
 import { AuthAction, AuthState } from './Auth.action';
+import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
 
 GoogleSignin.configure({offlineAccess:false})
 
 interface Props {
     auth:AuthState
     AuthAct: typeof AuthAction
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
 class SocialSign extends React.Component<Props> {
@@ -25,12 +27,11 @@ class SocialSign extends React.Component<Props> {
             await GoogleSignin.hasPlayServices();
             const data = await GoogleSignin.signIn();
             const crediencial = await GoogleSignin.getTokens()
-            const {AuthAct, auth}= this.props
+            const {AuthAct, auth, navigation}= this.props
             AuthAct.socialSign('google', data.user.id, 
                 data.user.name ? data.user.name : 'noname', 
                 crediencial.accessToken, auth.fcmToken)
-                .then(res=> console.log('res', res))
-                .catch(err=> console.log('err', err))
+                .then(res=> navigation.navigate('Home'))
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
@@ -44,12 +45,28 @@ class SocialSign extends React.Component<Props> {
         }
     }
 
-    facebookLogin() {
-        
+    async facebookLogin() {
+        const result:any = await LoginManager.logInWithPermissions(["public_profile"])
+        if (result.isCancelled) {
+            console.log("Login cancelled");
+        } else {
+            const data = await AccessToken.getCurrentAccessToken()
+            if (data) {
+                new GraphRequestManager().addRequest(new GraphRequest(
+                    '/me',null, (err, obj:any)=> {
+                        if (obj) {
+                            const {AuthAct, auth, navigation} = this.props
+                            AuthAct.socialSign('facebook', data.userID, obj.name, data.accessToken, auth.fcmToken)
+                            .then(res=> navigation.navigate('Home'))
+                        }
+                    }
+                )).start()
+            }
+        }
     }
 
     naverLogin() {
-
+        
     }
 
     kakaoLogin() {

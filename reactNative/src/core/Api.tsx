@@ -1,9 +1,8 @@
 import queryString from 'query-string';
 import AsyncStorage from "@react-native-community/async-storage";
-import { auth } from '../types/custom.types';
 import * as ApiType from '../types/api.types';
 
-const apiUrl = 'https://servicestarter.kro.kr'
+const apiUrl = __DEV__ ? 'http://172.18.150.214:8000' : 'https://servicestarter.kro.kr'
 const headers = {
     'Content-Type': 'application/json',
     Authorization: ''
@@ -50,31 +49,20 @@ const isTokenExpired = (token:string) => {
 }
 
 const getHeader = async() => {
-    const auth = await AsyncStorage.getItem('auth')
-    if (auth) {
-        const authObj = JSON.parse(auth)
-        // if (isTokenExpired(authObj.token)) {
-            if (authObj.password === 'google') {
-                console.log('google auth')
-            } else if (authObj.password === 'facebook') {
-
-            } else if(authObj.password === 'naver') {
-
-            } else if(authObj.password === 'kakao') {
-
-            } else {
-                const jwt = await Api.create<{token:string}>('/api/token-auth/', {
-                    username:authObj.username,
-                    password:authObj.password
-                }).catch(err=> undefined)
-                if (!jwt) Api.signOut()
-                else {
-                    authObj.token = jwt.token
-                    Api.signIn(undefined, authObj)
-                }
+    let token = await AsyncStorage.getItem('token')
+    if (token) {
+        if (isTokenExpired(token)) {
+            const refresh_token = await AsyncStorage.getItem('refresh_token')
+            const jwt = await Api.create<{token:string}>('/refresh/', {
+                refresh_token
+            }).catch(err=> undefined)
+            if (!jwt) Api.signOut()
+            else {
+                token = jwt.token
+                Api.signIn(undefined, jwt.token)
             }
-        // }
-        headers.Authorization = 'JWT '+authObj.token
+        }
+        headers.Authorization = 'JWT '+token
     }
     return headers
 }
@@ -85,7 +73,8 @@ const request = async(method:string, path:string, body:object={}) => {
         headers: method === 'GET' || 
             path === '/api/token-auth/' || 
             path === '/api-user/' || 
-            path === '/social/' ? 
+            path === '/social/' || 
+            path === '/refresh/'? 
             headers : await getHeader()
     }
     if (Object.keys(body).length >0) {
@@ -97,15 +86,16 @@ const request = async(method:string, path:string, body:object={}) => {
 
 export class Api {
 
-    static signIn(profile:ApiType.Profile|undefined,
-        auth:{username:string,password:string, token:string}|undefined) {
+    static signIn(profile:ApiType.Profile|undefined,token?:string, refresh_token?:string) {
         if (profile) AsyncStorage.setItem('profile', JSON.stringify(profile))
-        if (auth) AsyncStorage.setItem('auth', JSON.stringify(auth))
+        if (token) AsyncStorage.setItem('token', token)
+        if (refresh_token) AsyncStorage.setItem('refresh_token', refresh_token)
     }
 
     static signOut() {
         AsyncStorage.removeItem('profile')
-        AsyncStorage.removeItem('auth')
+        AsyncStorage.removeItem('token')
+        AsyncStorage.removeItem('refresh_token')
     }
 
     static list<T>(path:string, query:object={}):Promise<T> {

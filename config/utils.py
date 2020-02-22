@@ -63,6 +63,7 @@ class CustomSchema(AutoSchema):
 
 def send_fcm(device, notification=None, data=None):
     url = 'https://fcm.googleapis.com/fcm/send'
+    if device.fcm_token == 'noToken': return
     headers = {
         'Authorization': 'key=%s'%settings.FCM_SERVER_KEY,
         'Content-Type': 'application/json; UTF-8',
