@@ -5,23 +5,19 @@ import { Dispatch } from 'redux';
 import { View, Image, Text } from 'react-native';
 import { S } from '../core/S';
 import { binding } from '../core/connection';
-import { HomeAction, HomeState } from './Home.action';
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
+import { AuthAction } from '../auth/Auth.action';
 
 interface Props {
-    home:HomeState
-    HomeAct:typeof HomeAction
+    AuthAct:typeof AuthAction
     navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
 class Splash extends React.Component<Props> {    
 
     componentDidMount() {
-        const {HomeAct} = this.props
-        HomeAct.initialize().then(res=>{
-            // this.props.navigation.navigate(res.profile ? 'Home' : 'SignIn');
-            this.props.navigation.navigate('SignIn');
-        })
+        const {AuthAct, navigation} = this.props
+        AuthAct.init().then(res=> navigation.navigate(res.profile ? 'Home' : 'SignIn'))
     }
 
     render(){
@@ -33,10 +29,8 @@ class Splash extends React.Component<Props> {
 }
 
 export default connect(
-    (state:RootState)=>({
-        home:state.home
-    }),
+    (state:RootState)=>({}),
     (dispatch:Dispatch)=>({
-        HomeAct:binding(HomeAction, dispatch)
+        AuthAct:binding(AuthAction, dispatch)
     })
 )(Splash)

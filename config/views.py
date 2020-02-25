@@ -149,22 +149,29 @@ class SocialSiginViewSet(viewsets.ViewSet):
         payload = jwt_payload_handler(user)
         token = jwt_encode_handler(payload)
         serializer = getSerializer(Profile)
+        refresh_token = None
+        fcm_token = 'noToken'
         if 'fcm_token' in request.data:
-            type = request.data['type']
             fcm_token = request.data['fcm_token']
+        if 'type' in request.data:
+            type = request.data['type']
             devices = user.profile.device_set.filter(type=type)
             if devices.count() > 0:
                 device = devices[0]
                 device.fcm_token = fcm_token
+                device.refresh_token = User.objects.make_random_password(length=20)
                 device.save()
             else:
                 device = Device(fcm_token=fcm_token,
                     profile=user.profile,
+                    refresh_token=User.objects.make_random_password(length=20),
                     type=type)
                 device.save()
+            refresh_token = device.refresh_token
         return Response({
             'token':token, 
-            'profile':serializer(user.profile).data
+            'profile':serializer(user.profile).data,
+            'refresh_token':refresh_token
         }, status=status.HTTP_200_OK)
 
 def activate(request, uid64, token):

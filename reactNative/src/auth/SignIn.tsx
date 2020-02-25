@@ -59,7 +59,7 @@ class SignIn extends React.Component<Props> {
             <View style={S.pad}>
                 <Button title="Sign Up" onPress={()=>this.props.navigation.navigate('SignUp')}/>
             </View>
-            <SocialSign />
+            <SocialSign navigation={this.props.navigation}/>
         </View>
     }
 }

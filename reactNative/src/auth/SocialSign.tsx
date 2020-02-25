@@ -1,21 +1,35 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { Button } from 'react-native-elements';
 import { S } from '../core/S';
 import { connect } from 'react-redux';
 import { RootState } from '../core/Reducer';
 import { Dispatch } from 'redux';
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
-import { LoginManager } from 'react-native-fbsdk';
-import firebase from 'react-native-firebase';
+import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 import { binding } from '../core/connection';
 import { AuthAction, AuthState } from './Auth.action';
+import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation';
+import { NaverLogin, getProfile} from '@react-native-seoul/naver-login';
+import KakaoLogins from '@react-native-seoul/kakao-login';
 
 GoogleSignin.configure({offlineAccess:false})
+
+const naverKeys = Platform.OS === 'android' ? {
+    kConsumerKey: "GfwH3vvqAGsA6nx8zX_X",
+    kConsumerSecret: "zdvsIqikHd",
+    kServiceAppName: "Service Starter"
+  } : {
+    kConsumerKey: "VC5CPfjRigclJV_TFACU",
+    kConsumerSecret: "f7tLFw0AHn",
+    kServiceAppName: "테스트앱(iOS)",
+    kServiceAppUrlScheme: "testapp" // only for iOS
+  }
 
 interface Props {
     auth:AuthState
     AuthAct: typeof AuthAction
+    navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
 class SocialSign extends React.Component<Props> {
@@ -25,12 +39,11 @@ class SocialSign extends React.Component<Props> {
             await GoogleSignin.hasPlayServices();
             const data = await GoogleSignin.signIn();
             const crediencial = await GoogleSignin.getTokens()
-            const {AuthAct, auth}= this.props
+            const {AuthAct, auth, navigation}= this.props
             AuthAct.socialSign('google', data.user.id, 
                 data.user.name ? data.user.name : 'noname', 
                 crediencial.accessToken, auth.fcmToken)
-                .then(res=> console.log('res', res))
-                .catch(err=> console.log('err', err))
+                .then(res=> navigation.navigate('Home'))
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
               // user cancelled the login flow
@@ -44,16 +57,43 @@ class SocialSign extends React.Component<Props> {
         }
     }
 
-    facebookLogin() {
-        
+    async facebookLogin() {
+        const result:any = await LoginManager.logInWithPermissions(["public_profile"])
+        if (result.isCancelled) {
+            console.log("Login cancelled");
+        } else {
+            const data = await AccessToken.getCurrentAccessToken()
+            if (data) {
+                new GraphRequestManager().addRequest(new GraphRequest(
+                    '/me',null, (err, obj:any)=> {
+                        if (obj) {
+                            const {AuthAct, auth, navigation} = this.props
+                            AuthAct.socialSign('facebook', data.userID, obj.name, data.accessToken, auth.fcmToken)
+                            .then(res=> navigation.navigate('Home'))
+                        }
+                    }
+                )).start()
+            }
+        }
     }
 
     naverLogin() {
-
+        NaverLogin.login(naverKeys, async(err, token)=> {
+            if (token) {
+                const result = await getProfile(token.accessToken)
+                const {AuthAct, auth, navigation } = this.props
+                AuthAct.socialSign('naver', result.response.id, 'noname', token.accessToken, auth.fcmToken)
+                .then(res=> navigation.navigate('Home'))
+            }
+        })
     }
 
-    kakaoLogin() {
-
+    async kakaoLogin() {
+        const result = await KakaoLogins.login()
+        const profile = await KakaoLogins.getProfile()
+        const {AuthAct, auth, navigation} = this.props
+        AuthAct.socialSign('kakao', profile.id, profile.nickname, result.accessToken, auth.fcmToken)
+        .then(res=> navigation.navigate('Home'))
     }
 
     render() {
