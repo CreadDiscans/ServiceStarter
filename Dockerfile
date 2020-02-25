@@ -3,11 +3,11 @@ FROM ubuntu:18.04
 RUN apt-get update 
 RUN apt-get install -y nginx uwsgi python3 python3-pip wget locales redis supervisor
 RUN apt-get install -y uwsgi-plugin-python3
-RUN apt-get install -y libmysqlclient-dev
 RUN apt-get install -y libssl1.0-dev nodejs-dev node-gyp nodejs npm
 RUN apt-get install -y libffi-dev
 RUN npm install -g n
 RUN n stable
+RUN apt-get install -y libmysqlclient-dev
 RUN npm install -g forever
 RUN rm /etc/nginx/sites-enabled/default
 RUN mkdir /app
