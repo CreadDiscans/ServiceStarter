@@ -2,7 +2,7 @@ import queryString from 'query-string';
 import AsyncStorage from "@react-native-community/async-storage";
 import * as ApiType from '../types/api.types';
 
-const apiUrl = __DEV__ ? 'http://172.18.150.214:8000' : 'https://servicestarter.kro.kr'
+const apiUrl = __DEV__ ? 'http://localhost:8000' : 'https://servicestarter.kro.kr'
 const headers = {
     'Content-Type': 'application/json',
     Authorization: ''

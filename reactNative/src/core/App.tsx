@@ -8,11 +8,11 @@ import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import { Provider } from 'react-redux';
 import { store } from './Store';
+import Setting from '../setting/Setting';
 
 const AppStack = createStackNavigator({
   Home:Home,
-  // Setting:SettingScreen,
-  // Test:TestScreen
+  Setting:Setting
 })
 
 const AuthStack = createStackNavigator({

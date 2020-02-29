@@ -42,7 +42,7 @@ export const AuthAction = {
             })
           }
         }
-        return Promise.resolve({fcmToken, userProfile:profile})
+        return Promise.resolve({fcmToken, profile})
       },
       signIn: async(username:string, password:string, fcmToken:string|undefined=undefined) => {
         const res = await Api.list<{username:boolean, email:boolean}>('/api-user/',{
@@ -63,11 +63,19 @@ export const AuthAction = {
         if (fcmToken) {
           await AuthAction.setFcm(profile[0], fcmToken)
         }
-        return Promise.resolve({userProfile: profile[0]})
+        return Promise.resolve({profile: profile[0]})
       },
-      signOut: async ()=>{
+      signOut: async()=>{
+        const devices = await Api.list<ApiType.Device[]>('/api-device/', {
+          type:deviceType
+        })
+        if (devices.length > 0) {
+          await Api.patch<ApiType.Device>('/api-device/', devices[0].id, {
+            fcm_token:'notoken'
+          })
+        }
         Api.signOut();
-        return Promise.resolve({userProfile:undefined})
+        return Promise.resolve({profile:undefined})
       },
       signUp: async(username:string, email:string, password:string)=> {
         return Api.create<CustomType.auth.User>('/api-user/', {
@@ -86,7 +94,7 @@ export const AuthAction = {
           type:deviceType
         })
         Api.signIn(res.profile, res.token, res.refresh_token)
-        return Promise.resolve({userProfile:res.profile})
+        return Promise.resolve({profile:res.profile})
       }
 }
 
