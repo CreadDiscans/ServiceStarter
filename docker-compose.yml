@@ -20,21 +20,22 @@ services:
       - "80:80"
     command: >
       sh -c " 
-        redis-server --daemonize yes &&
-        redis-cli flushall &&  
-        cd react &&
-        npm i koa koa-static koa-mount serialize-javascript &&
-        npm install &&
-        npm run build &&
-        npm run build:server &&
-        cd .. &&
-        python3 -m pip install -U -r requirements.txt &&
-        python3 manage.py migrate --settings=config.production.settings &&
-        python3 manage.py collectstatic --no-input --settings=config.production.settings &&
-        forever start -a -l /app/log/forever.log react/server &&
-        python3 manage.py uwsgi &&
-        service supervisor start &&
-        service nginx start &&
+        rm -rf celerybeat.pid 
+        redis-server --daemonize yes 
+        redis-cli flushall 
+        cd react 
+        npm i koa koa-static koa-mount serialize-javascript 
+        npm install 
+        npm run build 
+        npm run build:server 
+        cd .. 
+        python3 -m pip install -U -r requirements.txt 
+        python3 manage.py migrate --settings=config.production.settings 
+        python3 manage.py collectstatic --no-input --settings=config.production.settings 
+        forever start -a -l /app/log/forever.log react/server 
+        python3 manage.py uwsgi 
+        service supervisor start 
+        service nginx start 
         chown -R www-data:www-data /app 
         tail -f /dev/null
       "
@@ -56,21 +57,21 @@ services:
       - "8000:80"
     command: >
       sh -c " 
-        rm -rf celerybeat.pid &&
-        redis-server --daemonize yes &&
-        redis-cli flushall &&  
-        cd react &&
-        npm i koa koa-static koa-mount serialize-javascript &&
-        npm install &&
-        npm run build &&
-        npm run build:server &&
-        cd .. &&
-        python3 -m pip install -U -r requirements.txt &&
-        python3 manage.py migrate --settings=config.production.settings &&
-        python3 manage.py collectstatic --no-input --settings=config.production.settings &&
-        forever start -a -l /app/log/forever.log react/server &&
-        python3 manage.py uwsgi &&
-        service supervisor start &&
-        service nginx start &&
+        rm -rf celerybeat.pid 
+        redis-server --daemonize yes 
+        redis-cli flushall 
+        cd react 
+        npm i koa koa-static koa-mount serialize-javascript 
+        npm install 
+        npm run build 
+        npm run build:server 
+        cd .. 
+        python3 -m pip install -U -r requirements.txt 
+        python3 manage.py migrate --settings=config.production.settings 
+        python3 manage.py collectstatic --no-input --settings=config.production.settings 
+        forever start -a -l /app/log/forever.log react/server 
+        python3 manage.py uwsgi 
+        service supervisor start 
+        service nginx start 
         tail -f /dev/null
       "
