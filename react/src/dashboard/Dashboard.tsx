@@ -13,7 +13,6 @@ import Chat from './Chat';
 import ChatRoom from './ChatRoom';
 import Task from './Task';
 import { translation } from 'component/I18next';
-import { U } from 'app/core/U';
 import { MediaQuery } from 'component/MediaQuery';
 interface Props {
     auth:AuthState
