@@ -124,13 +124,16 @@ export class Api{
             }
         }).then(res=>res.data)
     }
-    static async expand(arr:Array<any>, key:string, url:string) {
-        const ids = U.union([arr.filter(item=>item[key]).map((item:any)=>item[key])])
+    static async expand(arr:Array<any>, key:string, url:string, mtm:boolean=false) {
+        let ids 
+        if (mtm) ids = U.union(arr.filter(item=>item[key]).map((item:any)=>item[key]))
+        else ids = U.union([arr.filter(item=>item[key]).map((item:any)=>item[key])])
         if (ids.length > 0) {
             const res:Array<any> = await Api.list(url,{
                 'pk__in[]':ids
             })
-            arr.forEach((item:any)=> item[key]= res.filter(r=> r.id === item[key])[0])
+            if (mtm) arr.forEach((item:any)=> item[key] = item[key].map((id:number)=> res.filter(r=>r.id === id)[0]))
+            else arr.forEach((item:any)=> item[key]= res.filter(r=> r.id === item[key])[0])
         }
     }
     static signIn(jwt_token:string, user_profile:ApiType.Profile|undefined) {
