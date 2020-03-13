@@ -4,17 +4,32 @@ from celery import shared_task
 from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from api.models import TaskWork, MonitorServer, MonitorCpu, MonitorUsage
+from api.models import TaskWork, MonitorServer, MonitorCpu, MonitorUsage, MonitorMemory
 from datetime import datetime, timedelta
 import time
 import json
 import psutil
-import requests
+import os
+import multiprocessing
 
 @shared_task
 def monitering():
-    address = requests.get('https://api.ipify.org').text
-    server = MonitorServer.objects.get(address=address)
+    machine_name = os.path.join(settings.BASE_DIR, 'name.txt')
+    if not os.path.exists(machine_name):
+        return
+    with open(machine_name, 'r') as f:
+        name = f.read()
+    server = MonitorServer.objects.filter(address=name)
+    if server.count() == 0:
+        server = MonitorServer(address=name)
+        server.save()
+
+        MonitorMemory(total=psutil.virtual_memory().total/pow(2,20), server=server).save()
+        for i in range(multiprocessing.cpu_count()):
+            MonitorCpu(name='core'+str(i), server=server).save()
+    else:
+        server = server[0] 
+
     cpu_usages = psutil.cpu_percent(percpu=True)
     for i, cpu in enumerate(server.monitorcpu_set.all()):
         MonitorUsage(cpu=cpu, percent=cpu_usages[i]).save()

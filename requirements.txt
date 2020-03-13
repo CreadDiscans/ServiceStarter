@@ -8,7 +8,7 @@ django-sslserver
 django-ckeditor
 channels
 channels_redis
-pymysql
+mysqlclient
 requests
 coreapi
 celery[redis]
