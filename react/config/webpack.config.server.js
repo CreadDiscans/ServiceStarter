@@ -25,19 +25,19 @@ module.exports = {
     modules: ['node_modules', paths.appNodeModules].concat(
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
-    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.json', '.jsx', '.ts', '.tsx', 'scss'],
   },
   module: {
     strictExportPresence: true,
     rules: [
-        // 자바스크립트 이외의 파일들을 무시합니다.
-        {
-            exclude: [
-                /\.(js|jsx|ts|tsx|css)$/,
-                /\.json$/
-            ],
-            loader: 'ignore',
-        },
+      // 자바스크립트 이외의 파일들을 무시합니다.
+      {
+        exclude: [
+          /\.(js|jsx|ts|tsx|css|scss)$/,
+          /\.json$/
+        ],
+        loader: 'ignore',
+      },
       // 자바스크립트는 Babel 을 통하여 트랜스파일링합니다
       {
         test: /\.(js|jsx|ts|tsx)$/,
@@ -48,8 +48,8 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/,
-        loader: require.resolve('css-loader')
+        test: /\.(sa|sc|c)ss$/,
+        use: ["css-loader", "sass-loader"]
       }
     ],
   },
