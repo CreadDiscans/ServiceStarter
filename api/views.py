@@ -53,14 +53,16 @@ def applyPagination(queryset, serializer_class,  page, count, depth, ignore):
 def applyOption(request, queryset):
   logic = request.GET.get('logic')
   where = []
+  used_keys = []
   if logic:
     keys = logic.split('__OR__')
     for key in keys:
+      used_keys.append(key)
       value = request.GET.get(key)
       where.append(Q(**{key:value}))
   params = {}
   for key in request.GET:
-    if key in SCHEMA_FILED_EXCEPT:
+    if key in SCHEMA_FILED_EXCEPT or key in used_keys:
       continue
     if '[]' in key:
       request.GET.getlist(key)
