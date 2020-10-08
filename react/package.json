@@ -38,7 +38,7 @@
     "redux-actions": "^2.6.5",
     "redux-pender": "^2.0.12",
     "resolve": "1.8.1",
-    "serialize-javascript": "^2.1.2"
+    "serialize-javascript": "^3.1.0"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src node scripts/start.js",
