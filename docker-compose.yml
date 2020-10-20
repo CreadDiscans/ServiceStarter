@@ -1,77 +1,20 @@
 version: '3'
 
 services:
-  prod:
+  worker:
     build:
       context: .
       dockerfile: ./Dockerfile
     restart: always
     volumes:
       - ./:/app
-      - ./config/production/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
-      - ./config/production/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
-      - ./config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
-      - ./config/staging/celery.conf:/etc/supervisor/conf.d/celery.conf
-      - ./log:/var/log/nginx
-      - ./log:/var/log/uwsgi/app
-      - /etc/letsencrypt:/etc/letsencrypt
-    ports:
-      - "443:443"
-      - "80:80"
+      - ./config/production/celery.conf:/etc/supervisor/conf.d/celery.conf
+      - ./log:/app/log
     command: >
       sh -c " 
-        rm -rf celerybeat.pid 
-        redis-server --daemonize yes 
-        redis-cli flushall 
-        cd react 
-        npm i koa koa-static koa-mount serialize-javascript 
-        npm install 
-        npm run build 
-        npm run build:server 
-        cd .. 
+        rm celerybeat-schedule.db
+        rm celerybeat.pid
         python3 -m pip install -U -r requirements.txt 
-        python3 manage.py migrate --settings=config.production.settings 
-        python3 manage.py collectstatic --no-input --settings=config.production.settings 
-        forever start -a -l /app/log/forever.log react/server 
-        python3 manage.py uwsgi 
         service supervisor start 
-        service nginx start 
-        chown -R www-data:www-data /app 
-        tail -f /dev/null
-      "
-
-  staging:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    restart: always
-    volumes:
-      - ./:/app
-      - ./config/staging/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
-      - ./config/staging/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
-      - ./config/staging/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
-      - ./config/staging/celery.conf:/etc/supervisor/conf.d/celery.conf
-      - ./log:/var/log/nginx
-      - ./log:/var/log/uwsgi/app
-    ports:
-      - "8000:80"
-    command: >
-      sh -c " 
-        rm -rf celerybeat.pid 
-        redis-server --daemonize yes 
-        redis-cli flushall 
-        cd react 
-        npm i koa koa-static koa-mount serialize-javascript 
-        npm install 
-        npm run build 
-        npm run build:server 
-        cd .. 
-        python3 -m pip install -U -r requirements.txt 
-        python3 manage.py migrate --settings=config.production.settings 
-        python3 manage.py collectstatic --no-input --settings=config.production.settings 
-        forever start -a -l /app/log/forever.log react/server 
-        python3 manage.py uwsgi 
-        service supervisor start 
-        service nginx start 
         tail -f /dev/null
       "

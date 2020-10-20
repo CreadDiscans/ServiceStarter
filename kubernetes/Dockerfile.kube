@@ -33,4 +33,5 @@ RUN python3 manage.py migrate --settings=config.production.settings
 RUN python3 manage.py collectstatic --no-input --settings=config.production.settings
 RUN ln -s /app/config/production/nginx.conf /etc/nginx/sites-enabled/nginx.conf
 RUN ln -s /app/config/production/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
-CMD forever start -a -l /app/log/forever.log react/server ; python3 manage.py uwsgi ; service nginx start ; tail -f /dev/null
+RUN ln -s /app/config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+CMD forever start -a -l /app/log/forever.log react/server ; python3 manage.py uwsgi ; service nginx start ; service supervisor start ; tail -f /dev/null
