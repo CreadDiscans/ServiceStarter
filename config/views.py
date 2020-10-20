@@ -232,10 +232,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 def index(request):
-    contents = cache.get(request.path)
-    if not contents:
-        contents = requests.get(settings.REACT_HOST+request.path).text
-        cache.set(request.path, contents)
+    # contents = cache.get(request.path)
+    # if not contents:
+    contents = requests.get(settings.REACT_HOST+request.path).text
+        # cache.set(request.path, contents)
     contents = contents.replace('{% csrf_token %}', get_token(request))
     return HttpResponse(contents)
 
