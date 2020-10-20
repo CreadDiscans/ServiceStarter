@@ -1,28 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: service-starter
-  labels:
-    app: servicestarter
+  name: servicestarter
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:ap-northeast-2:937053429045:certificate/f9e42434-c875-4e47-80d4-99ebb7dfec30
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
 spec:
-  replicas: 2
   selector:
-    matchLabels:
-      app: servicestarter
-  template:
-    metadata:
-      labels:
-        app: servicestarter
-    spec:
-      containers:
-      - name: service-starter
-        image: work.juice.co.kr:9011/servicestarter:0.2
-        ports:
-        - containerPort: 80
-        command: ["/bin/sh","-c"]
-        args: [
-          "forever start -a -l /app/log/forever.log react/server; 
-          python3 manage.py uwsgi;
-          service supervisor start;
-          service nginx start;
-          tail -f /dev/null;"]
+    app:
+      servicestarter
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 80
+  type: LoadBalancer
