@@ -13,6 +13,32 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "react/build"),
 ]
 
+REDIS_HOST = 'a3084cf15370e4f738c777073a0b2c64-371699409.ap-northeast-2.elb.amazonaws.com'
+REDIS_PASSWORD = 'redispassword'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [("redis://:%s@%s:6379/0"%(REDIS_PASSWORD,REDIS_HOST))]
+        }
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://%s:6379/1"%REDIS_HOST, # 1번 DB
+        "OPTIONS": {
+            "PASSWORD": REDIS_PASSWORD,
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+CELERY_BROKER_URL  = 'redis://:%s@%s:6379/0'%(REDIS_PASSWORD,REDIS_HOST)
+CELERY_RESULT_BACKEND = 'redis://:%s@%s:6379/0'%(REDIS_PASSWORD,REDIS_HOST)
+
 REACT_HOST = 'http://localhost:3001'
 
 
