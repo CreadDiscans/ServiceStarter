@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicestarter
+  labels:
+    app: servicestarter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servicestarter
+  template:
+    metadata:
+      labels:
+        app: servicestarter
+    spec:
+      containers:
+      - name: servicestarter
+        image: docker.juice.co.kr:9011/servicestarter:0.11
+        imagePullPolicy: "Always"
+      imagePullSecrets:
+      - name: regcred
