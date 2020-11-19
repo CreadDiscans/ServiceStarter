@@ -6,7 +6,7 @@ import { pender } from "redux-pender";
 import { bindActionCreators, Dispatch } from "redux";
 
 export const connectWithDone:any = (mapStateToProps:any, mapDispatchToProps:any, compnent:any) => {
-  const conn:any = connect(mapStateToProps, mapDispatchToProps)(withRouter(compnent))
+  const conn:any = withRouter(connect(mapStateToProps, mapDispatchToProps)(compnent))
   return withDone(conn);
 }
 

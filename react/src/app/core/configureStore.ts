@@ -3,6 +3,8 @@ import penderMiddleware from 'redux-pender';
 
 import modules from 'app/Reducers';
 import * as ApiType from 'types/api.types';
+import { getHandleActions } from './connection';
+import createReducer from '../Reducers';
 
 declare var window:any;
 declare var module:any;
@@ -25,7 +27,7 @@ const configureStore = (initialState:any) => {
   if (initialState === undefined) initialState = {}
   if (initialState.auth === undefined) initialState.auth = {}
   initialState.auth.userProfile = initState();
-  const store = createStore(modules, initialState, composeEnhancers(
+  const store:any = createStore(modules, initialState, composeEnhancers(
     applyMiddleware(penderMiddleware())
   ));
   if(module.hot) {
@@ -33,6 +35,11 @@ const configureStore = (initialState:any) => {
       const nextRootReducer = require('../Reducers').default;
       store.replaceReducer(nextRootReducer);
     });
+  }
+  store.injectReducer = (actions, initState) => {
+    const asyncReducer = getHandleActions(actions, initState)
+    store.asyncReducers[actions.name] = asyncReducer
+    store.replaceReducer(createReducer(store.asyncReducers))
   }
   return store;
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 
 export class Base<P={},S={}> extends React.Component<P,S> {
-    onEvent(key:string, value:any){}
+    componentDidMount() {
+        this.setState({})
+    }
     lastState!:string
     bind(props:P, state:S) {}
     shouldComponentUpdate(props:P, state:S) {
