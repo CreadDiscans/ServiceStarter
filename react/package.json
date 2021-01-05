@@ -15,7 +15,7 @@
     "@types/reactstrap": "^8.0.1",
     "@types/redux-actions": "^2.6.1",
     "autoresize": "^0.1.1",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bootstrap": "^4.2.1",
     "i18next": "^19.1.0",
     "jsonwebtoken": "^8.4.0",
