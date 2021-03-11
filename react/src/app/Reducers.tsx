@@ -6,14 +6,14 @@ import board, { BoardState } from 'board/Board.action';
 import dashboard, { DashboardState } from 'dashboard/Dashboard.action';
 import mypage, { MypageState } from 'mypage/Mypage.action';
 import shared, { SharedState } from 'component/Shared.action';
-export default (asyncReducers={})=> combineReducers({
+export default combineReducers({
   auth,
   board,
   dashboard,
   mypage,
   shared,
   pender: penderReducer,
-  ...asyncReducers
+  // ...asyncReducers
 })
 
 export type RootState = {
