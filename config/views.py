@@ -120,8 +120,7 @@ class SocialSiginViewSet(viewsets.ViewSet):
         uid = request.data['uid']
         token = request.data['token']
         name = request.data['name']
-        email = request.data['email'] if 'email' in request.data else sns + '@' + uid
-        username = email
+        username = request.data['email'] if 'email' in request.data else sns + '@' + uid
         if sns == 'google':
             r = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json',headers={
                 'Authorization': 'Bearer '+token})
