@@ -84,11 +84,12 @@ export const AuthAction = {
           password:password
         }).then(res=> ({}))
       },
-      socialSign: async (sns:string, uid:string, name:string, token:string, fcmToken:string|undefined)=> {
+      socialSign: async (sns:string, uid:string, name:string, email:string|undefined, token:string, fcmToken:string|undefined)=> {
         const res = await Api.create<{token:string, profile:ApiType.Profile, refresh_token:string}>('/social/', {
           uid:uid,
           sns:sns,
           name:name,
+          email:email,
           token:token,
           fcm_token:fcmToken,
           type:deviceType

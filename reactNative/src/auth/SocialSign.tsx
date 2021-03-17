@@ -16,9 +16,9 @@ import KakaoLogins from '@react-native-seoul/kakao-login';
 GoogleSignin.configure({offlineAccess:false})
 
 const naverKeys = Platform.OS === 'android' ? {
-    kConsumerKey: "GfwH3vvqAGsA6nx8zX_X",
-    kConsumerSecret: "zdvsIqikHd",
-    kServiceAppName: "Service Starter"
+    kConsumerKey: "Lzkjn3jwrj2atDeh9JBp",
+    kConsumerSecret: "NQ1_ZWkxKD",
+    kServiceAppName: "Service Starter(android)"
   } : {
     kConsumerKey: "VC5CPfjRigclJV_TFACU",
     kConsumerSecret: "f7tLFw0AHn",
@@ -42,6 +42,7 @@ class SocialSign extends React.Component<Props> {
             const {AuthAct, auth, navigation}= this.props
             AuthAct.socialSign('google', data.user.id, 
                 data.user.name ? data.user.name : 'noname', 
+                data.user.email,
                 crediencial.accessToken, auth.fcmToken)
                 .then(res=> navigation.navigate('Home'))
         } catch (error) {
@@ -58,17 +59,23 @@ class SocialSign extends React.Component<Props> {
     }
 
     async facebookLogin() {
-        const result:any = await LoginManager.logInWithPermissions(["public_profile"])
+        const result:any = await LoginManager.logInWithPermissions(["public_profile", "email"])
         if (result.isCancelled) {
             console.log("Login cancelled");
         } else {
             const data = await AccessToken.getCurrentAccessToken()
             if (data) {
                 new GraphRequestManager().addRequest(new GraphRequest(
-                    '/me',null, (err, obj:any)=> {
+                    '/me',{
+                        parameters: {
+                        'fields': {
+                            'string' : 'email, name'
+                        }
+                    }
+                }, (err, obj:any)=> {
                         if (obj) {
                             const {AuthAct, auth, navigation} = this.props
-                            AuthAct.socialSign('facebook', data.userID, obj.name, data.accessToken, auth.fcmToken)
+                            AuthAct.socialSign('facebook', data.userID, obj.name, obj.email, data.accessToken, auth.fcmToken)
                             .then(res=> navigation.navigate('Home'))
                         }
                     }
@@ -78,11 +85,12 @@ class SocialSign extends React.Component<Props> {
     }
 
     naverLogin() {
+        console.log('naver login')
         NaverLogin.login(naverKeys, async(err, token)=> {
             if (token) {
                 const result = await getProfile(token.accessToken)
                 const {AuthAct, auth, navigation } = this.props
-                AuthAct.socialSign('naver', result.response.id, 'noname', token.accessToken, auth.fcmToken)
+                AuthAct.socialSign('naver', result.response.id, result.response.name, result.response.email, token.accessToken, auth.fcmToken)
                 .then(res=> navigation.navigate('Home'))
             }
         })
@@ -92,7 +100,8 @@ class SocialSign extends React.Component<Props> {
         const result = await KakaoLogins.login()
         const profile = await KakaoLogins.getProfile()
         const {AuthAct, auth, navigation} = this.props
-        AuthAct.socialSign('kakao', profile.id, profile.nickname, result.accessToken, auth.fcmToken)
+        const email = profile.email ? profile.email : undefined
+        AuthAct.socialSign('kakao', profile.id, profile.nickname, email, result.accessToken, auth.fcmToken)
         .then(res=> navigation.navigate('Home'))
     }
 

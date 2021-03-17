@@ -2,6 +2,7 @@
     <string name="app_name">ServiceStarter</string>
     <string name="default_notification_channel_id">default</string>
     <string name="RNB_GOOGLE_PLAY_LICENSE_KEY">YOUR_GOOGLE_PLAY_LICENSE_KEY_HERE</string>
-    <string name="facebook_id">179935856610183</string>
-    <string name="kakao_app_key">9bbba11773228542be0dc11d70d280a3</string>
+    <string name="facebook_id">747790809208974</string>
+    <!-- <string name="kakao_app_key">9bbba11773228542be0dc11d70d280a3</string> -->
+    <string name="kakao_app_key">d38b445771231a261ccf39ea1821b927</string>
 </resources>
