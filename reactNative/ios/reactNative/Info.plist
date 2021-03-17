@@ -2,13 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>FontAwesome.ttf</string>
-		<string>Foundation.ttf</string>
-		<string>IonIcons.ttf</string>
-		<string>MaterialIcons.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -27,6 +20,19 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.googleusercontent.apps.727634198667-74rhuatbil1dofskulgjtjfrnmvdg9kd</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.727634198667-74rhuatbil1dofskulgjtjfrnmvdg9kd</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -46,6 +52,13 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FontAwesome.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>IonIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -60,5 +73,38 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+  		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb747790809208974</string>
+				<string>kakaod38b445771231a261ccf39ea1821b927</string>
+				<string>naverlogintest</string>
+				<string>com.googleusercontent.apps.727634198667-74rhuatbil1dofskulgjtjfrnmvdg9kd</string>
+			</array>
+  		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>747790809208974</string>
+	<key>FacebookDisplayName</key>
+	<string>개발 테스트</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+  		<string>fbapi</string>
+  		<string>fb-messenger-api</string>
+  		<string>fbauth2</string>
+  		<string>fbshareextension</string>
+		<string>kakaotalk-5.9.7</string>
+		<string>kakaolink</string>
+		<string>kakaokompassauth</string>
+		<string>kakaod38b445771231a261ccf39ea1821b927</string>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+	</array>
+	<key>KAKAO_APP_KEY</key>
+	<string>d38b445771231a261ccf39ea1821b927</string>
+	
+
 </dict>
 </plist>
