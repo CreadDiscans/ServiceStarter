@@ -20,10 +20,10 @@ const naverKeys = Platform.OS === 'android' ? {
     kConsumerSecret: "NQ1_ZWkxKD",
     kServiceAppName: "Service Starter(android)"
   } : {
-    kConsumerKey: "VC5CPfjRigclJV_TFACU",
-    kConsumerSecret: "f7tLFw0AHn",
+    kConsumerKey: "Lzkjn3jwrj2atDeh9JBp",
+    kConsumerSecret: "NQ1_ZWkxKD",
     kServiceAppName: "테스트앱(iOS)",
-    kServiceAppUrlScheme: "testapp" // only for iOS
+    kServiceAppUrlScheme: "naverlogintest" // only for iOS
   }
 
 interface Props {
@@ -35,6 +35,7 @@ interface Props {
 class SocialSign extends React.Component<Props> {
     
     async googleLogin() {
+        console.log('google login')
         try {
             await GoogleSignin.hasPlayServices();
             const data = await GoogleSignin.signIn();
@@ -59,6 +60,7 @@ class SocialSign extends React.Component<Props> {
     }
 
     async facebookLogin() {
+        console.log('facebook login')
         const result:any = await LoginManager.logInWithPermissions(["public_profile", "email"])
         if (result.isCancelled) {
             console.log("Login cancelled");
@@ -97,6 +99,7 @@ class SocialSign extends React.Component<Props> {
     }
 
     async kakaoLogin() {
+        console.log('kakao login')
         const result = await KakaoLogins.login()
         const profile = await KakaoLogins.getProfile()
         const {AuthAct, auth, navigation} = this.props
