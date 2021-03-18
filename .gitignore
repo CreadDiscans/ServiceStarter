@@ -8,6 +8,7 @@ db.sqlite3
 # frontend
 node_modules
 build
+dist
 
 # misc
 .DS_Store
