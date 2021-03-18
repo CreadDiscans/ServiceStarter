@@ -35,7 +35,6 @@ interface Props {
 class SocialSign extends React.Component<Props> {
     
     async googleLogin() {
-        console.log('google login')
         try {
             await GoogleSignin.hasPlayServices();
             const data = await GoogleSignin.signIn();
@@ -60,7 +59,6 @@ class SocialSign extends React.Component<Props> {
     }
 
     async facebookLogin() {
-        console.log('facebook login')
         const result:any = await LoginManager.logInWithPermissions(["public_profile", "email"])
         if (result.isCancelled) {
             console.log("Login cancelled");
@@ -87,7 +85,6 @@ class SocialSign extends React.Component<Props> {
     }
 
     naverLogin() {
-        console.log('naver login')
         NaverLogin.login(naverKeys, async(err, token)=> {
             if (token) {
                 const result = await getProfile(token.accessToken)
@@ -99,7 +96,6 @@ class SocialSign extends React.Component<Props> {
     }
 
     async kakaoLogin() {
-        console.log('kakao login')
         const result = await KakaoLogins.login()
         const profile = await KakaoLogins.getProfile()
         const {AuthAct, auth, navigation} = this.props

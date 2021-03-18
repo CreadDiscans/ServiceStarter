@@ -5,7 +5,6 @@ import { RootState } from 'app/Reducers';
 import { Dispatch } from 'redux';
 import { AuthAction, AuthState } from './Auth.action';
 import { History } from 'history';
-import { profile } from 'console';
 
 declare var window: any;
 declare var firebase: any;
