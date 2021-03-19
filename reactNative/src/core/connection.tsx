@@ -4,13 +4,13 @@ import { bindActionCreators, Dispatch } from "redux";
 
 const getActions = (Action:any) => {
   const actions:any = {}
-  Object.keys(Action).forEach(key=> 
+  Object.keys(Action).filter(k=>k!=='name').forEach(key=> 
       actions[key] = createAction(key, Action[key]))
   return actions
 }
 
 export const getHandleActions = (Action:any, initState:any) => {
-  const arr =  Object.keys(Action).map(key=>
+  const arr =  Object.keys(Action).filter(k=>k!=='name').map(key=>
       pender({
           type:key,
           onSuccess:(state:any, {payload})=>({...state, ...payload})

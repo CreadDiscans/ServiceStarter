@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import { penderReducer } from 'redux-pender';
 import home, { HomeState } from '../home/Home.action';
-import auth, { AuthState } from '../auth/Auth.action';
-export default combineReducers({
+import { AuthState } from '../auth/Auth.action';
+export default (asyncReducers = {}) => combineReducers({
     home,
-    auth,
-    pender:penderReducer
+    pender:penderReducer,
+    ...asyncReducers
 })
 
 export type RootState = {
