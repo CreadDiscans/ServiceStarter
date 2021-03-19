@@ -1,7 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import penderMiddleware from 'redux-pender';
-
-// import modules from 'app/Reducers';
 import * as ApiType from 'types/api.types';
 import { getHandleActions } from './connection';
 import createReducer from '../Reducers';
