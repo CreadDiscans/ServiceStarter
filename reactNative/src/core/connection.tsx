@@ -1,6 +1,9 @@
 import { createAction, handleActions } from "redux-actions";
 import { pender } from "redux-pender";
 import { bindActionCreators, Dispatch } from "redux";
+import { withTranslation } from 'react-i18next'
+import { RootState } from "./Reducer";
+import { connect } from 'react-redux';
 
 const getActions = (Action:any) => {
   const actions:any = {}
@@ -24,3 +27,10 @@ export const getHandleActions = (Action:any, initState:any) => {
 export const binding = (Action:any, dispatch:Dispatch) => {
   return bindActionCreators(getActions(Action), dispatch)
 }
+
+export const chain = (
+  stateFunc:(state:RootState)=>({}), 
+  dispatchFnc:(dispatch:Dispatch)=>({}), 
+  comp:React.ComponentType<any>
+) => connect(stateFunc, dispatchFnc)(withTranslation()(comp))
+
