@@ -28,13 +28,13 @@ class SignIn extends React.Component<Props> {
     }
 
     async signIn() {
-        const {AuthAct, navigation} = this.props
+        const {AuthAct, navigation, t} = this.props
         AuthAct.signIn(this.state.username, this.state.password)
         .then(res=> navigation.navigate('Home'))
         .catch(err=>{
             const state = {errUsername:'', errPassword:''}
-            if (err === 'no user') state.errUsername =  'The username not exists.'
-            if (err === 'password wrong') state.errPassword = 'The Password was wrong.'
+            if (err === 'no user') state.errUsername =  t('signin.notexist')
+            if (err === 'password wrong') state.errPassword = t('signin.wrongpassword')
             this.setState(state)
         })
     }
