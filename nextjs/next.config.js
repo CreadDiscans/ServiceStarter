@@ -18,4 +18,5 @@ module.exports = {
         return config
       },
       i18n,
+      distDir: 'build',
 }
