@@ -5,7 +5,7 @@ import { Api } from "../core/Api";
 import DeviceInfo from 'react-native-device-info';
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-
+import { store } from "../core/Store";
 
 const deviceType = Platform.OS + ':' + DeviceInfo.getDeviceId()
 
@@ -19,6 +19,7 @@ const initState:AuthState = {
 }
 
 export const AuthAction = {
+    name:'auth',
     init:async()=>{
       const profile = await AsyncStorage.getItem('profile')
       if (profile) return Promise.resolve({profile:JSON.parse(profile)})
@@ -99,4 +100,4 @@ export const AuthAction = {
       }
 }
 
-export default getHandleActions(AuthAction, initState)
+store.injectReducer(AuthAction, initState)

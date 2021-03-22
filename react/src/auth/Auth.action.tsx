@@ -2,6 +2,7 @@ import { Api } from 'app/core/Api';
 import * as ApiType from 'types/api.types';
 import { getHandleActions } from 'app/core/connection';
 import * as CustomType from 'types/custom.types';
+import { store } from "../app/core/Store";
 
 export type AuthState = {
   userProfile?: ApiType.Profile
@@ -13,6 +14,7 @@ const initState: AuthState = {
 };
 
 export const AuthAction = {
+  name:'auth',
   setFcm: async (profile: ApiType.Profile | undefined, fcmToken: string) => {
     if (profile) {
       const devices = await Api.list<ApiType.Device[]>('/api-device/', {
@@ -65,7 +67,6 @@ export const AuthAction = {
     }).then(res => ({}))
   },
   socialSign: async (sns: string, uid: string, name: string, email: string | undefined, token: string, fcmToken: string | undefined) => {
-    // email = undefined // email 없을 때 테스트
     const res = await Api.create<{ token: string, profile: ApiType.Profile }>('/social/', {
       sns: sns,
       uid: uid,
@@ -80,4 +81,4 @@ export const AuthAction = {
   }
 }
 
-export default getHandleActions(AuthAction, initState)
+store.injectReducer(AuthAction, initState)

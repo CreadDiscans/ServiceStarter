@@ -9,6 +9,7 @@ import SignUp from '../auth/SignUp';
 import { Provider } from 'react-redux';
 import { store } from './Store';
 import Setting from '../setting/Setting';
+import './I18n'
 
 const AppStack = createStackNavigator({
   Home:Home,

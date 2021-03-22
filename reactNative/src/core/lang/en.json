@@ -1,0 +1,23 @@
+{
+  "signin": {
+    "forgotpassword": "Forgot password",
+    "notactivate": "The username is not activated. Check the email.",
+    "notexist": "The username not existed.",
+    "password": "Password",
+    "signin": "Sign In",
+    "signup": "Sign Up",
+    "username": "Username",
+    "wrongpassword": "The password was wrong."
+  },
+  "signup": {
+    "email": "Email",
+    "emailinvalid": "The email has already registered.",
+    "password": "Password",
+    "passwordconfirm": "Password Confirm",
+    "passwordconfirminvalid": "Two passwords are not matched.",
+    "passwordinvalid": "The password should be longer than 7 character.",
+    "signup": "Sign Up",
+    "username": "Username",
+    "usernameinvalid": "The username has already registered or invalid."
+  }
+}
