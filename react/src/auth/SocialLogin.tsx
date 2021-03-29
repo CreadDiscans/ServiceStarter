@@ -70,6 +70,7 @@ class SocialLogin extends React.Component<Props> {
                         //     'kakao',
                         //     String(user.id),
                         //     user.properties.nickname,
+                        //     user.properties.email,
                         //     authObj.access_token,
                         //     auth.fcmToken
                         // ).then(()=>history.push('/'))

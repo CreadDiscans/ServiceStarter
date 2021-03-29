@@ -20,10 +20,10 @@ const naverKeys = Platform.OS === 'android' ? {
     kConsumerSecret: "NQ1_ZWkxKD",
     kServiceAppName: "Service Starter(android)"
   } : {
-    kConsumerKey: "VC5CPfjRigclJV_TFACU",
-    kConsumerSecret: "f7tLFw0AHn",
+    kConsumerKey: "Lzkjn3jwrj2atDeh9JBp",
+    kConsumerSecret: "NQ1_ZWkxKD",
     kServiceAppName: "테스트앱(iOS)",
-    kServiceAppUrlScheme: "testapp" // only for iOS
+    kServiceAppUrlScheme: "naverlogintest" // only for iOS
   }
 
 interface Props {
@@ -85,7 +85,6 @@ class SocialSign extends React.Component<Props> {
     }
 
     naverLogin() {
-        console.log('naver login')
         NaverLogin.login(naverKeys, async(err, token)=> {
             if (token) {
                 const result = await getProfile(token.accessToken)
