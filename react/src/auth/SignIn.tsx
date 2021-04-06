@@ -38,6 +38,12 @@ class SignIn extends React.Component<Props> {
       activate:false
     }
   }
+  async componentDidMount(){ // 테스트 코드
+    const ttt = await Api.list<ApiType.Device<number>[]>('/api-device/',{});
+    console.log(typeof ttt[0].profile) // (property) profile: number
+    const aaa = await Api.expand<ApiType.Device<ApiType.Profile>>(ttt, 'profile', '/api-profile/')
+    console.log(typeof aaa[0].profile) // (property) profile: ApiType.Profile
+  }
 
   async submit(e:React.FormEvent<HTMLFormElement>) {
     e.stopPropagation()

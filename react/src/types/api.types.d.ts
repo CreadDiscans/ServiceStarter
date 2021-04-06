@@ -1,11 +1,12 @@
 import * as custom from './custom.types'
 
-export type Device = {
+export type Device<T=number> = {
     id:number
     fcm_token:string
     type:string
     refresh_token:string
-    profile:number|Profile
+    // profile:number|Profile
+    profile:T
 }
 export type Media = {
     id:number
