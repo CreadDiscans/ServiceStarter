@@ -34,7 +34,7 @@ export const BoardAction = {
             group:group.id,
             valid:1
         })
-        await Api.expand(res.items, 'author', '/api-profile/')
+        const www = await Api.expand<ApiType.BoardItem<ApiType.Profile>>(res.items, 'author', '/api-profile/')
         return Promise.resolve({
             totalPage:res.total_page,
             currentPage:page,
