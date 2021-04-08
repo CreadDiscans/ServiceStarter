@@ -1,4 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.http import AsyncHttpConsumer
 from api.models import ChatRoom, ChatMessage, Profile, TaskWork, TaskClient
 from api.views import getSerializer
 from api.tasks import background_task
@@ -83,3 +84,7 @@ class TaskConsumer(WebsocketConsumer):
         works = TaskWork.objects.filter(taskclient__channel_name=self.channel_name)
         if works.count() > 0:
             self.send(text_data=json.dumps(getSerializer(TaskWork)(works[0]).data))
+class HMRHttpConsumer(AsyncHttpConsumer):
+    async def handle(self, body):
+        # print(body)
+        pass

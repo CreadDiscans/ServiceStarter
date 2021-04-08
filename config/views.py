@@ -232,14 +232,17 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 def index(request):
-    # contents = cache.get(request.path)
-    # if not contents:
+    request.META['X-Content-Type-Options'] = 'nosniff'
     contents = requests.get(settings.REACT_HOST+request.path).text
         # cache.set(request.path, contents)
     contents = contents.replace('{% csrf_token %}', get_token(request))
-    return HttpResponse(contents)
+    res = HttpResponse(contents)
+    if ('.js' in request.path): res['CONTENT-TYPE'] = 'application/javascript'
+    
+    return res
 
 def assets(request):
+    print(request.path)
     response = requests.get(settings.REACT_HOST+request.path, stream=True)
     return HttpResponse(
         content=response.content,

@@ -8,7 +8,7 @@ RUN apt-get install -y libffi-dev
 RUN npm install -g n
 RUN n stable
 RUN apt-get install -y libmysqlclient-dev
-RUN npm install -g forever
+RUN npm install -g pm2@latest
 RUN rm /etc/nginx/sites-enabled/default
 RUN mkdir /app
 
@@ -21,11 +21,9 @@ ENV LC_ALL ko_KR.UTF-8
 
 COPY ./ /app
 
-WORKDIR /app/react
-RUN npm i koa koa-static koa-mount serialize-javascript 
+WORKDIR /app/nextjs
 RUN npm install
 RUN npm run build
-RUN npm run build:server
 WORKDIR /app
 RUN mkdir log
 RUN python3 -m pip install -r requirements.txt
@@ -34,4 +32,4 @@ RUN python3 manage.py collectstatic --no-input --settings=config.production.sett
 RUN ln -s /app/config/production/nginx.conf /etc/nginx/sites-enabled/nginx.conf
 RUN ln -s /app/config/production/uwsgi.ini /etc/uwsgi/apps-enabled/uwsgi.ini
 RUN ln -s /app/config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
-CMD forever start -a -l /app/log/forever.log react/server ; python3 manage.py uwsgi ; service nginx start ; service supervisor start ; tail -f /dev/null
+CMD pm2 start ./nextjs/ecosystem.config.js ; python3 manage.py uwsgi ; service nginx start ; service supervisor start ; tail -f /dev/null

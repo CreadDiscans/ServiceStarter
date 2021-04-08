@@ -6,6 +6,7 @@ django-rest-swagger
 django-redis
 django-sslserver
 django-ckeditor
+django-timezone-field
 channels
 channels_redis
 mysqlclient

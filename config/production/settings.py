@@ -10,7 +10,7 @@ DEBUG=True
 ALLOWED_HOSTS = ['servicestarter.kro.kr', '*']
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "react/build"),
+    os.path.join(BASE_DIR, "nextjs/build"),
 ]
 
 REDIS_HOST = 'a3084cf15370e4f738c777073a0b2c64-371699409.ap-northeast-2.elb.amazonaws.com'

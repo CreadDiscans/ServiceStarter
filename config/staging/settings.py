@@ -8,7 +8,7 @@ DEBUG=True
 ALLOWED_HOSTS = ['*']
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "react/build"),
+    os.path.join(BASE_DIR, "nextjs/build"),
 ]
 
 REACT_HOST = 'http://localhost:3001'

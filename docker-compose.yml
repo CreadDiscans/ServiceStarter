@@ -18,3 +18,33 @@ services:
         service supervisor start 
         tail -f /dev/null
       "
+  prod:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./:/app
+      - ./config/production/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
+      - ./config/production/uwsgi.ini:/etc/uwsgi/apps-enabled/uwsgi.ini
+      - ./config/production/supervisor.conf:/etc/supervisor/conf.d/supervisor.conf
+      - ./config/staging/celery.conf:/etc/supervisor/conf.d/celery.conf
+      - ./log:/var/log/nginx
+      - ./log:/var/log/uwsgi/app
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - "443:443"
+      - "80:80"
+    command: >
+      sh -c " cd nextjs &&
+        npm install &&
+        npm run build &&
+        pm2 start ecosystem.config.js &&
+        cd .. &&
+        python3 -m pip install -U -r requirements.txt &&
+        python3 manage.py migrate --settings=config.production.settings &&
+        python3 manage.py collectstatic --no-input --settings=config.production.settings &&
+        python3 manage.py uwsgi &&
+        service nginx start &&
+        tail -f /dev/null
+        "

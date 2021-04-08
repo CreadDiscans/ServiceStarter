@@ -8,7 +8,7 @@ RUN apt-get install -y libffi-dev
 RUN npm install -g n
 RUN n stable
 RUN apt-get install -y libmysqlclient-dev
-RUN npm install -g forever
+RUN npm install -g pm2 
 RUN rm /etc/nginx/sites-enabled/default
 RUN mkdir /app
 
@@ -21,4 +21,6 @@ ENV LANGUAGE ko_KR.UTF-8
 ENV LC_ALL ko_KR.UTF-8 
 
 WORKDIR /app
+RUN python3 -m pip install -U pip
+RUN python3 -m pip install -U setuptools
 RUN python3 -m pip install -r requirements.txt
