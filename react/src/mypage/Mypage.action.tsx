@@ -186,8 +186,6 @@ export const MypageAction = {
         const subs = await Api.list<ApiType.ShopSubscription[]>('/api-shop/subscription/', {
             'pk__in[]':res.items.map(item=>item.subscription)
         })
-        console.log(res)
-        console.log(subs)
         res.items.forEach(billing=> {
             billing.subscription = subs.filter(sub=>billing.subscription.id === sub.id)[0]
         })
