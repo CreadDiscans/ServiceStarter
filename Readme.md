@@ -13,6 +13,7 @@ export UML.mdj to django models in Star UML
 # Production
 
 Django SECRET_KEY
+- python manage.py makesecretkey
 - update config/base.py (SECRET_KEY)
 
 fix ssl domain
