@@ -4,12 +4,12 @@ import { Api } from "app/core/Api";
 import { U } from "app/core/U";
 
 export type DashboardState = {
-    shopProducts:ApiType.ShopProduct[],
-    shopProduct?:ApiType.ShopProduct
-    shopCurrentPage:number
-    shopTotalPage:number
-    shopSubscriptions:ApiType.ShopSubscription[]
-    chatRooms:ApiType.ChatRoom[]
+    shopProducts:ApiType.ShopProduct[];
+    shopProduct?:ApiType.ShopProduct;
+    shopCurrentPage:number;
+    shopTotalPage:number;
+    shopSubscriptions:ApiType.ShopSubscription[];
+    chatRooms:ApiType.ChatRoom[];
 }
 
 const initState:DashboardState = {
@@ -49,7 +49,7 @@ export const DashboardAction = {
         const rooms = await Api.list<ApiType.ChatRoom[]>('/api-chat/room/',{
             'user':profile.id,
         })
-        await Api.expand(rooms, 'user', '/api-profile/', true)
+        await Api.expand<ApiType.ChatRoom<ApiType.Profile>>(rooms, 'user', '/api-profile/', true)
         return Promise.resolve({chatRooms:rooms})
     },
     exitChatRoom:async(profile:ApiType.Profile, room:ApiType.ChatRoom)=> {
@@ -58,7 +58,7 @@ export const DashboardAction = {
             await Api.delete('/api-chat/room/',chatRoom.id)
         } else {
             await Api.update('/api-chat/room/',chatRoom.id,{
-                user:(chatRoom.user as number[]).filter(user=> user !== profile.id)
+                user:chatRoom.user.filter(user=> user !== profile.id)
             })
         }
         return DashboardAction.loadChatRoom(profile)

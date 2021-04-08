@@ -11,9 +11,9 @@ import SocialLogin from 'auth/SocialLogin';
 import { translation } from 'component/I18next';
 
 interface Props {
-  auth:AuthState
-  AuthAction: typeof AuthAction
-  history: History
+  auth:AuthState;
+  AuthAction: typeof AuthAction;
+  history: History;
 }
 
 class SignIn extends React.Component<Props> {

@@ -5,14 +5,14 @@ import { U } from "app/core/U";
 import moment from 'moment';
 
 export type MypageState = {
-    carts:ApiType.ShopCart[]
-    cartCurrentPage:number
-    cartTotalPage:number
-    products:ApiType.ShopProduct[]
-    payments:ApiType.ShopPayment[]
-    subscription?:ApiType.ShopSubscription
-    cards:ApiType.ShopCard[]
-    billings:ApiType.ShopBilling[]
+    carts:ApiType.ShopCart[];
+    cartCurrentPage:number;
+    cartTotalPage:number;
+    products:ApiType.ShopProduct[];
+    payments:ApiType.ShopPayment[];
+    subscription?:ApiType.ShopSubscription;
+    cards:ApiType.ShopCard[];
+    billings:ApiType.ShopBilling[];
 }
 
 const initState:MypageState = {
@@ -38,7 +38,7 @@ export const MypageAction = {
             valid:1
         })
         res.items.forEach(item=>{
-            item.product = U.union((item.product as number[]).map(id=> products.filter(p=> p.id === id)))
+            item.product = U.union(item.product.map(id=> products.filter(p=> p.id === id)))
         })
         const payments = await Api.list<ApiType.ShopPayment[]>('/api-shop/payment/', {
             'cart__in[]':res.items.map(item=>item.id)
@@ -54,7 +54,8 @@ export const MypageAction = {
         const res = await Api.list<ApiType.ShopCart[]>('/api-shop/cart/', {
             isOpen:1
         })
-        let cart;
+
+        let cart:ApiType.ShopCart;
         if (res.length === 0) {
             cart = await Api.create<ApiType.ShopCart>('/api-shop/cart/',{
                 isOpen:1,
@@ -63,14 +64,16 @@ export const MypageAction = {
         } else {
             cart = res[0];
         }
+        
         await Api.patch<ApiType.ShopCart>('/api-shop/cart/', cart.id, {
-            product:(cart.product as number[]).concat([product.id])
+            product:cart.product.concat([product.id])
         })
+        
         return Promise.resolve({})
     },
-    removeShopCart:async(cart:ApiType.ShopCart, product:ApiType.ShopProduct) => {
+    removeShopCart:async(cart:ApiType.ShopCart<number,ApiType.ShopProduct>, product:ApiType.ShopProduct) => {
         await Api.patch<ApiType.ShopCart>('/api-shop/cart/', cart.id, {
-            product:    (cart.product as ApiType.ShopProduct[])
+            product:    cart.product
                 .filter(item=> item.id !== product.id)
                 .map(item=>item.id)
         })
@@ -98,7 +101,7 @@ export const MypageAction = {
             type:type,
             id:id
         })
-        let cart!:ApiType.ShopCart
+        let cart:ApiType.ShopCart
         if (type === 'cart') {
             cart = await Api.patch<ApiType.ShopCart>('/api-shop/cart/', id, {
                 isOpen:0,
@@ -175,7 +178,7 @@ export const MypageAction = {
         return MypageAction.loadBilling(profile)
     },
     loadBilling:async(profile:ApiType.Profile)=>{
-        const res = await Api.list<{total_page:Number, items:ApiType.ShopBilling[]}>('/api-shop/billing/',{
+        const res = await Api.list<{total_page:Number, items:ApiType.ShopBilling<number, ApiType.ShopSubscription>[]}>('/api-shop/billing/',{
             page:1,
             count_per_page:10,
             profile:profile.id
@@ -184,7 +187,7 @@ export const MypageAction = {
             'pk__in[]':res.items.map(item=>item.subscription)
         })
         res.items.forEach(billing=> {
-            billing.subscription = subs.filter(sub=>billing.subscription == sub.id)[0]
+            billing.subscription = subs.filter(sub=>billing.subscription.id === sub.id)[0]
         })
         return Promise.resolve({billings:res.items})
     }
