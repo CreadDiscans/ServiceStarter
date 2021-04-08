@@ -238,7 +238,6 @@ def index(request):
     contents = contents.replace('{% csrf_token %}', get_token(request))
     res = HttpResponse(contents)
     if ('.js' in request.path): res['CONTENT-TYPE'] = 'application/javascript'
-    
     return res
 
 def assets(request):
