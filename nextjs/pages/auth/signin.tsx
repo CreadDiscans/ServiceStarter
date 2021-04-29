@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap'
 import Layout from '../../components/Layouts/Layout'
 import { wrapper } from '../../core/redux/store'
+import { AuthState, initialState, authReducer, authSaga } from './auth.reducer'
 
 interface InvalidState {
   username: boolean
@@ -14,7 +15,7 @@ interface InvalidState {
   activate: boolean
 }
 
-const Signin = () => {
+const Signin = (props:any) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [invalid, setInvalid] = useState<InvalidState>({
@@ -96,14 +97,22 @@ const Signin = () => {
     </Layout>
   )
 }
-
+console.log(initialState)
 export default Signin
 
-export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async({locale}:any)=> {
-  
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['signin', 'header'])),
-    },
-  }
-})
+const test_wrapper = () => {
+  return wrapper.getStaticProps(async({store, locale}:any)=> {
+    // const state = store.getState()
+    // store.injectReducer('auth', authReducer)
+    // store.injectSaga('auth', authSaga)
+    console.log(store,store.getState())
+    return {
+      props: {
+        // store,
+        ...(await serverSideTranslations(locale, ['signin', 'header'])),
+      },
+    }
+  })
+}
+
+export const getStaticProps: GetStaticProps = test_wrapper()

@@ -1,6 +1,7 @@
+import { HYDRATE } from "next-redux-wrapper"
 import { all, fork, takeEvery } from "redux-saga/effects"
+import { injectReducers } from "../../core/redux/store"
 import { U } from "../../core/U"
-import Sigin from './signin'
 
 export type AuthState = {
     
@@ -19,17 +20,24 @@ function* watchValue() {
     yield takeEvery('AAA', loadValue)
 }
 
-function* authSaga() {
+export function* authSaga() {
     yield all([
         fork(watchValue)
     ])
 }
 
-const reducer = (state=initialState, action:any) => {
+export const authReducer = (state=initialState, action:any) => {
     switch(action.type) {
+        case HYDRATE:
+            console.log('hydrate')
+            return {...state}
         case 'AAA':
+            return {...state}
+        default:
             return {...state}
     }
 }
+injectReducers('auth',authReducer)
 
+// store
 export default U.redirect('signin')
