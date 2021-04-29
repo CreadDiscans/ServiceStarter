@@ -60,7 +60,7 @@ const Counter = () => {
 
 export default Counter
 
-export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async ({ store, locale }) => {
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async ({ store, locale }:any) => {
   if (store.getState().sampledata) {
     store.dispatch(loadData())
     store.dispatch(END)

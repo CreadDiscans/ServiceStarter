@@ -99,12 +99,11 @@ const Signin = () => {
 
 export default Signin
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale
-
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async({locale}:any)=> {
+  
   return {
     props: {
       ...(await serverSideTranslations(locale, ['signin', 'header'])),
     },
   }
-}
+})

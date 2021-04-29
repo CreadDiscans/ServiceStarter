@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   )
 }
 
-export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async ({ store, locale }) => {
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async ({locale}:any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['home', 'header', 'userlist'])),

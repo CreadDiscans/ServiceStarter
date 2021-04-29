@@ -24,7 +24,7 @@ class Command(BaseCommand):
           body += content
         elif '.d.ts' in file:
           type_body += content + '\n'
-    # with open(os.path.join(settings.REACT_API_TYPE_PATH, 'api.types.d.ts'), 'w', encoding='utf-8') as f:
-    #   f.write(type_body)
+    with open(os.path.join(settings.REACT_API_TYPE_PATH, 'api.types.d.ts'), 'w', encoding='utf-8') as f:
+      f.write(type_body)
     with open('api/models.py', 'w', encoding='utf-8') as f:
       f.write(body)

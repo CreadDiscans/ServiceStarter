@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, Middleware } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
-import createSagaMiddleware from 'redux-saga'
+import createSagaMiddleware, { Task } from 'redux-saga'
 
 import rootReducer from './reducers/index'
 import rootSaga from './sagas'
@@ -15,11 +15,24 @@ const bindMiddleware = (middleware: Middleware[]) => {
 
 const makeStore = () => {
   const sagaMiddleware = createSagaMiddleware()
-  const store = createStore(rootReducer, bindMiddleware([sagaMiddleware]))
+  const store:any = createStore(rootReducer, bindMiddleware([sagaMiddleware]))
 
-  store.sagaTask = sagaMiddleware.run(rootSaga)
+  // store.sagaTask = sagaMiddleware.run(rootSaga)
+  store.injectSaga = createSagaInjector(sagaMiddleware.run, rootSaga)
 
   return store
 }
 
-export const wrapper: any = createWrapper(makeStore, { debug: false })
+export const wrapper = createWrapper(makeStore, { debug: false })
+
+function createSagaInjector(runSaga:any, rootSaga:any) {
+  const injectedSaga = new Map()
+  const isInjected = (key:string) => injectedSaga.has(key);
+  const injectSaga = (key:string, saga:any) => {
+    if(isInjected(key)) return;
+    const task = runSaga(saga)
+    injectedSaga.set(key, task)
+  }
+  injectSaga('root', rootSaga)
+  return injectSaga
+}
