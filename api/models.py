@@ -1,5 +1,14 @@
 from django.db import models
 
+class Device(models.Model):
+    class Meta:
+        pass
+
+    fcm_token = models.CharField(max_length=200)
+    type = models.CharField(max_length=100)
+
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+
 class Media(models.Model):
     class Meta:
         pass
@@ -11,16 +20,6 @@ class Media(models.Model):
     extra = models.CharField(max_length=100, null=True, blank=True)
 
 
-class Device(models.Model):
-    class Meta:
-        pass
-
-    fcm_token = models.CharField(max_length=200)
-    type = models.CharField(max_length=100)
-    refresh_token = models.CharField(max_length=100, null=True, blank=True)
-
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
-
 class Profile(models.Model):
     class Meta:
         verbose_name_plural='사용자'
@@ -31,58 +30,8 @@ class Profile(models.Model):
     user = models.OneToOneField(to='auth.User', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     profile_img = models.CharField(max_length=200, null=True, blank=True)
+    auth_token = models.CharField(max_length=500, null=True, blank=True)
 
-
-class MonitorCpu(models.Model):
-    class Meta:
-        pass
-
-    name = models.CharField(max_length=100)
-
-    server = models.ForeignKey('MonitorServer', on_delete=models.CASCADE)
-
-class MonitorUsage(models.Model):
-    class Meta:
-        pass
-
-    percent = models.DecimalField(max_digits=5, decimal_places=2)
-    dt = models.DateTimeField(auto_now_add=True)
-
-    cpu = models.ForeignKey('MonitorCpu', on_delete=models.CASCADE, null=True, blank=True)
-    memory = models.ForeignKey('MonitorMemory', on_delete=models.CASCADE, null=True, blank=True)
-
-class MonitorMemory(models.Model):
-    class Meta:
-        pass
-
-    total = models.IntegerField(default=0)
-
-    server = models.OneToOneField('MonitorServer', on_delete=models.CASCADE)
-
-class MonitorServer(models.Model):
-    class Meta:
-        pass
-
-    address = models.CharField(max_length=100)
-    keep_day = models.IntegerField(default=7)
-
-
-class ChatRoom(models.Model):
-    class Meta:
-        pass
-
-    user = models.ManyToManyField(to='Profile')
-
-
-class ChatMessage(models.Model):
-    class Meta:
-        pass
-
-    sender = models.ForeignKey(to='Profile', on_delete=models.SET_NULL, null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    room = models.ForeignKey('ChatRoom', on_delete=models.CASCADE)
 
 class BoardComment(models.Model):
     class Meta:
@@ -119,6 +68,57 @@ class BoardItem(models.Model):
 
     group = models.ForeignKey('BoardGroup', on_delete=models.CASCADE)
 
+class ChatMessage(models.Model):
+    class Meta:
+        pass
+
+    sender = models.ForeignKey(to='Profile', on_delete=models.SET_NULL, null=True, blank=True)
+    content = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    room = models.ForeignKey('ChatRoom', on_delete=models.CASCADE)
+
+class ChatRoom(models.Model):
+    class Meta:
+        pass
+
+    user = models.ManyToManyField(to='Profile')
+
+
+class MonitorCpu(models.Model):
+    class Meta:
+        pass
+
+    name = models.CharField(max_length=100)
+
+    server = models.ForeignKey('MonitorServer', on_delete=models.CASCADE)
+
+class MonitorMemory(models.Model):
+    class Meta:
+        pass
+
+    total = models.IntegerField(default=0)
+
+    server = models.OneToOneField('MonitorServer', on_delete=models.CASCADE)
+
+class MonitorServer(models.Model):
+    class Meta:
+        pass
+
+    address = models.CharField(max_length=100)
+    keep_day = models.IntegerField(default=7)
+
+
+class MonitorUsage(models.Model):
+    class Meta:
+        pass
+
+    percent = models.DecimalField(max_digits=5, decimal_places=2)
+    dt = models.DateTimeField(auto_now_add=True)
+
+    cpu = models.ForeignKey('MonitorCpu', on_delete=models.CASCADE, null=True, blank=True)
+    memory = models.ForeignKey('MonitorMemory', on_delete=models.CASCADE, null=True, blank=True)
+
 class ShopBilling(models.Model):
     class Meta:
         verbose_name_plural='상점 구독내역'
@@ -145,24 +145,14 @@ class ShopCard(models.Model):
     buyer_tel = models.CharField(max_length=100)
 
 
-class ShopSubscription(models.Model):
+class ShopCart(models.Model):
     class Meta:
-        verbose_name_plural='상점 구독'
+        verbose_name_plural='상점 장바구니'
 
-    name = models.CharField(max_length=100)
-    price = models.IntegerField(default=0)
-    valid = models.BooleanField(default=False)
+    isOpen = models.BooleanField(default=True)
+    profile = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
 
-
-class ShopProduct(models.Model):
-    class Meta:
-        verbose_name_plural='상점 상품'
-
-    name = models.CharField(max_length=100)
-    price = models.IntegerField(default=0)
-    valid = models.BooleanField(default=False)
-    content = models.TextField(null=True, blank=True)
-
+    product = models.ManyToManyField('ShopProduct', blank=True)
 
 class ShopPayment(models.Model):
     class Meta:
@@ -174,14 +164,32 @@ class ShopPayment(models.Model):
 
     cart = models.OneToOneField('ShopCart', on_delete=models.SET_NULL, null=True, blank=True)
 
-class ShopCart(models.Model):
+class ShopProduct(models.Model):
     class Meta:
-        verbose_name_plural='상점 장바구니'
+        verbose_name_plural='상점 상품'
 
-    isOpen = models.BooleanField(default=True)
-    profile = models.ForeignKey(on_delete=models.CASCADE, to='Profile')
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=0)
+    valid = models.BooleanField(default=False)
+    content = models.TextField(null=True, blank=True)
 
-    product = models.ManyToManyField('ShopProduct', blank=True)
+
+class ShopSubscription(models.Model):
+    class Meta:
+        verbose_name_plural='상점 구독'
+
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(default=0)
+    valid = models.BooleanField(default=False)
+
+
+class TaskClient(models.Model):
+    class Meta:
+        pass
+
+    channel_name = models.CharField(max_length=100)
+
+    work = models.ForeignKey('TaskWork', on_delete=models.CASCADE)
 
 class TaskWork(models.Model):
     class Meta:
@@ -192,12 +200,4 @@ class TaskWork(models.Model):
     status = models.CharField(max_length=100)
     body = models.TextField(null=True, blank=True)
 
-
-class TaskClient(models.Model):
-    class Meta:
-        pass
-
-    channel_name = models.CharField(max_length=100)
-
-    work = models.ForeignKey('TaskWork', on_delete=models.CASCADE)
 

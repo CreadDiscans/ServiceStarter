@@ -112,68 +112,6 @@ class UserViewSet(viewsets.ModelViewSet):
         email.send()
         return response
 
-@permission_classes((AllowAny,))
-@authentication_classes((JSONWebTokenAuthentication,))
-class SocialSiginViewSet(viewsets.ViewSet):
-    def create(self, request, *args, **kwargs):
-        sns = request.data['sns']
-        uid = request.data['uid']
-        token = request.data['token']
-        name = request.data['name']
-        username = request.data['email'] if 'email' in request.data else sns + '@' + uid
-        if sns == 'google':
-            r = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?alt=json',headers={
-                'Authorization': 'Bearer '+token})
-        elif sns == 'facebook':
-            r = requests.get('https://graph.facebook.com/v6.0/me/?access_token='+token)
-        elif sns == 'naver':
-            r = requests.get('https://openapi.naver.com/v1/nid/me', headers={
-                'Authorization':'Bearer '+token})
-        elif sns == 'kakao':
-            r = requests.get('https://kapi.kakao.com/v2/user/me',headers={
-                'Authorization':'Bearer '+token})
-        if r.status_code != 200:
-            return Response({'message':'fail to authenticate'}, status=status.HTTP_401_UNAUTHORIZED)
-        user = User.objects.filter(username=username)
-        if user.count() == 0:
-            user = User(username=username)
-            password = User.objects.make_random_password()
-            user.set_password(password)
-            user.is_active = True
-            user.save()
-            profile = Profile(user=user, name=name)
-            profile.save()
-        user = User.objects.get(username=username)
-        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-        payload = jwt_payload_handler(user)
-        token = jwt_encode_handler(payload)
-        serializer = getSerializer(Profile)
-        refresh_token = None
-        fcm_token = 'noToken'
-        if 'fcm_token' in request.data:
-            fcm_token = request.data['fcm_token']
-        if 'type' in request.data:
-            type = request.data['type']
-            devices = user.profile.device_set.filter(type=type)
-            if devices.count() > 0:
-                device = devices[0]
-                device.fcm_token = fcm_token
-                device.refresh_token = User.objects.make_random_password(length=20)
-                device.save()
-            else:
-                device = Device(fcm_token=fcm_token,
-                    profile=user.profile,
-                    refresh_token=User.objects.make_random_password(length=20),
-                    type=type)
-                device.save()
-            refresh_token = device.refresh_token
-        return Response({
-            'token':token, 
-            'profile':serializer(user.profile).data,
-            'refresh_token':refresh_token
-        }, status=status.HTTP_200_OK)
-
 def activate(request, uid64, token):
     uid = force_text(urlsafe_base64_decode(uid64))
     user = User.objects.get(pk=uid)
@@ -211,20 +149,6 @@ def send_reset_mail(request):
             return HttpResponse('ok')
     return HttpResponse('Unauthorized', status=401)
 
-@permission_classes((AllowAny,))
-@authentication_classes((JSONWebTokenAuthentication,))
-class TokenRefreshViewSet(viewsets.ViewSet):
-    def create(self, request):
-        refresh_token = request.data['refresh_token']
-        devices = Device.objects.filter(refresh_token=refresh_token)
-        if devices.count() > 0:
-            device = devices[0]
-            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-            payload = jwt_payload_handler(device.profile.user)
-            token = jwt_encode_handler(payload)
-            return Response({'token':token}, status=status.HTTP_200_OK)
-        return Response({'message':'invalid refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
 @permission_classes((IsAuthenticatedOrReadOnly,))
 @authentication_classes((JSONWebTokenAuthentication,))
 class GroupViewSet(viewsets.ModelViewSet):
