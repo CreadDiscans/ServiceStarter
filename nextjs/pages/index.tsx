@@ -1,44 +1,37 @@
-import Head from 'next/head'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
-import { GetStaticProps } from 'next'
 import React from 'react'
-import { I18next } from '../component/I18next'
+import Link from 'next/link'
+import { GetStaticProps, NextPage } from 'next'
+import { Container } from 'reactstrap'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 
-function Home() {
-  const router = useRouter()
-  const { t } = useTranslation('common')
-  
+import { wrapper } from '../core/redux/store'
+import Layout from '../components/Layouts/Layout'
+import UserList from '../components/UserList'
+
+const Home: NextPage = () => {
+  const { t } = useTranslation('home')
+
   return (
-    <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <I18next/>
-        <h1>{t('activation.move')}</h1>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-    </div>
+    <Layout title={t('home')}>
+      <Container className="my-5 py-5">
+        <h1>{t('hello')}</h1>
+        <p>
+          <Link href="/">
+            <a>{t('about')}</a>
+          </Link>
+        </p>
+        <UserList />
+      </Container>
+    </Layout>
   )
 }
 
-export const getStaticProps:GetStaticProps = async ({locale}) => ({
-  props: {
-    ...await serverSideTranslations(locale as string, ['common']),
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async ({ store, locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['home', 'header', 'userlist'])),
+    },
   }
 })
 

@@ -1,10 +1,24 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '../index.css'
 import { appWithTranslation } from 'next-i18next'
 import type { AppProps } from 'next/app'
+import Head from 'next/head'
+import { NextPage } from 'next'
+import { wrapper } from '../core/redux/store'
+import 'bootstrap/dist/css/bootstrap.css'
 
-const ServiceStaterApp = ({ Component, pageProps }: AppProps) => {
-    return <Component {...pageProps} />
+const ServiceStaterApp: NextPage<AppProps> = ({ Component, pageProps }: AppProps) => {
+  return (
+    <>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossOrigin="anonymous"
+        />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  )
 }
 
-export default appWithTranslation(ServiceStaterApp)
+export default wrapper.withRedux(appWithTranslation(ServiceStaterApp))
