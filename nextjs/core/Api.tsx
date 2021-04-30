@@ -77,27 +77,27 @@ export class Api {
 
     static async list<T>(url: string, query: object): Promise<T> {
         await setHeader();
-        return axios.get(domain + url + '?' + queryString.stringify(query)).then(res => res.data)
+        return axios.get(domain + url + '?' + queryString.stringify(query))
     }
     static async create<T>(url: string, body: object): Promise<T> {
         await setHeader();
-        return axios.post(domain + url, body).then(res => res.data);
+        return axios.post(domain + url, body)
     }
     static async retrieve<T>(url: string, id: number | string, query: object): Promise<T> {
         await setHeader();
-        return axios.get(domain + queryUrl(url, query, id)).then(res => res.data)
+        return axios.get(domain + queryUrl(url, query, id))
     }
     static async update<T>(url: string, id: number | string, body: object): Promise<T> {
         await setHeader();
-        return axios.put(domain + queryUrl(url, {}, id), body).then(res => res.data)
+        return axios.put(domain + queryUrl(url, {}, id), body)
     }
     static async patch<T>(url: string, id: number | string, body: object): Promise<T> {
         await setHeader();
-        return axios.patch(domain + queryUrl(url, {}, id), body).then(res => res.data);
+        return axios.patch(domain + queryUrl(url, {}, id), body)
     }
     static async delete<T>(url: string, id: number | string): Promise<T> {
         await setHeader();
-        return axios.delete(domain + queryUrl(url, {}, id)).then(res => res.data);
+        return axios.delete(domain + queryUrl(url, {}, id))
     }
     static async upload(file: File): Promise<{ uploaded: boolean, url: string }> {
         await setHeader()
@@ -107,7 +107,7 @@ export class Api {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
-        }).then(res => res.data)
+        })
     }
     static async expand<T>(arr: Array<any>, key: string, url: string, mtm: boolean = false): Promise<T[]> {
         let ids

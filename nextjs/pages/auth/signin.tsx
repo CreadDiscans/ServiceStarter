@@ -8,7 +8,7 @@ import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Butto
 import Layout from '../../components/Layouts/Layout'
 import { wrapper } from '../../core/redux/store'
 import { authReducer, authSaga, AuthState, init, signin } from './auth.reducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 interface InvalidState {
   username: boolean
@@ -30,6 +30,8 @@ const Signin = (props:Props) => {
   })
   const router = useRouter()
   const { t } = useTranslation('signin')
+  const state = useSelector((state:any)=> state.auth)
+  console.log(state)
   const dispatch = useDispatch()
 
   const submit = async (e: React.FormEvent<HTMLFormElement>, err: string = 'no user') => {

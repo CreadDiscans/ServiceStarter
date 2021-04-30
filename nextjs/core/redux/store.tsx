@@ -33,14 +33,12 @@ const context:any = {store:undefined}
 export const injectReducers = (key:string, reducer:any) => {
   reducers[key] = reducer
   if (context.store !== undefined) {
-    console.log(key, reducer)
     context.store.injectReducer(key, reducer)
   }
 }
 export const injectSaga = (key:string, saga:any) => {
   sagas[key] = saga 
   if (context.store !== undefined) {
-    console.log(key, saga)
     context.store.injectSaga(key, saga)
   }
 }
