@@ -6,6 +6,8 @@ import DeviceInfo from 'react-native-device-info';
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import { store } from "../core/Store";
+import { put, takeEvery } from "@redux-saga/core/effects";
+import { call } from "redux-saga/effects";
 
 const deviceType = Platform.OS + ':' + DeviceInfo.getDeviceId()
 
@@ -100,4 +102,36 @@ export const AuthAction = {
       }
 }
 
-store.injectReducer(AuthAction, initState)
+const SIGNIN = 'auth.SIGNIN'
+const INIT = 'auth.INIT'
+const SET_PROFILE = 'auth.SET_PROFILE'
+
+export const signin = (username:string, password:string) => ({type:SIGNIN, username, password}) 
+export const init = () => ({type:INIT})
+
+function* signin_worker({username, password}:{type:string, username:string, password:string}) {
+
+}
+
+function* init_worker() {
+  const profile:undefined|ApiType.Profile = yield call(AsyncStorage.getItem, 'profile')
+  yield put({type:SET_PROFILE, profile})
+}
+
+function* authSaga() {
+  yield takeEvery(SIGNIN, signin_worker)
+  yield takeEvery(INIT, init_worker)
+}
+
+const reducer = (state:AuthState=initState, action:any) => {
+  switch(action.type) {
+    case SET_PROFILE:
+      return {profile:action.profile, ...state}
+    default:
+      return {...state}
+  }
+}
+
+// store.injectReducer(AuthAction, initState)
+store.injectReducer('auth', reducer)
+store.injectSaga('auth', authSaga)

@@ -1,114 +1,114 @@
 import * as custom from './custom.types'
 
-export type Device = {
+export type Device<A=number> = {
     id:number
     fcm_token:string
     type:string
-    refresh_token:string
-    profile:number|Profile
+    profile:A // Profile
 }
-export type Media = {
+export type Media<A=number,B=number,C=number> = {
     id:number
     file:string
-    boarditem:number|BoardItem
-    shopproduct:number|ShopProduct
-    profile:number|Profile
+    boarditem:A // BoardItem
+    shopproduct:B // ShopProduct
+    profile:C // Profile
     extra:string
 }
-export type Profile = {
+export type Profile<A=number> = {
     id:number
-    user:number|custom.auth.User
+    user:A // custom.auth.User
     name:string
     profile_img:string
+    auth_token:string
 }
-export type MonitorServer = {
-    id:number
-    address:string
-    keep_day:number
-}
-export type MonitorUsage = {
-    id:number
-    percent:number
-    dt:string
-    cpu:number|MonitorCpu
-    memory:number|MonitorMemory
-}
-export type MonitorMemory = {
-    id:number
-    total:number
-    server:number|MonitorServer
-}
-export type MonitorCpu = {
-    id:number
-    name:string
-    server:number|MonitorServer
-}
-export type BoardItem = {
-    id:number
-    title:string
-    content:string
-    created:string
-    modified:string
-    author:number|Profile
-    valid:boolean
-    group:number|BoardGroup
-}
-export type BoardComment = {
+export type BoardComment<A=number,B=number,C=number> = {
     id:number
     content:string
     created:string
-    author:number|Profile
-    item:number|BoardItem
-    parent:number|BoardComment
+    author:A // Profile
+    item:B // BoardItem
+    parent:C // BoardComment
 }
 export type BoardGroup = {
     id:number
     name:string
     readonly:boolean
 }
-export type TaskClient = {
+export type BoardItem<A=number,B=number> = {
     id:number
-    channel_name:string
-    work:number|TaskWork
+    title:string
+    content:string
+    created:string
+    modified:string
+    author:A // Profile
+    valid:boolean
+    group:B // BoardGroup
 }
-export type TaskWork = {
+export type ChatMessage<A=number,B=number> = {
     id:number
-    owner:number|Profile
-    progress:number
-    status:string
-    body:string
+    sender:A // Profile
+    content:string
+    created:string
+    room:B // ChatRoom
 }
-export type ShopSubscription = {
+export type ChatRoom<A=number> = {
+    id:number
+    user:A[] // Profile[]
+}
+export type MonitorCpu<A=number> = {
     id:number
     name:string
-    price:number
-    valid:boolean
+    server:A // MonitorServer
 }
-export type ShopBilling = {
+export type MonitorMemory<A=number> = {
     id:number
-    profile:number|Profile
+    total:number
+    server:A // MonitorServer
+}
+export type MonitorServer = {
+    id:number
+    address:string
+    keep_day:number
+}
+export type MonitorUsage<A=number,B=number> = {
+    id:number
+    percent:number
+    dt:string
+    cpu:A // MonitorCpu
+    memory:B // MonitorMemory
+}
+export type ShopBilling<A=number,B=number,C=number> = {
+    id:number
+    profile:A // Profile
     created:string
     expired:string
     scheduled:boolean
     imp_uid:string
     merchant_uid:string
-    subscription:number|ShopSubscription
-    card:number|ShopCard
+    subscription:B // ShopSubscription
+    card:C // ShopCard
 }
-export type ShopCart = {
-    id:number
-    isOpen:boolean
-    profile:number|Profile
-    product:number[]|ShopProduct[]
-}
-export type ShopCard = {
+export type ShopCard<A=number> = {
     id:number
     name:string
     customer_uid:string
-    profile:number|Profile
+    profile:A // Profile
     buyer_name:string
     buyer_email:string
     buyer_tel:string
+}
+export type ShopCart<A=number,B=number> = {
+    id:number
+    isOpen:boolean
+    profile:A // Profile
+    product:B[] // ShopProduct
+}
+export type ShopPayment<A=number> = {
+    id:number
+    imp_uid:string
+    status:string
+    vbank:string
+    cart:A // ShopCart
 }
 export type ShopProduct = {
     id:number
@@ -117,21 +117,21 @@ export type ShopProduct = {
     valid:boolean
     content:string
 }
-export type ShopPayment = {
+export type ShopSubscription = {
     id:number
-    imp_uid:string
+    name:string
+    price:number
+    valid:boolean
+}
+export type TaskClient<A=number> = {
+    id:number
+    channel_name:string
+    work:A // TaskWork
+}
+export type TaskWork<A=number> = {
+    id:number
+    owner:A // Profile
+    progress:number
     status:string
-    vbank:string
-    cart:number|ShopCart
-}
-export type ChatRoom = {
-    id:number
-    user:number[]|Profile[]
-}
-export type ChatMessage = {
-    id:number
-    sender:number|Profile
-    content:string
-    created:string
-    room:number|ChatRoom
+    body:string
 }
