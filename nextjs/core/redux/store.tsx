@@ -1,16 +1,15 @@
 import { createStore, applyMiddleware, Middleware, combineReducers } from 'redux'
 import { createWrapper } from 'next-redux-wrapper'
-import createSagaMiddleware, { Task } from 'redux-saga'
+import createSagaMiddleware from 'redux-saga'
 
-import rootReducer from './reducers/index'
-import { all } from 'redux-saga/effects'
+import { all, fork } from 'redux-saga/effects'
+import sagaUsers from './sagas/sagaUsers'
+import sampledata from './reducers/sampledata'
 import counter from './reducers/counter'
-// import rootSaga from './sagas'
 
 
 function* rootSaga() {
-  // yield all([fork(sagaUsers)])
-  yield all([])
+  yield all(Object.values(sagas).map((saga:any)=> fork(saga)))
 }
 
 function createReducer(asyncReducers:any) {
@@ -27,9 +26,23 @@ const bindMiddleware = (middleware: Middleware[]) => {
   return applyMiddleware(...middleware)
 }
 
-const reducers:any = {}
+const reducers:any = {sampledata, counter}
+const sagas:any = {users:sagaUsers}
+const context:any = {store:undefined}
+
 export const injectReducers = (key:string, reducer:any) => {
   reducers[key] = reducer
+  if (context.store !== undefined) {
+    console.log(key, reducer)
+    context.store.injectReducer(key, reducer)
+  }
+}
+export const injectSaga = (key:string, saga:any) => {
+  sagas[key] = saga 
+  if (context.store !== undefined) {
+    console.log(key, saga)
+    context.store.injectSaga(key, saga)
+  }
 }
 
 const makeStore = () => {
@@ -38,8 +51,15 @@ const makeStore = () => {
   // store.sagaTask = sagaMiddleware.run(rootSaga)
   store.injectSaga = createSagaInjector(sagaMiddleware.run, rootSaga)
 
+  const asyncReducers:any = reducers
+  store.injectReducer = (key:string, reducer:any) => {
+    asyncReducers[key] = reducer
+    store.replaceReducer(createReducer(asyncReducers))
+  }
+  context.store = store
   return store
 }
+
 export const wrapper = createWrapper(makeStore, { debug: false })
 
 function createSagaInjector(runSaga:any, rootSaga:any) {

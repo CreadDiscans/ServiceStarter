@@ -1,43 +1,48 @@
+import axios from "axios"
 import { HYDRATE } from "next-redux-wrapper"
-import { all, fork, takeEvery } from "redux-saga/effects"
-import { injectReducers } from "../../core/redux/store"
+import { Action } from "redux"
+import { all, call, fork, takeEvery } from "redux-saga/effects"
+import { Api } from "../../core/Api"
+import { injectReducers, injectSaga } from "../../core/redux/store"
 import { U } from "../../core/U"
 
 export type AuthState = {
     
 }
 
-export const initialState:AuthState = {
+const initialState:AuthState = {
 
 }
 
-function loadValue() {
-    console.log('load value')
-    return 2
-}
+const SIGNIN = 'SIGNIN'
 
-function* watchValue() {
-    yield takeEvery('AAA', loadValue)
+export const signin = (username:string, password:string) => ({type:SIGNIN, username, password})
+
+function* singin_worker({username, password}:{type:string, username:string, password:string}) {
+    const {status, data} = yield call(Api.create, '/api/token-auth/', {username, password})
+    console.log(status, data)
 }
 
 export function* authSaga() {
-    yield all([
-        fork(watchValue)
-    ])
+    yield takeEvery(SIGNIN, singin_worker)
 }
 
-export const authReducer = (state=initialState, action:any) => {
+export const authReducer = (state=initialState, action:Action) => {
     switch(action.type) {
         case HYDRATE:
             console.log('hydrate')
             return {...state}
-        case 'AAA':
+        case SIGNIN:
+            console.log('signin reducer')
             return {...state}
         default:
             return {...state}
     }
 }
-injectReducers('auth',authReducer)
 
-// store
+export const init = ()=> {
+    injectReducers('auth', authReducer)
+    injectSaga('auth', authSaga)
+}
+
 export default U.redirect('signin')

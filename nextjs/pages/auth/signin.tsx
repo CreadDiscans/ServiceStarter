@@ -7,7 +7,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Container, Form, Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap'
 import Layout from '../../components/Layouts/Layout'
 import { wrapper } from '../../core/redux/store'
-import { AuthState, initialState, authReducer, authSaga } from './auth.reducer'
+import { authReducer, authSaga, AuthState, init, signin } from './auth.reducer'
+import { useDispatch } from 'react-redux'
 
 interface InvalidState {
   username: boolean
@@ -15,7 +16,11 @@ interface InvalidState {
   activate: boolean
 }
 
-const Signin = (props:any) => {
+interface Props {
+  auth:AuthState
+}
+
+const Signin = (props:Props) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [invalid, setInvalid] = useState<InvalidState>({
@@ -25,31 +30,33 @@ const Signin = (props:any) => {
   })
   const router = useRouter()
   const { t } = useTranslation('signin')
+  const dispatch = useDispatch()
 
   const submit = async (e: React.FormEvent<HTMLFormElement>, err: string = 'no user') => {
     e.stopPropagation()
     e.preventDefault()
 
+    dispatch(signin(username, password))
     // 추후 validation 비동기 함수 로직에 추가
-    if (err === 'no user') {
-      setInvalid({
-        password: false,
-        username: true,
-        activate: false,
-      })
-    } else if (err === 'not activate') {
-      setInvalid({
-        password: false,
-        username: true,
-        activate: true,
-      })
-    } else if (err === 'password wrong') {
-      setInvalid({
-        password: true,
-        username: false,
-        activate: false,
-      })
-    } else router.push('/')
+    // if (err === 'no user') {
+    //   setInvalid({
+    //     password: false,
+    //     username: true,
+    //     activate: false,
+    //   })
+    // } else if (err === 'not activate') {
+    //   setInvalid({
+    //     password: false,
+    //     username: true,
+    //     activate: true,
+    //   })
+    // } else if (err === 'password wrong') {
+    //   setInvalid({
+    //     password: true,
+    //     username: false,
+    //     activate: false,
+    //   })
+    // } else router.push('/')
   }
 
   return (
@@ -97,22 +104,15 @@ const Signin = (props:any) => {
     </Layout>
   )
 }
-console.log(initialState)
+
+init()
 export default Signin
-
-const test_wrapper = () => {
-  return wrapper.getStaticProps(async({store, locale}:any)=> {
-    // const state = store.getState()
-    // store.injectReducer('auth', authReducer)
-    // store.injectSaga('auth', authSaga)
-    console.log(store,store.getState())
-    return {
-      props: {
-        // store,
-        ...(await serverSideTranslations(locale, ['signin', 'header'])),
-      },
-    }
-  })
-}
-
-export const getStaticProps: GetStaticProps = test_wrapper()
+export const getStaticProps: GetStaticProps = wrapper.getStaticProps(async({store, locale}:any)=> {
+  return {
+    props: {
+      // auth:state.auth,
+      // store,
+      ...(await serverSideTranslations(locale, ['signin', 'header'])),
+    },
+  }
+})
