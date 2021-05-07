@@ -47,6 +47,7 @@ const makeStore = () => {
   const sagaMiddleware = createSagaMiddleware()
   const store:any = createStore(createReducer(reducers), bindMiddleware([sagaMiddleware]))
   // store.sagaTask = sagaMiddleware.run(rootSaga)
+  context.store = store
   store.injectSaga = createSagaInjector(sagaMiddleware.run, rootSaga)
 
   const asyncReducers:any = reducers
@@ -54,7 +55,6 @@ const makeStore = () => {
     asyncReducers[key] = reducer
     store.replaceReducer(createReducer(asyncReducers))
   }
-  context.store = store
   return store
 }
 
@@ -66,6 +66,7 @@ function createSagaInjector(runSaga:any, rootSaga:any) {
   const injectSaga = (key:string, saga:any) => {
     if(isInjected(key)) return;
     const task = runSaga(saga)
+    context.store.sagaTask = task
     injectedSaga.set(key, task)
   }
   injectSaga('root', rootSaga)
